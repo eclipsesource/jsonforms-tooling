@@ -11,16 +11,45 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.sayHello"
+        "onCommand:extension.createExampleProject",
+        "onCommand:extension.createSeedProject",
+        "onCommand:extension.generateUISchema"
     ],
     "main": "./out/extension",
     "contributes": {
         "commands": [
             {
-                "command": "extension.sayHello",
-                "title": "Hello World"
+                "command": "extension.createExampleProject",
+                "title": "Create Example Project"
+            },
+            {
+                "command": "extension.createSeedProject",
+                "title": "Create Seed Project"
+            },
+            {
+                "command": "extension.generateUISchema",
+                "title": "Generate UI Schema"
             }
-        ]
+        ],
+        "menus": {
+            "explorer/context": [
+                {
+                    "when": "explorerResourceIsFolder",
+                    "command": "extension.createExampleProject",
+                    "group": "jsonforms"
+                },
+                {
+                    "when": "explorerResourceIsFolder",
+                    "command": "extension.createSeedProject",
+                    "group": "jsonforms"
+                },
+                {
+                    "when": "resourceExtname == .json",
+                    "command": "extension.generateUISchema",
+                    "group": "jsonforms"
+                }
+            ]
+        }
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",

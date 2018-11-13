@@ -14,14 +14,30 @@ export function activate(context: vscode.ExtensionContext) {
     // The command has been defined in the package.json file
     // Now provide the implementation of the command with  registerCommand
     // The commandId parameter must match the command field in package.json
-    let disposable = vscode.commands.registerCommand('extension.sayHello', () => {
+    let createExampleProject = vscode.commands.registerCommand('extension.createExampleProject', (args: any) => {
         // The code you place here will be executed every time your command is executed
-
+        let path = (args) ? args.path : "";
         // Display a message box to the user
-        vscode.window.showInformationMessage('Hello World!');
+        vscode.window.showInformationMessage('Creating example project: '+path);
     });
 
-    context.subscriptions.push(disposable);
+    let createSeedProject = vscode.commands.registerCommand('extension.createSeedProject', (args: any) => {
+        // The code you place here will be executed every time your command is executed
+        let path = (args) ? args.path : "";
+        // Display a message box to the user
+        vscode.window.showInformationMessage('Creating seed project: '+path);
+    });
+
+    let generateUISchema = vscode.commands.registerCommand('extension.generateUISchema', (args: any) => {
+        // The code you place here will be executed every time your command is executed
+        let path = (args) ? args.path : "";
+        // Display a message box to the user
+        vscode.window.showInformationMessage('Generating UI Schema: '+path);
+    });
+
+    context.subscriptions.push(createExampleProject);
+    context.subscriptions.push(createSeedProject);
+    context.subscriptions.push(generateUISchema);
 }
 
 // this method is called when your extension is deactivated
