@@ -1,6 +1,6 @@
 {
-    "name": "vscode-extension",
-    "displayName": "vscode-extension",
+    "name": "jsoforms-tooling",
+    "displayName": "JSONForms Tooling",
     "description": "Extension for the VS Code editor to support JSONForms Tooling, making it easier for developers to start new project or try out the library.",
     "version": "0.0.1",
     "publisher": "EclipseSource",
