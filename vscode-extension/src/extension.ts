@@ -8,31 +8,40 @@ var tooling = require('jsonforms-tooling');
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
-    // Use the console to output diagnostic information (console.log) and errors (console.error)
-    // This line of code will only be executed once when your extension is activated
-    console.log('Congratulations, your extension "vscode-extension" is now active!');
-
     // The command has been defined in the package.json file
     // Now provide the implementation of the command with  registerCommand
     // The commandId parameter must match the command field in package.json
     let createExampleProject = vscode.commands.registerCommand('extension.createExampleProject', (args: any) => {
-        // The code you place here will be executed every time your command is executed
-        let path = (args) ? args.fsPath : "";
-        tooling.cloneAndInstall('example', path);
-        vscode.window.showInformationMessage('Creating example project: '+path);
+        if(!args) {
+            vscode.window.showInformationMessage('You can only run this on a folder');
+            return;
+        } else {
+            let path = args.fsPath;
+            vscode.window.showInformationMessage('Creating example project: '+path);
+            tooling.cloneAndInstall('example', path);
+        }
     });
 
     let createSeedProject = vscode.commands.registerCommand('extension.createSeedProject', (args: any) => {
-        // The code you place here will be executed every time your command is executed
-        let path = (args) ? args.fsPath : "";
-        tooling.cloneAndInstall('seed', path);
-        vscode.window.showInformationMessage('Creating seed project: '+path);
+        if(!args) {
+            vscode.window.showInformationMessage('You can only run this on a folder');
+            return;
+        } else {
+            let path = args.fsPath;
+            vscode.window.showInformationMessage('Creating seed project: '+path);
+            tooling.cloneAndInstall('seed', path);
+        }
     });
 
     let generateUISchema = vscode.commands.registerCommand('extension.generateUISchema', (args: any) => {
-        let path = (args) ? args.fsPath : "";
-        tooling.generateUISchema(path);
-        vscode.window.showInformationMessage('Generating UI Schema: '+path);
+        if(!args) {
+            vscode.window.showInformationMessage('You can only run this on a json file');
+            return;
+        } else {
+            let path = args.fsPath;
+            vscode.window.showInformationMessage('Generating UI Schema: '+path);
+            tooling.generateUISchema(path);
+        }
     });
 
     context.subscriptions.push(createExampleProject);
