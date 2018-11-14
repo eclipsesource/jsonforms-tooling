@@ -30,9 +30,8 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
     let generateUISchema = vscode.commands.registerCommand('extension.generateUISchema', (args: any) => {
-        // The code you place here will be executed every time your command is executed
-        let path = (args) ? args.path : "";
-        // Display a message box to the user
+        let path = (args) ? args.fsPath : "";
+        tooling.generateUISchema(path);
         vscode.window.showInformationMessage('Generating UI Schema: '+path);
     });
 

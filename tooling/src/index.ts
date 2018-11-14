@@ -1,5 +1,7 @@
 import * as simplegit from 'simple-git/promise';
 import * as child from 'child_process';
+import * as jsonforms from '@jsonforms/core';
+import { writeFile, readFile } from 'fs';
 
 export function cloneAndInstall(repo: String, path: string) {
     var url = '';
@@ -27,4 +29,23 @@ export function cloneAndInstall(repo: String, path: string) {
         });
     })
     .catch((err: any) => console.error('failed: ', err));
+}
+
+export function generateUISchema(path: string) {
+    readFile(path, 'utf8', (err, data) => {
+        if (err) throw err;
+        var content = JSON.parse(data);
+        var jsonSchema = jsonforms.generateJsonSchema(content);
+        var jsonUISchema = jsonforms.generateDefaultUISchema(jsonSchema);
+        var newPath = removeLastPathElement(path);
+        writeFile(newPath+'\\ui-schema.json', JSON.stringify(jsonUISchema,null, 2), (err) => {
+            if (err) throw err;
+        });
+    });
+}
+
+function removeLastPathElement(path: string) {
+    var newPath = path.split('\\');
+    newPath.pop();
+    return newPath.join('\\');
 }

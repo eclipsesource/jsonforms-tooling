@@ -11,6 +11,7 @@
     "compile": "rimraf out && tsc -p ./ --declaration"
   },
   "dependencies": {
+    "@jsonforms/core": "^2.0.12-rc.3",
     "npm": "^6.4.1",
     "simple-git": "^1.107.0"
   },
