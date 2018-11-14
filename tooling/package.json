@@ -1,0 +1,27 @@
+{
+  "name": "jsonforms-tooling",
+  "version": "0.0.1",
+  "description": "",
+  "author": "EclipseSource",
+  "main": "out/index",
+  "typings": "out/index",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel src -d out --extensions \".ts,.tsx\"",
+    "compile": "rimraf out && tsc -p ./ --declaration"
+  },
+  "dependencies": {
+    "npm": "^6.4.1",
+    "simple-git": "^1.107.0"
+  },
+  "type-check": "tsc",
+  "devDependencies": {
+    "@babel/cli": "^7.1.5",
+    "@babel/core": "^7.1.6",
+    "@babel/preset-env": "^7.1.6",
+    "@babel/preset-typescript": "^7.1.0",
+    "@types/node": "^10.12.7",
+    "rimraf": "^2.6.2",
+    "typescript": "^3.1.6"
+  }
+}
