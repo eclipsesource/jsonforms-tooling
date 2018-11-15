@@ -55,6 +55,11 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(generateUISchema);
 }
 
+/**
+ * Show Visual Studio Code Message
+ * @param {string} message the message that should be displayed
+ * @param {string} type the type of the message
+ */
 function showMessage(message: string, type?: string) {
     switch(type) {
         case 'err':

@@ -4,6 +4,11 @@ import * as jsonforms from '@jsonforms/core';
 import { writeFile, readFile } from 'fs';
 
 /**
+ * Clones a git repository and runs npm install on it
+ * @param {string} repo the name of the repo that should be cloned
+ * @param {string} path to the folder, where the repo should be cloned into
+ * @param {function} callback forwards the current status to the caller
+ */
 export function cloneAndInstall(repo: String, path: string, callback: (result: string, type?: string) => void) {
     var url = '';
     switch(repo) {
@@ -33,6 +38,10 @@ export function cloneAndInstall(repo: String, path: string, callback: (result: s
 }
 
 /**
+ * Generates the default UI Schema from a json schema
+ * @param {string} path path to the json schema file
+ * @param {function} callback forwards the current status to the caller
+ */
 export function generateUISchema(path: string, callback: (result: string, type?: string) => void) {
     readFile(path, 'utf8', (err, data) => {
         if (err) callback(err.message, 'err');
@@ -47,6 +56,11 @@ export function generateUISchema(path: string, callback: (result: string, type?:
     });
 }
 
+/**
+ * Takes a path and removes the last part
+ * @param {string} path path to a folder or file
+ * @return {string} the path without the last part
+ */
 function removeLastPathElement(path: string) {
     var newPath = path.split('\\');
     newPath.pop();
