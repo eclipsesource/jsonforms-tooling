@@ -13,40 +13,59 @@ export function activate(context: vscode.ExtensionContext) {
     // The commandId parameter must match the command field in package.json
     let createExampleProject = vscode.commands.registerCommand('extension.createExampleProject', (args: any) => {
         if(!args) {
-            vscode.window.showInformationMessage('You can only run this on a folder');
+            showMessage('You can only run this on a folder', 'err');
             return;
         } else {
             let path = args.fsPath;
-            vscode.window.showInformationMessage('Creating example project: '+path);
-            tooling.cloneAndInstall('example', path);
+            showMessage('Creating example project: '+path);
+            tooling.cloneAndInstall('example', path, function(result: string, type: string) {
+                showMessage(result, type);
+            });
         }
     });
 
     let createSeedProject = vscode.commands.registerCommand('extension.createSeedProject', (args: any) => {
         if(!args) {
-            vscode.window.showInformationMessage('You can only run this on a folder');
+            showMessage('You can only run this on a folder', 'err');
             return;
         } else {
             let path = args.fsPath;
-            vscode.window.showInformationMessage('Creating seed project: '+path);
-            tooling.cloneAndInstall('seed', path);
+            showMessage('Creating seed project: '+path);
+            tooling.cloneAndInstall('seed', path, function(result: string, type: string) {
+                showMessage(result, type);
+            });
         }
     });
 
     let generateUISchema = vscode.commands.registerCommand('extension.generateUISchema', (args: any) => {
         if(!args) {
-            vscode.window.showInformationMessage('You can only run this on a json file');
+            showMessage('You can only run this on a json file', 'err');
             return;
         } else {
             let path = args.fsPath;
-            vscode.window.showInformationMessage('Generating UI Schema: '+path);
-            tooling.generateUISchema(path);
+            showMessage('Generating UI Schema: '+path);
+            tooling.generateUISchema(path, function(result: string, type: string) {
+                showMessage(result, type);
+            });
         }
     });
 
     context.subscriptions.push(createExampleProject);
     context.subscriptions.push(createSeedProject);
     context.subscriptions.push(generateUISchema);
+}
+
+function showMessage(message: string, type?: string) {
+    switch(type) {
+        case 'err':
+            vscode.window.showErrorMessage(message);
+            break;
+        case 'war':
+            vscode.window.showWarningMessage(message);
+            break;
+        default:
+            vscode.window.showInformationMessage(message);
+    }
 }
 
 // this method is called when your extension is deactivated
