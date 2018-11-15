@@ -1,7 +1,7 @@
 import * as simplegit from 'simple-git/promise';
-import * as child from 'child_process';
 import * as jsonforms from '@jsonforms/core';
 import { writeFile, readFile } from 'fs';
+var npm = require('npm-cmd');
 
 /**
  * Clones a git repository and runs npm install on it
@@ -25,13 +25,12 @@ export function cloneAndInstall(repo: String, path: string, callback: (result: s
         .then(function() {
             callback('Finished to clone repo');
             callback('Running npm install');
-            child.exec(`cd /${path} | npm install`, (error, stdout, stderr) => {
-                if (error) {
-                    callback(`exec error: ${error}`, 'err');
-                    return;
-                }
-                callback(`stdout: ${stdout}`);
-                callback(`stderr: ${stderr}`, 'err');
+            npm.install([], {cwd: path}, function(err: any) {
+                if (err) {
+                    callback(err.message, 'err');
+                } else {
+                    callback('Installation succeeded!'); 
+                }       
             });
         })
         .catch((err: any) => {callback(err.message, 'err')});
