@@ -3,3 +3,4 @@ node_modules/
 theia-plugin/npm-debug.log
 
 tooling/out/
+package-lock.json
