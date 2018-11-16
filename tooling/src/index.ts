@@ -44,8 +44,11 @@ export function generateUISchema(path: string, callback: (result: string, type?:
         var content = JSON.parse(data);
         var jsonSchema = jsonforms.generateJsonSchema(content);
         var jsonUISchema = jsonforms.generateDefaultUISchema(jsonSchema);
-        var newPath = removeLastPathElement(path);
-        writeFile(newPath+'\\ui-schema.json', JSON.stringify(jsonUISchema,null, 2), (err) => {
+        callback(JSON.stringify(jsonUISchema));
+        var newPath = path.substring(0, path.lastIndexOf("/"));
+        console.log(newPath+'/ui-schema.json');
+        console.log(JSON.stringify(jsonUISchema,null, 2));
+        writeFile(newPath+'/ui-schema.json', JSON.stringify(jsonUISchema,null, 2), (err) => {
             if (err) callback(err.message, 'err');
             callback('Successfully generated UI schema');
         });
@@ -57,8 +60,8 @@ export function generateUISchema(path: string, callback: (result: string, type?:
  * @param {string} path path to a folder or file
  * @return {string} the path without the last part
  */
-function removeLastPathElement(path: string) {
+/* function removeLastPathElement(path: string) {
     var newPath = path.split('\\');
     newPath.pop();
     return newPath.join('\\');
-}
+} */
