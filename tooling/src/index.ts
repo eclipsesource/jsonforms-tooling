@@ -42,11 +42,14 @@ export function cloneAndInstall(repo: String, path: string, callback: (result: s
 export function generateUISchema(path: string, callback: (result: string, type?: string) => void) {
     readFile(path, 'utf8', (err, data) => {
         if (err) callback(err.message, 'err');
-        var content = JSON.parse(data);
-        var jsonSchema = jsonforms.generateJsonSchema(content);
+        var jsonSchema = JSON.parse(data);
         var jsonUISchema = jsonforms.generateDefaultUISchema(jsonSchema);
-        var newPath = path.substring(0, path.lastIndexOf("/"));
-        writeFile(newPath+'/ui-schema.json', JSON.stringify(jsonUISchema,null, 2), (err) => {
+        if(process.platform === 'win32') {
+            var newPath = path.substring(0, path.lastIndexOf("\\"))+'\\ui-schema.json';
+        } else {
+            var newPath = path.substring(0, path.lastIndexOf("/"))+'/ui-schema.json';
+        }
+        writeFile(newPath, JSON.stringify(jsonUISchema,null, 2), (err) => {
             if (err) callback(err.message, 'err');
             callback('Successfully generated UI schema');
         });
