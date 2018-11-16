@@ -3,6 +3,7 @@ import * as jsonforms from '@jsonforms/core';
 import * as cp from 'child_process';
 import { writeFile, readFile } from 'fs';
 var npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+
 /*
  * Clones a git repository and runs npm install on it
  * @param {string} repo the name of the repo that should be cloned
@@ -44,24 +45,10 @@ export function generateUISchema(path: string, callback: (result: string, type?:
         var content = JSON.parse(data);
         var jsonSchema = jsonforms.generateJsonSchema(content);
         var jsonUISchema = jsonforms.generateDefaultUISchema(jsonSchema);
-        callback(JSON.stringify(jsonUISchema));
         var newPath = path.substring(0, path.lastIndexOf("/"));
-        console.log(newPath+'/ui-schema.json');
-        console.log(JSON.stringify(jsonUISchema,null, 2));
         writeFile(newPath+'/ui-schema.json', JSON.stringify(jsonUISchema,null, 2), (err) => {
             if (err) callback(err.message, 'err');
             callback('Successfully generated UI schema');
         });
     });
 }
-
-/**
- * Takes a path and removes the last part
- * @param {string} path path to a folder or file
- * @return {string} the path without the last part
- */
-/* function removeLastPathElement(path: string) {
-    var newPath = path.split('\\');
-    newPath.pop();
-    return newPath.join('\\');
-} */
