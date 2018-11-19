@@ -43,9 +43,17 @@ export function activate(context: vscode.ExtensionContext) {
             return;
         } else {
             let path = args.fsPath;
-            showMessage('Generating UI Schema: '+path);
-            tooling.generateUISchema(path, function(result: string, type: string) {
-                showMessage(result, type);
+            
+            let options: vscode.InputBoxOptions = {
+                prompt: "Label: ",
+                placeHolder: "Enter a filename for your UI Schema (default: ui-schema.json)"
+            }
+            vscode.window.showInputBox(options).then(name => {
+                if (!name) name = 'ui-schema.json';
+                showMessage('Generating UI Schema: '+path);
+                tooling.generateUISchema(path, name, function(result: string, type: string) {
+                    showMessage(result, type);
+                });
             });
         }
     });

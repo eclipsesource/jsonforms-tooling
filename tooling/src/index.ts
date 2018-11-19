@@ -40,7 +40,7 @@ export function cloneAndInstall(repo: String, path: string, callback: (result: s
  * @param {string} path path to the json schema file
  * @param {function} callback forwards the current status to the caller
  */
-export function generateUISchema(path: string, callback: (result: string, type?: string) => void) {
+export function generateUISchema(path: string, name: string, callback: (result: string, type?: string) => void) {
     // Read JSON Schema file
     readFile(path, 'utf8', (err, data) => {
         if (err) {
@@ -59,9 +59,9 @@ export function generateUISchema(path: string, callback: (result: string, type?:
 
             // Check if windows or linux filesystem
             if(process.platform === 'win32') {
-                var newPath = path.substring(0, path.lastIndexOf("\\"))+'\\ui-schema.json';
+                var newPath = path.substring(0, path.lastIndexOf("\\"))+'\\'+name;
             } else {
-                var newPath = path.substring(0, path.lastIndexOf("/"))+'/ui-schema.json';
+                var newPath = path.substring(0, path.lastIndexOf("/"))+'/'+name;
             }
 
             // Write UI Schema file
