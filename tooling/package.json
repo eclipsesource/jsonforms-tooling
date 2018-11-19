@@ -8,10 +8,12 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel src -d out --extensions \".ts,.tsx\"",
-    "compile": "rimraf out && tsc -p ./ --declaration"
+    "compile": "rimraf out && tsc -p ./ --declaration",
+    "watch": "tsc -watch -p ./ --declaration"
   },
   "dependencies": {
     "@jsonforms/core": "^2.0.12-rc.3",
+    "ajv": "^6.5.5",
     "npm": "^6.4.1",
     "simple-git": "^1.107.0"
   },

@@ -2,6 +2,7 @@ import * as simplegit from 'simple-git/promise';
 import * as jsonforms from '@jsonforms/core';
 import * as cp from 'child_process';
 import { writeFile, readFile } from 'fs';
+import * as Ajv from 'ajv';
 var npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 
 /*
@@ -40,18 +41,53 @@ export function cloneAndInstall(repo: String, path: string, callback: (result: s
  * @param {function} callback forwards the current status to the caller
  */
 export function generateUISchema(path: string, callback: (result: string, type?: string) => void) {
+    // Read JSON Schema file
     readFile(path, 'utf8', (err, data) => {
-        if (err) callback(err.message, 'err');
-        var jsonSchema = JSON.parse(data);
-        var jsonUISchema = jsonforms.generateDefaultUISchema(jsonSchema);
-        if(process.platform === 'win32') {
-            var newPath = path.substring(0, path.lastIndexOf("\\"))+'\\ui-schema.json';
-        } else {
-            var newPath = path.substring(0, path.lastIndexOf("/"))+'/ui-schema.json';
+        if (err) {
+            callback(err.message, 'err');
+            return;
         }
-        writeFile(newPath, JSON.stringify(jsonUISchema,null, 2), (err) => {
-            if (err) callback(err.message, 'err');
-            callback('Successfully generated UI schema');
+
+        var jsonSchema = JSON.parse(data);
+        validateJSONSchema(jsonSchema, function(err?: string) {
+            if (err) {
+                callback(err, 'err');
+                return;
+            }
+
+            var jsonUISchema = jsonforms.generateDefaultUISchema(jsonSchema);
+
+            // Check if windows or linux filesystem
+            if(process.platform === 'win32') {
+                var newPath = path.substring(0, path.lastIndexOf("\\"))+'\\ui-schema.json';
+            } else {
+                var newPath = path.substring(0, path.lastIndexOf("/"))+'/ui-schema.json';
+            }
+
+            // Write UI Schema file
+            writeFile(newPath, JSON.stringify(jsonUISchema,null, 2), (err) => {
+                if (err) {
+                    callback(err.message, 'err');
+                    return;
+                }
+
+                callback('Successfully generated UI schema');
+            });
         });
     });
+}
+
+/**
+ * Validate a given JSON Schema
+ * @param {string} path path to the json schema file
+ * @param {function} callback forwards the current status to the caller
+ */
+function validateJSONSchema(schema: Object, callback: (err?: string) => void) {
+    var ajv = new Ajv();
+    try {
+        ajv.compile(schema);
+        callback();
+    } catch (error) {
+        callback(error.message);
+    }
 }
