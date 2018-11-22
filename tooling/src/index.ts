@@ -11,7 +11,7 @@ var npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
  * @param {string} path to the folder, where the repo should be cloned into
  * @param {function} callback forwards the current status to the caller
  */
-export function cloneAndInstall(repo: String, path: string, callback: (result: string, type?: string) => void) {
+export function cloneAndInstall(repo: string, path: string, callback: (result: string, type?: string) => void, name?: string) {
     var url = '';
     switch(repo) {
         case 'example':

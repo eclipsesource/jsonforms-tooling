@@ -29,10 +29,17 @@ export function activate(context: vscode.ExtensionContext) {
             showMessage('You can only run this on a folder', 'err');
             return;
         } else {
-            let path = args.fsPath;
-            showMessage('Creating seed project: '+path);
-            tooling.cloneAndInstall('seed', path, function(result: string, type: string) {
-                showMessage(result, type);
+            let options: vscode.InputBoxOptions = {
+                prompt: "Label: ",
+                placeHolder: "Enter a name for your seed project"
+            }
+            vscode.window.showInputBox(options).then(name => {
+                if (!name) name = 'jsonforms-seed';
+                let path = args.fsPath;
+                showMessage('Creating seed project: '+path);
+                tooling.cloneAndInstall('seed', path, function(result: string, type: string) {
+                    showMessage(result, type);
+                }, name);
             });
         }
     });
@@ -42,14 +49,13 @@ export function activate(context: vscode.ExtensionContext) {
             showMessage('You can only run this on a json file', 'err');
             return;
         } else {
-            let path = args.fsPath;
-            
             let options: vscode.InputBoxOptions = {
                 prompt: "Label: ",
                 placeHolder: "Enter a filename for your UI Schema (default: ui-schema.json)"
             }
             vscode.window.showInputBox(options).then(name => {
                 if (!name) name = 'ui-schema.json';
+                let path = args.fsPath;
                 showMessage('Generating UI Schema: '+path);
                 tooling.generateUISchema(path, name, function(result: string, type: string) {
                     showMessage(result, type);
