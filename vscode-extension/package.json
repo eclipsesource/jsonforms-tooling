@@ -1,38 +1,69 @@
 {
-    "name": "vscode-extension",
-    "displayName": "vscode-extension",
-    "description": "Extension for the VS Code editor to support JSONForms Tooling, making it easier for developers to start new project or try out the library.",
-    "version": "0.0.1",
-    "publisher": "EclipseSource",
-    "engines": {
-        "vscode": "^1.28.0"
-    },
-    "categories": [
-        "Other"
+  "name": "jsonforms-tooling-vscode",
+  "displayName": "JSONForms Tooling",
+  "description": "Extension for the VS Code editor to support JSONForms Tooling, making it easier for developers to start new project or try out the library.",
+  "version": "0.0.1",
+  "publisher": "EclipseSource",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.28.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:extension.createExampleProject",
+    "onCommand:extension.createSeedProject",
+    "onCommand:extension.generateUISchema"
+  ],
+  "main": "./out/extension",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.createExampleProject",
+        "title": "Create Example Project"
+      },
+      {
+        "command": "extension.createSeedProject",
+        "title": "Create Seed Project"
+      },
+      {
+        "command": "extension.generateUISchema",
+        "title": "Generate UI Schema"
+      }
     ],
-    "activationEvents": [
-        "onCommand:extension.sayHello"
-    ],
-    "main": "./out/extension",
-    "contributes": {
-        "commands": [
-            {
-                "command": "extension.sayHello",
-                "title": "Hello World"
-            }
-        ]
-    },
-    "scripts": {
-        "vscode:prepublish": "npm run compile",
-        "compile": "tsc -p ./",
-        "watch": "tsc -watch -p ./",
-        "postinstall": "node ./node_modules/vscode/bin/install",
-        "test": "npm run compile && node ./node_modules/vscode/bin/test"
-    },
-    "devDependencies": {
-        "typescript": "^2.6.1",
-        "vscode": "^1.1.21",
-        "@types/node": "^8.10.25",
-        "@types/mocha": "^2.2.42"
+    "menus": {
+      "explorer/context": [
+        {
+          "when": "explorerResourceIsFolder",
+          "command": "extension.createExampleProject",
+          "group": "jsonforms"
+        },
+        {
+          "when": "explorerResourceIsFolder",
+          "command": "extension.createSeedProject",
+          "group": "jsonforms"
+        },
+        {
+          "when": "resourceExtname == .json",
+          "command": "extension.generateUISchema",
+          "group": "jsonforms"
+        }
+      ]
     }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "build": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "postinstall": "node ../node_modules/vscode/bin/install",
+    "lint": "tslint --project tsconfig.json"
+  },
+  "dependencies": {
+    "jsonforms-tooling": "file:../tooling"
+  },
+  "devDependencies": {
+    "vscode": "^1.1.21"
+  }
 }

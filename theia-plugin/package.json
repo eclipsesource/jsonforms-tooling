@@ -1,37 +1,37 @@
 {
-      "name": "theia-plugin",
-      "publisher": "theia",
-      "keywords": [
-        "theia-plugin"
-      ],
-      "version": "0.0.1",
-      "license": "none",
-      
-      "files": [
-        "src"
-      ],
-      "devDependencies": {
-        "@theia/plugin": "next",
-        "@theia/plugin-packager": "latest",
-        "rimraf": "2.6.2",
-        "typescript-formatter": "7.2.2",
-        "typescript": "2.9.2"
-      },
-      "scripts": {
-        "prepare": "yarn run clean && yarn run build",
-        "clean": "rimraf lib",
-        "format-code": "tsfmt -r",
-        "watch": "tsc -watch",
-        "compile": "tsc", 
-        "build": "yarn run format-code && yarn run compile && theia:plugin pack"
-      },
-      "engines": {
-        "theiaPlugin": "next"
-      },
-      "theiaPlugin": {
-          
-          
-            "backend": "lib/theia-plugin-backend.js"
-          
-      }
+  "name": "jsonforms-tooling-theia",
+  "displayName": "JSONForms Tooling",
+  "description": "Extension for the VS Code editor to support JSONForms Tooling, making it easier for developers to start new project or try out the library.",
+  "version": "0.0.1",
+  "publisher": "EclipseSource",
+  "license": "MIT",
+  "keywords": [
+    "theia-plugin"
+  ],
+  "files": [
+    "src"
+  ],
+  "dependencies": {
+    "jsonforms-tooling": "file:../tooling",
+    "@theia/plugin": "^0.4.0-next.8c668434",
+    "@theia/plugin-packager": "0.0.1-1539891078"
+  },
+  "devDependencies": {
+    "@types/node": "^10.12.10",
+    "rimraf": "2.6.2"
+  },
+  "scripts": {
+    "prepare": "npm run clean && npm run build",
+    "clean": "rimraf out",
+    "watch": "tsc -watch",
+    "compile": "tsc -p ./",
+    "build": "npm run compile && theia:plugin pack",
+    "postinstall": " "
+  },
+  "engines": {
+    "theiaPlugin": "next"
+  },
+  "theiaPlugin": {
+    "backend": "out/extension.js"
+  }
 }
