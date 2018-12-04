@@ -1,6 +1,7 @@
 {
   "scripts": {
     "lerna": "lerna",
+    "coveralls": "ts-jest --coverage && cat ./tests/coverage/lcov.info | coveralls",
     "postinstall": "npm run lernabootstrap && npm run lernainstall",
     "lernainstall": "lerna exec --no-bail --npm-ci-mode -- npm run postinstall",
     "lernabootstrap": "lerna bootstrap --npm-ci-mode --ignore-scripts",
@@ -12,6 +13,7 @@
     "@theia/plugin-packager": "0.0.1-1539891078",
     "@types/jest": "^23.3.9",
     "@types/node": "^10.12.10",
+    "coveralls": "^3.0.2",
     "jest": "^23.6.0",
     "lerna": "^3.4.3",
     "rimraf": "2.6.2",
