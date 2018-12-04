@@ -12,6 +12,7 @@
     "compile": "rimraf out && tsc -p ./ --declaration",
     "postinstall": " ",
     "custominstall": "npm run postinstall"
+    "lint": "tslint --project tsconfig.json"
   },
   "dependencies": {
     "@jsonforms/core": "^2.0.12",

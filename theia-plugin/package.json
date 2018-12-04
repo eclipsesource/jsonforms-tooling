@@ -28,6 +28,7 @@
     "build": "yarn run compile && theia:plugin pack",
     "postinstall": " ",
     "custominstall": "yarn install"
+    "lint": "tslint --project tsconfig.json"
   },
   "engines": {
     "theiaPlugin": "next"
