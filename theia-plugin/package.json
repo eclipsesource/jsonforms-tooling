@@ -26,7 +26,8 @@
     "watch": "tsc -watch",
     "compile": "tsc -p ./",
     "build": "npm run compile && theia:plugin pack",
-    "postinstall": " "
+    "postinstall": " ",
+    "lint": "tslint --project tsconfig.json"
   },
   "engines": {
     "theiaPlugin": "next"

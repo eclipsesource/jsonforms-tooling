@@ -10,7 +10,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run compile",
     "compile": "rimraf out && tsc -p ./ --declaration",
-    "postinstall": " "
+    "postinstall": " ",
+    "lint": "tslint --project tsconfig.json"
   },
   "dependencies": {
     "@jsonforms/core": "^2.0.12",
