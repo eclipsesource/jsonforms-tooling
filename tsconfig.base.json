@@ -13,7 +13,7 @@
 		"noUnusedLocals": true,
 		"sourceMap": true,
 		"strict": true,
-		"types": ["node"]
+		"types": ["node", "jest"]
 	},
 	"exclude": [
         "node_modules"
