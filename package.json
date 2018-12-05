@@ -9,8 +9,7 @@
     "lint": "lerna run lint"
   },
   "devDependencies": {
-    "@theia/plugin": "^0.4.0-next.8c668434",
-    "@theia/plugin-packager": "0.0.1-1539891078",
+    "@types/inquirer": "0.0.43",
     "@types/jest": "^23.3.9",
     "@types/node": "^10.12.10",
     "coveralls": "^3.0.2",
@@ -25,6 +24,11 @@
   },
   "dependencies": {
     "@jsonforms/core": "^2.0.12-rc.4",
+    "chalk": "^2.4.1",
+    "clear": "^0.1.0",
+    "clui": "^0.3.6",
+    "figlet": "^1.2.1",
+    "inquirer": "^6.2.0",
     "npm": "^6.4.1",
     "simple-git": "^1.107.0"
   }

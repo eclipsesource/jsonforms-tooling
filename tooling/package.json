@@ -6,6 +6,9 @@
   "license": "MIT",
   "main": "out/index",
   "typings": "out/index",
+  "bin": {
+    "jsonform-tools": "tooling/out/cli.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run compile",
