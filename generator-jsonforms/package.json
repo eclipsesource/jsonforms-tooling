@@ -1,0 +1,16 @@
+{
+  "name": "generator-jsonforms",
+  "version": "0.0.1",
+  "description": "",
+  "files": [
+    "generators"
+  ],
+  "keywords": [
+    "yeoman-generator"
+  ],
+  "dependencies": {
+    "yeoman-generator": "^3.1.1",
+    "example-project": "git+https://git@github.com/eclipsesource/make-it-happen-react.git",
+    "seed-project": "git+https://git@github.com/eclipsesource/jsonforms-react-seed.git"
+  }
+}
