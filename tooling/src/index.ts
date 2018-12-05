@@ -1,9 +1,11 @@
+// tslint:disable:no-use-before-declare
+
 import * as simplegit from 'simple-git/promise';
 import * as jsonforms from '@jsonforms/core';
 import * as cp from 'child_process';
-import { writeFile, readFile } from 'fs';
+import { readFile, writeFile } from 'fs';
 import * as Ajv from 'ajv';
-const pathLib = require('path');
+import { sep } from 'path';
 const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 
 /*
@@ -12,7 +14,11 @@ const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
  * @param {string} path to the folder, where the repo should be cloned into
  * @param {function} callback forwards the current status to the caller
  */
-export function cloneAndInstall(repo: string, path: string, callback: (id: string, result: string, type?: string) => void, name?: string) {
+export const cloneAndInstall = (
+  repo: string,
+  path: string,
+  callback: (id: string, result: string, type?: string) => void,
+  name?: string) => {
   let url = '';
   switch (repo) {
     case 'example':
@@ -21,6 +27,8 @@ export function cloneAndInstall(repo: string, path: string, callback: (id: strin
     case 'seed':
       url = 'https://github.com/eclipsesource/jsonforms-react-seed';
       break;
+    default:
+      return;
   }
   const git = simplegit();
   callback('start-cloning', 'Starting to clone repo');
@@ -34,52 +42,55 @@ export function cloneAndInstall(repo: string, path: string, callback: (id: strin
       callback('signal', result.signal);
     })
     .catch((err: any) => { callback('error', err.message, 'err'); });
-}
+};
 
 /**
  * Generates the default UI Schema from a json schema
  * @param {string} path path to the json schema file
  * @param {function} callback forwards the current status to the caller
  */
-export function generateUISchema(path: string, name: string, callback: (id: string, result: string, type?: string) => void) {
+export const generateUISchema = (
+  path: string,
+  name: string,
+  callback: (id: string, result: string, type?: string) => void) => {
   // Read JSON Schema file
-  readFile(path, 'utf8', (err, data) => {
-    if (err) {
-      callback('error', err.message, 'err');
+  readFile(path, 'utf8', (readError, data) => {
+    if (readError.message) {
+      callback('error', readError.message, 'err');
       return;
     }
 
     const jsonSchema = JSON.parse(data);
-    validateJSONSchema(jsonSchema, (err?: string) => {
-      if (err) {
-        callback('error', err, 'err');
+    validateJSONSchema(jsonSchema, (validateError?: string) => {
+      if (validateError) {
+        callback('error', validateError, 'err');
         return;
       }
 
       const jsonUISchema = jsonforms.generateDefaultUISchema(jsonSchema);
 
       // Check if windows or linux filesystem
-      let newPath = path.substring(0, path.lastIndexOf(pathLib.sep));
-      newPath = newPath + pathLib.sep + name;
+      let newPath = path.substring(0, path.lastIndexOf(sep));
+      newPath = newPath + sep + name;
 
       // Write UI Schema file
-      writeFile(newPath, JSON.stringify(jsonUISchema, null, 2), (err) => {
-        if (err) {
-          callback('error', err.message, 'err');
+      writeFile(newPath, JSON.stringify(jsonUISchema, null, 2), writeError => {
+        if (writeError.message) {
+          callback('error', writeError.message, 'err');
           return;
         }
         callback('success', 'Successfully generated UI schema');
       });
     });
   });
-}
+};
 
 /**
  * Validate a given JSON Schema
  * @param {string} path path to the json schema file
  * @param {function} callback forwards the current status to the caller
  */
-function validateJSONSchema(schema: Object, callback: (err?: string) => void) {
+const validateJSONSchema = (schema: Object, callback: (err?: string) => void) => {
   const ajv = new Ajv();
   try {
     ajv.compile(schema);
@@ -87,4 +98,4 @@ function validateJSONSchema(schema: Object, callback: (err?: string) => void) {
   } catch (error) {
     callback(error.message);
   }
-}
+};
