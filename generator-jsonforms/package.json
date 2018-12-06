@@ -8,9 +8,15 @@
   "keywords": [
     "yeoman-generator"
   ],
+  "scripts": {
+    "postinstall": " ",
+    "compile": "tsc -p ./",
+    "build": "npm run compile"
+  },
   "dependencies": {
-    "yeoman-generator": "^3.1.1",
+    "@types/yeoman-generator": "^3.0.1",
+    "jsonforms-react-seed": "git+https://git@github.com/eclipsesource/jsonforms-react-seed.git",
     "make-it-happen-react": "git+https://git@github.com/eclipsesource/make-it-happen-react.git",
-    "jsonforms-react-seed": "git+https://git@github.com/eclipsesource/jsonforms-react-seed.git"
+    "yeoman-generator": "^3.1.1"
   }
 }
