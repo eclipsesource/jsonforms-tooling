@@ -15,11 +15,11 @@
   "dependencies": {
     "@jsonforms/core": "^2.0.12",
     "ajv": "^6.5.5",
-    "npm": "^6.4.1",
     "simple-git": "^1.107.0"
   },
   "type-check": "tsc",
   "devDependencies": {
     "rimraf": "^2.6.2"
-  }
+  },
+  "type-check": "tsc"
 }
