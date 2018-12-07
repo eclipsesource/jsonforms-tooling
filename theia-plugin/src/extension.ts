@@ -12,7 +12,7 @@ const tooling = require('jsonforms-tooling');
 export const start = (context: theia.PluginContext) => {
   const createExampleProjectCommand = {
     id: 'create-example-project',
-    label: 'Create Example Project',
+    label: 'JSONForms: Create Example Project',
   };
   const createExampleProject = theia.commands.registerCommand(
     createExampleProjectCommand,
@@ -39,7 +39,7 @@ export const start = (context: theia.PluginContext) => {
 
   const createSeedProjectCommand = {
     id: 'create-seed-project',
-    label: 'Create Seed Project',
+    label: 'JSONForms: Create Seed Project',
   };
   const createSeedProject = theia.commands.registerCommand(
     createSeedProjectCommand,
@@ -66,7 +66,7 @@ export const start = (context: theia.PluginContext) => {
 
   const generateUISchemaCommand = {
     id: 'generate-ui-schema',
-    label: 'Generate UI Schema',
+    label: 'JSONForms: Generate UI Schema',
   };
   const generateUISchema = theia.commands.registerCommand(
     generateUISchemaCommand,
