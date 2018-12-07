@@ -22,12 +22,13 @@
     "typescript": "^3.1.6"
   },
   "scripts": {
-    "prepare": "npm run clean && npm run build",
+    "prepare": "yarn run clean && yarn run build",
     "clean": "rimraf out",
     "watch": "tsc -watch",
     "compile": "tsc -p ./",
-    "build": "npm run compile && theia:plugin pack",
-    "postinstall": " "
+    "build": "yarn run compile && theia:plugin pack",
+    "postinstall": " ",
+    "custominstall": "yarn install"
   },
   "engines": {
     "theiaPlugin": "next"

@@ -10,7 +10,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run compile",
     "compile": "rimraf out && tsc -p ./ --declaration",
-    "postinstall": " "
+    "postinstall": " ",
+    "custominstall": "npm run postinstall"
   },
   "dependencies": {
     "@jsonforms/core": "^2.0.12",
@@ -20,6 +21,5 @@
   "type-check": "tsc",
   "devDependencies": {
     "rimraf": "^2.6.2"
-  },
-  "type-check": "tsc"
+  }
 }
