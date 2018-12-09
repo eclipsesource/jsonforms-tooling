@@ -18,5 +18,8 @@
     "jsonforms-react-seed": "git+https://git@github.com/eclipsesource/jsonforms-react-seed.git",
     "make-it-happen-react": "git+https://git@github.com/eclipsesource/make-it-happen-react.git",
     "yeoman-generator": "^3.1.1"
+  },
+  "devDependencies": {
+    "typescript": "^3.1.6"
   }
 }

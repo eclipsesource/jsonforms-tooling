@@ -3,7 +3,7 @@
 import * as Generator from 'yeoman-generator';
 import { join } from 'path';
 
-export class JsonformsGenerator extends Generator {
+class JsonformsGenerator extends Generator {
 
   answers: any;
 
@@ -52,3 +52,4 @@ export class JsonformsGenerator extends Generator {
   }
 };
   
+export default JsonformsGenerator;
