@@ -44,6 +44,26 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
+    let createBasicProject = vscode.commands.registerCommand('extension.createBasicProject', (args: any) => {
+        if(!args) {
+            showMessage('You can only run this on a folder', 'err');
+            return;
+        } else {
+            let options: vscode.InputBoxOptions = {
+                prompt: "Label: ",
+                placeHolder: "Enter a name for your basic project"
+            }
+            vscode.window.showInputBox(options).then(name => {
+                if (!name) name = 'jsonforms-basic';
+                let path = args.fsPath;
+                showMessage('Creating a basic project: '+path);
+                tooling.cloneAndInstall('basic', path, function(result: string, type: string) {
+                    showMessage(result, type);
+                }, name);
+            });
+        }
+    });
+
     let generateUISchema = vscode.commands.registerCommand('extension.generateUISchema', (args: any) => {
         if(!args) {
             showMessage('You can only run this on a json file', 'err');
@@ -66,6 +86,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(createExampleProject);
     context.subscriptions.push(createSeedProject);
+    context.subscriptions.push(createBasicProject);
     context.subscriptions.push(generateUISchema);
 }
 

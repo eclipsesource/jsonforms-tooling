@@ -17,6 +17,9 @@ export function cloneAndInstall(repo: string, path: string, callback: (result: s
         case 'example':
             url = 'https://github.com/eclipsesource/make-it-happen-react';
             break;
+        case 'basic':
+            url = 'https://github.com/roxhens/example-project';
+            break;
         case 'seed':
             url = 'https://github.com/eclipsesource/jsonforms-react-seed';
             break;
