@@ -11,7 +11,8 @@
   "scripts": {
     "postinstall": " ",
     "compile": "tsc -p ./",
-    "build": "npm run compile"
+    "build": "npm run compile",
+    "custominstall": "npm run postinstall"
   },
   "dependencies": {
     "@types/yeoman-generator": "^3.0.1",

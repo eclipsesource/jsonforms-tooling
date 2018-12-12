@@ -1,7 +1,6 @@
 {
     "extends": "../tsconfig.base",
     "compilerOptions": {
-      "outDir": "generators/app/",
       "sourceMap": true
     },
     "include": [
