@@ -1,9 +1,11 @@
 {
-    "extends": "../tsconfig.base",
-    "compilerOptions": {
-      "sourceMap": true
-    },
-    "include": [
-      "src", "generators/app/index.ts"
-    ]
-  }
+  "extends": "../tsconfig.base",
+  "compilerOptions": {
+    "sourceMap": true,
+    "rootDir": "./src",
+    "outDir": "./"
+  },
+  "include": [
+    "src"
+  ]
+}
