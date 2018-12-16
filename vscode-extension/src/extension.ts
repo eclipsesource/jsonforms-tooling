@@ -6,7 +6,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-const tooling = require('jsonforms-tooling');
+import { generateUISchema, cloneAndInstall } from 'jsonforms-tooling';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -98,7 +98,7 @@ export const activate = (context: vscode.ExtensionContext) => {
  */
 const asyncCreateExampleProject = (path: string) => {
   showMessage(`Creating example project: ${path}`);
-  tooling.cloneAndInstall('example', path, (result: string, type: string) => {
+  cloneAndInstall('example', path, (result: string, type: string) => {
     showMessage(result, type);
   });
 };
@@ -118,7 +118,7 @@ const asyncCreateSeedProject = (path: string) => {
       projectName = 'jsonforms-seed';
     }
     showMessage(`Creating seed project: ${path}`);
-    tooling.cloneAndInstall(
+    cloneAndInstall(
       'seed',
       path,
       (result: string, type: string) => { showMessage(result, type); },
@@ -138,11 +138,11 @@ const asyncGenerateUiSchema = (path: string) => {
   };
   vscode.window.showInputBox(options).then(name => {
     let fileName = name;
-    if (!name) {
+    if (!fileName) {
       fileName = 'ui-schema.json';
     }
     showMessage(`Generating UI Schema: ${path}`);
-    tooling.generateUISchema(path, fileName, (result: string, type: string) => {
+    generateUISchema(path, fileName, (result: string, type: string) => {
       showMessage(result, type);
     });
   });

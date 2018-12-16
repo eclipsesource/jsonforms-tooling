@@ -22,7 +22,6 @@
     "typescript": "^3.1.6"
   },
   "scripts": {
-    "prepare": "yarn run clean && yarn run build",
     "clean": "rimraf out",
     "watch": "tsc -watch",
     "compile": "tsc -p ./",

@@ -7,7 +7,7 @@
  */
 
 import * as theia from '@theia/plugin';
-const tooling = require('jsonforms-tooling');
+import { generateUISchema, cloneAndInstall } from 'jsonforms-tooling';
 
 export const start = (context: theia.PluginContext) => {
   const createExampleProjectCommand = {
@@ -108,7 +108,7 @@ export const start = (context: theia.PluginContext) => {
  */
 const asyncCreateExampleProject = (path: string) => {
   showMessage(`Creating example project: ${path}`);
-  tooling.cloneAndInstall('example', path, (result: string, type: string) => {
+  cloneAndInstall('example', path, (result: string, type: string) => {
     showMessage(result, type);
   });
 };
@@ -128,7 +128,7 @@ const asyncCreateSeedProject = (path: string) => {
       projectName = 'jsonforms-seed';
     }
     showMessage(`Creating seed project: ${path}`);
-    tooling.cloneAndInstall(
+    cloneAndInstall(
       'seed',
       path,
       (result: string, type: string) => { showMessage(result, type); },
@@ -148,11 +148,11 @@ const asyncGenerateUiSchema = (path: string) => {
   };
   theia.window.showInputBox(options).then(name => {
     let fileName = name;
-    if (!name) {
+    if (!fileName) {
       fileName = 'jsonforms-seed';
     }
     showMessage(`Generating UI Schema: ${path}`);
-    tooling.generateUISchema(path, fileName, (result: string, type: string) => {
+    generateUISchema(path, fileName, (result: string, type: string) => {
       showMessage(result, type);
     });
   });
