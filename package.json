@@ -1,0 +1,20 @@
+{
+  "scripts": {
+    "lerna": "lerna",
+    "postinstall": "npm run lernabootstrap && npm run lernainstall",
+    "lernainstall": "lerna exec --no-bail --npm-ci-mode -- npm run custominstall",
+    "lernabootstrap": "lerna bootstrap --npm-ci-mode --ignore-scripts",
+    "compile": "lerna run build"
+  },
+  "devDependencies": {
+    "@types/node": "^10.12.10",
+    "lerna": "^3.4.3",
+    "rimraf": "2.6.2",
+    "typescript": "^3.1.6",
+    "vscode": "^1.1.21"
+  },
+  "dependencies": {
+    "@jsonforms/core": "^2.0.12",
+    "simple-git": "^1.107.0"
+  }
+}

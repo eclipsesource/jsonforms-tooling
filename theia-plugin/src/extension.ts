@@ -2,30 +2,29 @@
 // tslint:disable:no-require-imports
 // tslint:disable:no-use-before-declare
 
-'use strict';
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
+/**
+ * Generated using theia-plugin-generator
+ */
+
+import * as theia from '@theia/plugin';
 const tooling = require('jsonforms-tooling');
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
-export const activate = (context: vscode.ExtensionContext) => {
-
-  // The command has been defined in the package.json file
-  // Now provide the implementation of the command with  registerCommand
-  // The commandId parameter must match the command field in package.json
-  const createExampleProject = vscode.commands.registerCommand(
-    'extension.createExampleProject',
+export const start = (context: theia.PluginContext) => {
+  const createExampleProjectCommand = {
+    id: 'create-example-project',
+    label: 'JSONForms: Create Example Project',
+  };
+  const createExampleProject = theia.commands.registerCommand(
+    createExampleProjectCommand,
     (args: any) => {
     if (!args) {
-      const options: vscode.OpenDialogOptions = {
+      const options: theia.OpenDialogOptions = {
         canSelectMany: false,
         canSelectFolders: true,
         canSelectFiles: false,
         openLabel: 'Select folder',
       };
-      vscode.window.showOpenDialog(options).then(fileUri => {
+      theia.window.showOpenDialog(options).then(fileUri => {
         if (fileUri && fileUri[0].fsPath) {
           asyncCreateExampleProject(fileUri[0].fsPath);
         } else {
@@ -38,37 +37,21 @@ export const activate = (context: vscode.ExtensionContext) => {
     }
   });
 
-  let createBasicProject = vscode.commands.registerCommand('extension.createBasicProject', (args: any) => {
-    if(!args) {
-        showMessage('You can only run this on a folder', 'err');
-        return;
-    } else {
-        let options: vscode.InputBoxOptions = {
-            prompt: "Label: ",
-            placeHolder: "Enter a name for your basic project"
-        }
-        vscode.window.showInputBox(options).then(name => {
-            if (!name) name = 'jsonforms-basic';
-            let path = args.fsPath;
-            showMessage('Creating a basic project: '+path);
-            tooling.cloneAndInstall('basic', path, function(result: string, type: string) {
-                showMessage(result, type);
-            }, name);
-        });
-    }
-  });
-
-  const createSeedProject = vscode.commands.registerCommand(
-    'extension.createSeedProject',
+  const createSeedProjectCommand = {
+    id: 'create-seed-project',
+    label: 'JSONForms: Create Seed Project',
+  };
+  const createSeedProject = theia.commands.registerCommand(
+    createSeedProjectCommand,
     (args: any) => {
     if (!args) {
-      const options: vscode.OpenDialogOptions = {
+      const options: theia.OpenDialogOptions = {
         canSelectMany: false,
         canSelectFolders: true,
         canSelectFiles: false,
         openLabel: 'Select folder',
       };
-      vscode.window.showOpenDialog(options).then(fileUri => {
+      theia.window.showOpenDialog(options).then(fileUri => {
         if (fileUri && fileUri[0].fsPath) {
           asyncCreateSeedProject(fileUri[0].fsPath);
         } else {
@@ -81,20 +64,24 @@ export const activate = (context: vscode.ExtensionContext) => {
     }
   });
 
-  const generateUISchema = vscode.commands.registerCommand(
-    'extension.generateUISchema',
+  const generateUISchemaCommand = {
+    id: 'generate-ui-schema',
+    label: 'JSONForms: Generate UI Schema',
+  };
+  const generateUISchema = theia.commands.registerCommand(
+    generateUISchemaCommand,
     (args: any) => {
     if (!args) {
-      const options: vscode.OpenDialogOptions = {
+      const options: theia.OpenDialogOptions = {
         canSelectMany: false,
-        canSelectFolders: false,
+        canSelectFolders: true,
         canSelectFiles: true,
         openLabel: 'Select schema',
         filters: {
-          'Json Files': ['json'],
+          'JSON files': ['json'],
         },
       };
-      vscode.window.showOpenDialog(options).then(fileUri => {
+      theia.window.showOpenDialog(options).then(fileUri => {
         if (fileUri && fileUri[0].fsPath) {
           asyncGenerateUiSchema(fileUri[0].fsPath);
         } else {
@@ -128,11 +115,11 @@ const asyncCreateExampleProject = (path: string) => {
  * @param {string} path the path to the project folder
  */
 const asyncCreateSeedProject = (path: string) => {
-  const options: vscode.InputBoxOptions = {
+  const options: theia.InputBoxOptions = {
     prompt: 'Label: ',
     placeHolder: 'Enter a name for your seed project',
   };
-  vscode.window.showInputBox(options).then(name => {
+  theia.window.showInputBox(options).then(name => {
     let projectName = name;
     if (!name) {
       projectName = 'jsonforms-seed';
@@ -152,14 +139,14 @@ const asyncCreateSeedProject = (path: string) => {
  * @param {string} path the path to the project folder
  */
 const asyncGenerateUiSchema = (path: string) => {
-  const options: vscode.InputBoxOptions = {
+  const options: theia.InputBoxOptions = {
     prompt: 'Label: ',
     placeHolder: 'Enter a filename for your UI Schema (default: ui-schema.json)',
   };
-  vscode.window.showInputBox(options).then(name => {
+  theia.window.showInputBox(options).then(name => {
     let fileName = name;
     if (!name) {
-      fileName = 'ui-schema.json';
+      fileName = 'jsonforms-seed';
     }
     showMessage(`Generating UI Schema: ${path}`);
     tooling.generateUISchema(path, fileName, (result: string, type: string) => {
@@ -169,19 +156,19 @@ const asyncGenerateUiSchema = (path: string) => {
 };
 
 /**
- * Show Visual Studio Code Message
+ * Show Theia Message
  * @param {string} message the message that should be displayed
  * @param {string} type the type of the message
  */
 const showMessage = (message: string, type?: string) => {
   switch (type) {
     case 'err':
-      vscode.window.showErrorMessage(message);
+      theia.window.showErrorMessage(message);
       break;
     case 'war':
-      vscode.window.showWarningMessage(message);
+      theia.window.showWarningMessage(message);
       break;
     default:
-      vscode.window.showInformationMessage(message);
+      theia.window.showInformationMessage(message);
   }
 };

@@ -4,3 +4,6 @@ theia-plugin/npm-debug.log
 
 tooling/out/
 package-lock.json
+npm-debug\.log
+out/
+lerna-debug\.log
