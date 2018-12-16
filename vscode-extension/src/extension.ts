@@ -108,6 +108,7 @@ export const activate = (context: vscode.ExtensionContext) => {
   });
 
   context.subscriptions.push(createExampleProject);
+  context.subscriptions.push(createBasicProject);
   context.subscriptions.push(createSeedProject);
   context.subscriptions.push(generateUISchema);
 };

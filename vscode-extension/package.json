@@ -45,10 +45,10 @@
           "group": "jsonforms"
         },
         {
-            "when": "explorerResourceIsFolder",
-            "command": "extension.createBasicProject",
-            "group": "jsonforms"
-          },
+          "when": "explorerResourceIsFolder",
+          "command": "extension.createBasicProject",
+          "group": "jsonforms"
+        },
         {
           "when": "explorerResourceIsFolder",
           "command": "extension.createSeedProject",
