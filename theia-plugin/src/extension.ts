@@ -17,25 +17,26 @@ export const start = (context: theia.PluginContext) => {
   const createExampleProject = theia.commands.registerCommand(
     createExampleProjectCommand,
     (args: any) => {
-    if (!args) {
-      const options: theia.OpenDialogOptions = {
-        canSelectMany: false,
-        canSelectFolders: true,
-        canSelectFiles: false,
-        openLabel: 'Select folder',
-      };
-      theia.window.showOpenDialog(options).then(fileUri => {
-        if (fileUri && fileUri[0].fsPath) {
-          asyncCreateExampleProject(fileUri[0].fsPath);
-        } else {
-          showMessage('Please select a empty folder', 'err');
-          return;
-        }
-      });
-    } else {
-      asyncCreateExampleProject(args.fsPath);
+      if (!args) {
+        const options: theia.OpenDialogOptions = {
+          canSelectMany: false,
+          canSelectFolders: true,
+          canSelectFiles: false,
+          openLabel: 'Select folder',
+        };
+        theia.window.showOpenDialog(options).then(fileUri => {
+          if (fileUri && fileUri[0].fsPath) {
+            asyncCreateExampleProject(fileUri[0].fsPath);
+          } else {
+            showMessage('Please select a empty folder', 'err');
+            return;
+          }
+        });
+      } else {
+        asyncCreateExampleProject(args.fsPath);
+      }
     }
-  });
+  );
 
   const createSeedProjectCommand = {
     id: 'create-seed-project',
@@ -44,25 +45,26 @@ export const start = (context: theia.PluginContext) => {
   const createSeedProject = theia.commands.registerCommand(
     createSeedProjectCommand,
     (args: any) => {
-    if (!args) {
-      const options: theia.OpenDialogOptions = {
-        canSelectMany: false,
-        canSelectFolders: true,
-        canSelectFiles: false,
-        openLabel: 'Select folder',
-      };
-      theia.window.showOpenDialog(options).then(fileUri => {
-        if (fileUri && fileUri[0].fsPath) {
-          asyncCreateSeedProject(fileUri[0].fsPath);
-        } else {
-          showMessage('Please select a empty folder', 'err');
-          return;
-        }
-      });
-    } else {
-      asyncCreateSeedProject(args.fsPath);
+      if (!args) {
+        const options: theia.OpenDialogOptions = {
+          canSelectMany: false,
+          canSelectFolders: true,
+          canSelectFiles: false,
+          openLabel: 'Select folder',
+        };
+        theia.window.showOpenDialog(options).then(fileUri => {
+          if (fileUri && fileUri[0].fsPath) {
+            asyncCreateSeedProject(fileUri[0].fsPath);
+          } else {
+            showMessage('Please select a empty folder', 'err');
+            return;
+          }
+        });
+      } else {
+        asyncCreateSeedProject(args.fsPath);
+      }
     }
-  });
+  );
 
   const generateUISchemaCommand = {
     id: 'generate-ui-schema',
@@ -71,28 +73,29 @@ export const start = (context: theia.PluginContext) => {
   const generateUISchema = theia.commands.registerCommand(
     generateUISchemaCommand,
     (args: any) => {
-    if (!args) {
-      const options: theia.OpenDialogOptions = {
-        canSelectMany: false,
-        canSelectFolders: true,
-        canSelectFiles: true,
-        openLabel: 'Select schema',
-        filters: {
-          'JSON files': ['json'],
-        },
-      };
-      theia.window.showOpenDialog(options).then(fileUri => {
-        if (fileUri && fileUri[0].fsPath) {
-          asyncGenerateUiSchema(fileUri[0].fsPath);
-        } else {
-          showMessage('Please select a json schema file', 'err');
-          return;
-        }
-      });
-    } else {
-      asyncGenerateUiSchema(args.fsPath);
+      if (!args) {
+        const options: theia.OpenDialogOptions = {
+          canSelectMany: false,
+          canSelectFolders: true,
+          canSelectFiles: true,
+          openLabel: 'Select schema',
+          filters: {
+            'JSON files': ['json'],
+          },
+        };
+        theia.window.showOpenDialog(options).then(fileUri => {
+          if (fileUri && fileUri[0].fsPath) {
+            asyncGenerateUiSchema(fileUri[0].fsPath);
+          } else {
+            showMessage('Please select a json schema file', 'err');
+            return;
+          }
+        });
+      } else {
+        asyncGenerateUiSchema(args.fsPath);
+      }
     }
-  });
+  );
 
   context.subscriptions.push(createExampleProject);
   context.subscriptions.push(createSeedProject);
