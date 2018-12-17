@@ -41,10 +41,8 @@ export const cloneAndInstall = (
   git.clone(url, path)
     .then(() => {
       callback('finished-cloning', 'Finished to clone repo');
-      /**
-       * TODO: refactor basic app
-       */
       if(repo === 'basic') {
+        // Perform only for basic project
         // TODO: Dynamically set API
         const API = 'https://api.swaggerhub.com/apis/jsonforms-tooling/JSONForms-Tooling-API/1.0.0';
         get(API, (response) => {

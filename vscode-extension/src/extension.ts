@@ -26,7 +26,7 @@ export const activate = (context: vscode.ExtensionContext) => {
     }
   });
 
-  let createBasicProject = vscode.commands.registerCommand(
+  const createBasicProject = vscode.commands.registerCommand(
     'extension.createBasicProject',
     (args: any) => {
       const type = 'basic';
