@@ -89,9 +89,10 @@ const asyncCreateProject = (path: string, type: string) => {
 
   if(type === 'example'){
     showMessage(`Creating example project: ${path}`);
-    tooling.cloneAndInstall('example', path, (result: string, type: string) => {
+    tooling.cloneAndInstall(type, path, (result: string, type: string) => {
       showMessage(result, type);
-    });
+    },
+    'jsonforms-example');
     return;
   }
 

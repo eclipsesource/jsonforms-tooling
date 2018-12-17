@@ -37,13 +37,14 @@ export const cloneAndInstall = (
   }
   const git = simplegit();
   callback('start-cloning', 'Starting to clone repo');
+  path += sep + name;
   git.clone(url, path)
     .then(() => {
       callback('finished-cloning', 'Finished to clone repo');
       /**
        * TODO: refactor basic app
        */
-      if(repo === "basic") {
+      if(repo === 'basic') {
         // TODO: Dynamically set API
         const API = 'https://api.swaggerhub.com/apis/jsonforms-tooling/JSONForms-Tooling-API/1.0.0';
         get(API, (response) => {
@@ -144,7 +145,6 @@ const generateJSONUISchemaFile = (path: string, jsonSchema: any, callback: (err?
       callback(validateError);
       return;
     }
-
     // Generate UI Schema
     const jsonUISchema = jsonforms.generateDefaultUISchema(jsonSchema);
     // Generate file inside project
@@ -158,5 +158,4 @@ const generateJSONUISchemaFile = (path: string, jsonSchema: any, callback: (err?
       }
     );
   });
-
 };
