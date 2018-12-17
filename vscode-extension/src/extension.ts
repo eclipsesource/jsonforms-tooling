@@ -29,7 +29,7 @@ export const activate = (context: vscode.ExtensionContext) => {
   let createBasicProject = vscode.commands.registerCommand(
     'extension.createBasicProject',
     (args: any) => {
-      const type = 'example';
+      const type = 'basic';
       if (!args) {
         asyncCreateProjectWithArgs(type);
       } else {
@@ -40,7 +40,7 @@ export const activate = (context: vscode.ExtensionContext) => {
   const createSeedProject = vscode.commands.registerCommand(
     'extension.createSeedProject',
     (args: any) => {
-    const type = 'example';
+    const type = 'seed';
     if (!args) {
       asyncCreateProjectWithArgs(type);      
     } else {
