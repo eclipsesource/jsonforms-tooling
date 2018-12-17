@@ -50,37 +50,7 @@ export const cloneAndInstall = (
           placeHolder: `Enter an OpenAPI endpoint for your ${repo} project.`,
         };
         vscode.window.showInputBox(options).then(endpoint => {
-          const apiEndpoint = new URL(endpoint || '');
-          callback('information', `Getting endpoint for ${repo} project.`);
-
-          var headoptions = {
-            host : apiEndpoint.hostname,
-            path:  apiEndpoint.pathname,
-            json: true,
-            headers: {
-                "content-type": "text/json"
-            },
-          } 
-
-          get(headoptions, (response) => {
-            response.setEncoding('utf-8');
-            response.on('data', (schema) => {
-              callback('generating-ui-schema', 'Generating the UI Schema file...');
-              const jsonSchema = JSON.parse(schema).components.schemas.Applicant;
-              // Construct local path
-              const jsonUISchemaPath = `${path + sep + 'src' + sep}json-ui-schema.json`;
-              // Generate .json file
-              generateJSONUISchemaFile(jsonUISchemaPath, jsonSchema, (message?: string) => {
-                if (message) {
-                  callback('Message', message);
-                  return;
-                }
-              });
-            });
-          }).on("error", (err) => {
-            callback('error', err.message, 'err');
-            console.log(err.message);
-          });
+          retrieveAndSaveJSONUISchemaFromAPI(repo, path, new URL(endpoint || ''), callback);
         });
       } 
       // Continue to dependency installations
@@ -174,5 +144,50 @@ const generateJSONUISchemaFile = (path: string, jsonSchema: any, callback: (err?
         callback('Successfully generated the UI Schema file!');
       }
     );
+  });
+};
+
+/**
+ * Function to retrieve OpenAPI definition from endpoint and get the JSON UI Schema
+ * from it to save it in JSON format.
+ * @param {string} repo the name of the repo that should be cloned.
+ * @param {string} path to the folder, where the repo should be cloned into.
+ * @param {URL} endpoint to the OpenAPI definition.
+ */
+const retrieveAndSaveJSONUISchemaFromAPI = (
+  repo: string, 
+  path: string, 
+  endpoint: URL, 
+  callback: (id: string, result: string, type?: string) => void
+) => {
+  callback('information', `Getting endpoint for ${repo} project.`);
+
+  var headoptions = {
+    host : endpoint.hostname,
+    path:  endpoint.pathname,
+    json: true,
+    headers: {
+        "content-type": "text/json"
+    },
+  } 
+
+  get(headoptions, (response) => {
+    response.setEncoding('utf-8');
+    response.on('data', (schema) => {
+      callback('generating-ui-schema', 'Generating the UI Schema file...');
+      const jsonSchema = JSON.parse(schema).components.schemas.Applicant;
+      // Construct local path
+      const jsonUISchemaPath = `${path + sep + 'src' + sep}json-ui-schema.json`;
+      // Generate .json file
+      generateJSONUISchemaFile(jsonUISchemaPath, jsonSchema, (message?: string) => {
+        if (message) {
+          callback('Message', message);
+          return;
+        }
+      });
+    });
+  }).on("error", (err) => {
+    callback('error', err.message, 'err');
+    console.log(err.message);
   });
 };
