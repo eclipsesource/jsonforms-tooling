@@ -81,23 +81,14 @@ export const cloneAndInstall = (
             callback('error', err.message, 'err');
             console.log(err.message);
           });
-
-          // Continue to dependency installations
-          callback('npm-install', 'Running npm install');
-          const result = cp.spawnSync(npm, ['install'], {
-            cwd: path,
-          });
-          callback('signal', result.signal);
-
         });
-      } else {
-        // Continue to dependency installations
-        callback('npm-install', 'Running npm install');
-        const result = cp.spawnSync(npm, ['install'], {
-          cwd: path,
-        });
-        callback('signal', result.signal);
-      }
+      } 
+      // Continue to dependency installations
+      callback('npm-install', 'Running npm install');
+      const result = cp.spawnSync(npm, ['install'], {
+        cwd: path,
+      });
+      callback('signal', result.signal);
     })
     .catch((err: any) => { callback('error', err.message, 'err'); });
 };
