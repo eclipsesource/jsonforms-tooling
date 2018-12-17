@@ -4,6 +4,8 @@ import * as Ajv from 'ajv';
 import * as cp from 'child_process';
 import * as jsonforms from '@jsonforms/core';
 import * as simplegit from 'simple-git/promise';
+import * as vscode from 'vscode';
+import { URL } from 'url';
 import { get } from 'https';
 import { readFile, writeFile } from 'fs';
 import { sep } from 'path';
@@ -43,15 +45,30 @@ export const cloneAndInstall = (
       callback('finished-cloning', 'Finished to clone repo');
       if(repo === 'basic') {
         // Perform only for basic project
-        // TODO: Dynamically set API
-        const API = 'https://api.swaggerhub.com/apis/jsonforms-tooling/JSONForms-Tooling-API/1.0.0';
-        get(API, (response) => {
-          response.setEncoding('utf-8');
-          response.on('data', (schema) => {
+        const options: vscode.InputBoxOptions = {
+          prompt: 'Label: ',
+          placeHolder: `Enter an OpenAPI endpoint for your ${repo} project.`,
+        };
+        vscode.window.showInputBox(options).then(endpoint => {
+          const apiEndpoint = new URL(endpoint || '');
+          callback('information', `Getting endpoint for ${repo} project.`);
+
+          var headoptions = {
+            host : apiEndpoint.hostname,
+            path:  apiEndpoint.pathname,
+            json: true,
+            headers: {
+                "content-type": "text/json"
+            },
+          } 
+
+          get(headoptions, (response) => {
+            response.setEncoding('utf-8');
+            response.on('data', (schema) => {
               callback('generating-ui-schema', 'Generating the UI Schema file...');
               const jsonSchema = JSON.parse(schema).components.schemas.Applicant;
               // Construct local path
-              const jsonUISchemaPath = `${path + sep + 'src' + sep}jsonUISchema.json`;
+              const jsonUISchemaPath = `${path + sep + 'src' + sep}json-ui-schema.json`;
               // Generate .json file
               generateJSONUISchemaFile(jsonUISchemaPath, jsonSchema, (message?: string) => {
                 if (message) {
@@ -59,17 +76,28 @@ export const cloneAndInstall = (
                   return;
                 }
               });
+            });
+          }).on("error", (err) => {
+            callback('error', err.message, 'err');
+            console.log(err.message);
           });
-        }).on("error", (err) => {
-          callback('error', err.message, 'err');
+
+          // Continue to dependency installations
+          callback('npm-install', 'Running npm install');
+          const result = cp.spawnSync(npm, ['install'], {
+            cwd: path,
+          });
+          callback('signal', result.signal);
+
         });
+      } else {
+        // Continue to dependency installations
+        callback('npm-install', 'Running npm install');
+        const result = cp.spawnSync(npm, ['install'], {
+          cwd: path,
+        });
+        callback('signal', result.signal);
       }
-      // Continue to dependency installations
-      callback('npm-install', 'Running npm install');
-      const result = cp.spawnSync(npm, ['install'], {
-        cwd: path,
-      });
-      callback('signal', result.signal);
     })
     .catch((err: any) => { callback('error', err.message, 'err'); });
 };
