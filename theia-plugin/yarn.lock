@@ -752,13 +752,6 @@ json-schema-traverse@^0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/json-schema-traverse/-/json-schema-traverse-0.4.1.tgz#69f6a87d9513ab8bb8fe63bdb0979c448e684660"
 
-"jsonforms-tooling@file:../tooling":
-  version "0.0.1"
-  dependencies:
-    "@jsonforms/core" "^2.0.12"
-    ajv "^6.5.5"
-    simple-git "^1.107.0"
-
 kind-of@^3.0.2, kind-of@^3.0.3, kind-of@^3.2.0:
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-3.2.2.tgz#31ea21a734bab9bbb0f32466d893aea51e4a3c64"
@@ -1362,6 +1355,13 @@ to-regex@^3.0.1, to-regex@^3.0.2:
     extend-shallow "^3.0.2"
     regex-not "^1.0.2"
     safe-regex "^1.1.0"
+
+"tooling@file:../tooling":
+  version "0.0.1"
+  dependencies:
+    "@jsonforms/core" "^2.0.12"
+    ajv "^6.5.5"
+    simple-git "^1.107.0"
 
 typescript@^3.1.6:
   version "3.2.2"

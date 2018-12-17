@@ -7,7 +7,7 @@
  */
 
 import * as theia from '@theia/plugin';
-import { generateUISchema, cloneAndInstall } from 'jsonforms-tooling';
+import { generateUISchema, cloneAndInstall } from 'tooling';
 
 export const start = (context: theia.PluginContext) => {
   const createExampleProjectCommand = {
