@@ -18,69 +18,33 @@ export const activate = (context: vscode.ExtensionContext) => {
   const createExampleProject = vscode.commands.registerCommand(
     'extension.createExampleProject',
     (args: any) => {
+    const type = 'example';
     if (!args) {
-      const options: vscode.OpenDialogOptions = {
-        canSelectMany: false,
-        canSelectFolders: true,
-        canSelectFiles: false,
-        openLabel: 'Select folder',
-      };
-      vscode.window.showOpenDialog(options).then(fileUri => {
-        if (fileUri && fileUri[0].fsPath) {
-          asyncCreateExampleProject(fileUri[0].fsPath);
-        } else {
-          showMessage('Please select a empty folder', 'err');
-          return;
-        }
-      });
+      asyncCreateProjectWithArgs(type);
     } else {
-      asyncCreateExampleProject(args.fsPath);
+      asyncCreateProject(args.fsPath, type);
     }
   });
 
   let createBasicProject = vscode.commands.registerCommand(
     'extension.createBasicProject',
     (args: any) => {
+      const type = 'example';
       if (!args) {
-        const options: vscode.OpenDialogOptions = {
-          canSelectMany: false,
-          canSelectFolders: true,
-          canSelectFiles: false,
-          openLabel: 'Select folder',
-        };
-        vscode.window.showOpenDialog(options).then(fileUri => {
-          if (fileUri && fileUri[0].fsPath) {
-            asyncCreateSeedProject(fileUri[0].fsPath);
-          } else {
-            showMessage('Please select a empty folder', 'err');
-            return;
-          }
-        });
+        asyncCreateProjectWithArgs(type);
       } else {
-        asyncCreateBasicProject(args.fsPath);
+        asyncCreateProject(args.fsPath, type);
       }
   });
 
   const createSeedProject = vscode.commands.registerCommand(
     'extension.createSeedProject',
     (args: any) => {
+    const type = 'example';
     if (!args) {
-      const options: vscode.OpenDialogOptions = {
-        canSelectMany: false,
-        canSelectFolders: true,
-        canSelectFiles: false,
-        openLabel: 'Select folder',
-      };
-      vscode.window.showOpenDialog(options).then(fileUri => {
-        if (fileUri && fileUri[0].fsPath) {
-          asyncCreateSeedProject(fileUri[0].fsPath);
-        } else {
-          showMessage('Please select a empty folder', 'err');
-          return;
-        }
-      });
+      asyncCreateProjectWithArgs(type);      
     } else {
-      asyncCreateSeedProject(args.fsPath);
+      asyncCreateProject(args.fsPath, type);
     }
   });
 
@@ -117,57 +81,32 @@ export const activate = (context: vscode.ExtensionContext) => {
 };
 
 /**
- * Async Creating Example Project
+ * Async Creating Project
  * @param {string} path the path to the project folder
+ * @param {string} type the path to the project folder
  */
-const asyncCreateExampleProject = (path: string) => {
-  showMessage(`Creating example project: ${path}`);
-  tooling.cloneAndInstall('example', path, (result: string, type: string) => {
-    showMessage(result, type);
-  });
-};
+const asyncCreateProject = (path: string, type: string) => {
 
-/**
- * Async Creating Seed Project
- * @param {string} path the path to the project folder
- */
-const asyncCreateSeedProject = (path: string) => {
+  if(type === 'example'){
+    showMessage(`Creating example project: ${path}`);
+    tooling.cloneAndInstall('example', path, (result: string, type: string) => {
+      showMessage(result, type);
+    });
+    return;
+  }
+
   const options: vscode.InputBoxOptions = {
     prompt: 'Label: ',
-    placeHolder: 'Enter a name for your seed project',
+    placeHolder: `Enter a name for your ${type} project`,
   };
   vscode.window.showInputBox(options).then(name => {
     let projectName = name;
     if (!name) {
-      projectName = 'jsonforms-seed';
+      projectName = `jsonforms-${type}`;
     }
-    showMessage(`Creating seed project: ${path}`);
+    showMessage(`Creating ${type} project: ${path}`);
     tooling.cloneAndInstall(
-      'seed',
-      path,
-      (result: string, type: string) => { showMessage(result, type); },
-      projectName
-    );
-  });
-};
-
-/**
- * Async Creating Basic Project
- * @param {string} path the path to the project folder
- */
-const asyncCreateBasicProject = (path: string) => {
-  const options: vscode.InputBoxOptions = {
-    prompt: 'Label: ',
-    placeHolder: 'Enter a name for your basic project',
-  };
-  vscode.window.showInputBox(options).then(name => {
-    let projectName = name;
-    if (!name) {
-      projectName = 'jsonforms-basic';
-    }
-    showMessage(`Creating basic project: ${path}`);
-    tooling.cloneAndInstall(
-      'basic',
+      type,
       path,
       (result: string, type: string) => { showMessage(result, type); },
       projectName
@@ -212,4 +151,26 @@ const showMessage = (message: string, type?: string) => {
     default:
       vscode.window.showInformationMessage(message);
   }
+};
+
+/**
+ * Set up project with options. 
+ * @param {string} type : Type of project to set up.
+ */
+const asyncCreateProjectWithArgs = (type: string) => {
+  const options: vscode.OpenDialogOptions = {
+    canSelectMany: false,
+    canSelectFolders: true,
+    canSelectFiles: false,
+    openLabel: 'Select folder',
+  };
+  vscode.window.showOpenDialog(options).then(fileUri => {
+    if (fileUri && fileUri[0].fsPath) {
+      asyncCreateProject(fileUri[0].fsPath, type);
+    } else {
+      showMessage('Please select a empty folder', 'err');
+      return;
+    }
+  });
+
 };
