@@ -38,24 +38,27 @@ export const activate = (context: vscode.ExtensionContext) => {
     }
   });
 
-  let createBasicProject = vscode.commands.registerCommand('extension.createBasicProject', (args: any) => {
-    if(!args) {
-        showMessage('You can only run this on a folder', 'err');
-        return;
-    } else {
-        let options: vscode.InputBoxOptions = {
-            prompt: "Label: ",
-            placeHolder: "Enter a name for your basic project"
-        }
-        vscode.window.showInputBox(options).then(name => {
-            if (!name) name = 'jsonforms-basic';
-            let path = args.fsPath;
-            showMessage('Creating a basic project: '+path);
-            tooling.cloneAndInstall('basic', path, function(result: string, type: string) {
-                showMessage(result, type);
-            }, name);
+  let createBasicProject = vscode.commands.registerCommand(
+    'extension.createBasicProject',
+    (args: any) => {
+      if (!args) {
+        const options: vscode.OpenDialogOptions = {
+          canSelectMany: false,
+          canSelectFolders: true,
+          canSelectFiles: false,
+          openLabel: 'Select folder',
+        };
+        vscode.window.showOpenDialog(options).then(fileUri => {
+          if (fileUri && fileUri[0].fsPath) {
+            asyncCreateSeedProject(fileUri[0].fsPath);
+          } else {
+            showMessage('Please select a empty folder', 'err');
+            return;
+          }
         });
-    }
+      } else {
+        asyncCreateBasicProject(args.fsPath);
+      }
   });
 
   const createSeedProject = vscode.commands.registerCommand(
@@ -141,6 +144,30 @@ const asyncCreateSeedProject = (path: string) => {
     showMessage(`Creating seed project: ${path}`);
     tooling.cloneAndInstall(
       'seed',
+      path,
+      (result: string, type: string) => { showMessage(result, type); },
+      projectName
+    );
+  });
+};
+
+/**
+ * Async Creating Basic Project
+ * @param {string} path the path to the project folder
+ */
+const asyncCreateBasicProject = (path: string) => {
+  const options: vscode.InputBoxOptions = {
+    prompt: 'Label: ',
+    placeHolder: 'Enter a name for your basic project',
+  };
+  vscode.window.showInputBox(options).then(name => {
+    let projectName = name;
+    if (!name) {
+      projectName = 'jsonforms-basic';
+    }
+    showMessage(`Creating basic project: ${path}`);
+    tooling.cloneAndInstall(
+      'basic',
       path,
       (result: string, type: string) => { showMessage(result, type); },
       projectName
