@@ -20,6 +20,10 @@ To compile the code in all packages, just run
 ```
 npm run compile
 ```
+Also run the following command inside `vscode-extension` folder:
+```
+npm install
+```
 
 For more information on each package, please read the  README of those packages.
 
