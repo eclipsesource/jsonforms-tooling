@@ -46,11 +46,11 @@ export const cloneAndInstall = (
       callback('finished-cloning', 'Finished to clone repo');
       if(repo === 'basic') {
         if(!endpoint){
-          callback('api-endpoint', 'Not a valid API endpoint.', 'err');
+          callback('api-endpoint-error', 'Not a valid API endpoint.', 'err');
           return;
         }
         retrieveAndSaveJSONUISchemaFromAPI(repo, path, endpoint, callback);
-      } 
+      }
       // Continue to dependency installations
       callback('npm-install', 'Running npm install');
       const result = cp.spawnSync(npm, ['install'], {
@@ -160,7 +160,7 @@ const retrieveAndSaveJSONUISchemaFromAPI = (
 ) => {
   callback('information', `Getting endpoint for ${repo} project.`);
 
-  var headoptions = {
+  var reqOptions = {
     host : endpoint.hostname,
     path:  endpoint.pathname,
     json: true,
@@ -169,7 +169,7 @@ const retrieveAndSaveJSONUISchemaFromAPI = (
     },
   } 
 
-  get(headoptions, (response) => {
+  get(reqOptions, (response) => {
     response.setEncoding('utf-8');
     response.on('data', (schema) => {
       callback('generating-ui-schema', 'Generating the UI Schema file...');
@@ -179,7 +179,7 @@ const retrieveAndSaveJSONUISchemaFromAPI = (
       // Generate .json file
       generateJSONUISchemaFile(jsonUISchemaPath, jsonSchema, (message?: string) => {
         if (message) {
-          callback('Message', message);
+          callback('message', message);
           return;
         }
       });

@@ -114,7 +114,6 @@ const asyncCreateProject = (path: string, type: string) => {
       };
       vscode.window.showInputBox(endpointInputOptions).then(endpoint => {
         const apiEndpoint = new URL(endpoint || '');
-        console.log(apiEndpoint)
         showMessage(`Creating ${type} project: ${path}`);
         tooling.cloneAndInstall(
           type,
