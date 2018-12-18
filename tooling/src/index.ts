@@ -118,6 +118,34 @@ const validateJSONSchema = (schema: Object, callback: (err?: string) => void) =>
 };
 
 /**
+ * Generate file containing JSON UI Schema.
+ * @param path {string} : Path to which the file will be saved.
+ * @param jsonSchema {any} : Valid JSON Schema to generate the UI Schema from.
+ * @param callback {function} : Callback to pass informational message.
+ */
+const generateJSONUISchemaFile = (path: string, jsonSchema: any, callback: (err?: string) => void) => {
+  // Validate if content is valid JSON
+  validateJSONSchema(jsonSchema, (validateError?: string) => {
+    if (validateError) {
+      callback(validateError);
+      return;
+    }
+    // Generate UI Schema
+    const jsonUISchema = jsonforms.generateDefaultUISchema(jsonSchema);
+    // Generate file inside project
+    writeFile(path, JSON.stringify(jsonUISchema, null, 2), 'utf-8', 
+      (error) => {
+        if (error.message) {
+          callback(error.message);
+          return;
+        }
+        callback('Successfully generated the UI Schema file!');
+      }
+    );
+  });
+};
+
+/**
  * Function to retrieve OpenAPI definition from endpoint and get the JSON UI Schema
  * from it to save it in JSON format.
  * @param {string} repo the name of the repo that should be cloned.
@@ -145,20 +173,16 @@ const retrieveAndSaveJSONUISchemaFromAPI = (
     response.setEncoding('utf-8');
     response.on('data', (schema) => {
       callback('generating-ui-schema', 'Generating the UI Schema file...');
-      // const jsonSchema = JSON.parse(schema).components.schemas.Applicant;
-      const openAPIJSON = JSON.parse(schema);      
+      const jsonSchema = JSON.parse(schema).components.schemas.Applicant;
       // Construct local path
-      const openAPIJSONPath = `${path + sep + 'src' + sep}openAPI-definition.json`;
-      // Generate .json file inside project
-      writeFile(openAPIJSONPath, JSON.stringify(openAPIJSON, null, 2), 'utf-8', 
-        (error) => {
-          if (error.message) {
-            callback('error', error.message);
-            return;
-          }
-          callback('success', 'Successfully generated the openAPI .json definition file!');
+      const jsonUISchemaPath = `${path + sep + 'src' + sep}json-ui-schema.json`;
+      // Generate .json file
+      generateJSONUISchemaFile(jsonUISchemaPath, jsonSchema, (message?: string) => {
+        if (message) {
+          callback('message', message);
+          return;
         }
-      );
+      });
     });
   }).on("error", (err) => {
     callback('error', err.message, 'err');
