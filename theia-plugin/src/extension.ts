@@ -122,13 +122,14 @@ const asyncCreateProject = (path: string, type: string) => {
         placeHolder: `Enter an OpenAPI endpoint for your ${type} project.`,
       };
       theia.window.showInputBox(endpointInputOptions).then(endpoint => {
-        // const apiEndpoint = new URL(endpoint || '');
+        const apiEndpoint = new URL(endpoint || '');
         showMessage(`Creating bla ${type} project: ${path}`);
         tooling.cloneAndInstall(
             type,
             path,
             (result: string, type: string) => { showMessage(result, type); },
-            projectName
+            projectName,
+            apiEndpoint
         );
       });
     } else {
