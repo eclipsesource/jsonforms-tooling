@@ -30,7 +30,7 @@ export const cloneAndInstall = (
       url = 'https://github.com/eclipsesource/make-it-happen-react';
       break;
     case 'basic':
-      url = 'https://github.com/roxhens/example-project';
+      url = 'https://github.com/roxhens/jsonforms-basic-project';
       break;
     case 'seed':
       url = 'https://github.com/eclipsesource/jsonforms-react-seed';
