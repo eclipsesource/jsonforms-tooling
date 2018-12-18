@@ -6,6 +6,8 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import { URL } from 'url';
+
 const tooling = require('jsonforms-tooling');
 
 // this method is called when your extension is activated
@@ -105,13 +107,32 @@ const asyncCreateProject = (path: string, type: string) => {
     if (!name) {
       projectName = `jsonforms-${type}`;
     }
-    showMessage(`Creating ${type} project: ${path}`);
-    tooling.cloneAndInstall(
-      type,
-      path,
-      (result: string, type: string) => { showMessage(result, type); },
-      projectName
-    );
+    if(type === 'basic') {
+      const endpointInputOptions: vscode.InputBoxOptions = {
+        prompt: 'Label: ',
+        placeHolder: `Enter an OpenAPI endpoint for your ${type} project.`,
+      };
+      vscode.window.showInputBox(endpointInputOptions).then(endpoint => {
+        const apiEndpoint = new URL(endpoint || '');
+        console.log(apiEndpoint)
+        showMessage(`Creating ${type} project: ${path}`);
+        tooling.cloneAndInstall(
+          type,
+          path,
+          (result: string, type: string) => { showMessage(result, type); },
+          projectName,
+          apiEndpoint
+        );
+      });
+    } else {
+      showMessage(`Creating ${type} project: ${path}`);
+      tooling.cloneAndInstall(
+        type,
+        path,
+        (result: string, type: string) => { showMessage(result, type); },
+        projectName
+      );
+    }
   });
 };
 

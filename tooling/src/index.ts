@@ -4,7 +4,6 @@ import * as Ajv from 'ajv';
 import * as cp from 'child_process';
 import * as jsonforms from '@jsonforms/core';
 import * as simplegit from 'simple-git/promise';
-import * as vscode from 'vscode';
 import { URL } from 'url';
 import { get } from 'https';
 import { readFile, writeFile } from 'fs';
@@ -22,7 +21,9 @@ export const cloneAndInstall = (
   repo: string,
   path: string,
   callback: (id: string, result: string, type?: string) => void,
-  name?: string) => {
+  name?: string,
+  endpoint?: URL
+) => {
   let url = '';
   switch (repo) {
     case 'example':
@@ -44,14 +45,11 @@ export const cloneAndInstall = (
     .then(() => {
       callback('finished-cloning', 'Finished to clone repo');
       if(repo === 'basic') {
-        // Perform only for basic project
-        const options: vscode.InputBoxOptions = {
-          prompt: 'Label: ',
-          placeHolder: `Enter an OpenAPI endpoint for your ${repo} project.`,
-        };
-        vscode.window.showInputBox(options).then(endpoint => {
-          retrieveAndSaveJSONUISchemaFromAPI(repo, path, new URL(endpoint || ''), callback);
-        });
+        if(!endpoint){
+          callback('api-endpoint', 'Not a valid API endpoint.', 'err');
+          return;
+        }
+        retrieveAndSaveJSONUISchemaFromAPI(repo, path, endpoint, callback);
       } 
       // Continue to dependency installations
       callback('npm-install', 'Running npm install');
