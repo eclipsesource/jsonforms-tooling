@@ -159,7 +159,6 @@ const retrieveAndSaveJSONUISchemaFromAPI = (
   callback: (id: string, result: string, type?: string) => void
 ) => {
   callback('information', `Getting endpoint for ${repo} project.`);
-
   var reqOptions = {
     host : endpoint.hostname,
     path:  endpoint.pathname,
@@ -168,14 +167,27 @@ const retrieveAndSaveJSONUISchemaFromAPI = (
         "content-type": "text/json"
     },
   } 
-
   get(reqOptions, (response) => {
     response.setEncoding('utf-8');
     response.on('data', (schema) => {
       callback('generating-ui-schema', 'Generating the UI Schema file...');
-      const jsonSchema = JSON.parse(schema).components.schemas.Applicant;
-      // Construct local path
-      const jsonUISchemaPath = `${path + sep + 'src' + sep}json-ui-schema.json`;
+      const schemaObj = JSON.parse(schema);
+      const jsonSchema = schemaObj.components.schemas.Applicant;
+      // Construct paths
+      const srcPath = path + sep + 'src' + sep;
+      const jsonUISchemaPath = srcPath + 'json-ui-schema.json';
+      const constsPath = srcPath + 'vars.js';
+      // Create .js file with constants
+      const obj = 'const ENDPOINT = \'' + endpoint + '\'; export default ENDPOINT;';
+      writeFile(constsPath, obj, 'utf-8', 
+        (error) => {
+          if (error.message) {
+            callback('error', error.message);
+            return;
+          }
+          callback('success', 'Successfully generated endpoint!');
+        }
+      );
       // Generate .json file
       generateJSONUISchemaFile(jsonUISchemaPath, jsonSchema, (message?: string) => {
         if (message) {
