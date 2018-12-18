@@ -17,23 +17,11 @@ export const start = (context: theia.PluginContext) => {
   const createExampleProject = theia.commands.registerCommand(
     createExampleProjectCommand,
     (args: any) => {
+    const type = 'example';
     if (!args) {
-      const options: theia.OpenDialogOptions = {
-        canSelectMany: false,
-        canSelectFolders: true,
-        canSelectFiles: false,
-        openLabel: 'Select folder',
-      };
-      theia.window.showOpenDialog(options).then(fileUri => {
-        if (fileUri && fileUri[0].fsPath) {
-          asyncCreateExampleProject(fileUri[0].fsPath);
-        } else {
-          showMessage('Please select a empty folder', 'err');
-          return;
-        }
-      });
+      asyncCreateProjectWithArgs(type);
     } else {
-      asyncCreateExampleProject(args.fsPath);
+      asyncCreateProject(args.fsPath, type);
     }
   });
 
@@ -44,24 +32,27 @@ export const start = (context: theia.PluginContext) => {
   const createSeedProject = theia.commands.registerCommand(
     createSeedProjectCommand,
     (args: any) => {
+    const type = 'seed';
     if (!args) {
-      const options: theia.OpenDialogOptions = {
-        canSelectMany: false,
-        canSelectFolders: true,
-        canSelectFiles: false,
-        openLabel: 'Select folder',
-      };
-      theia.window.showOpenDialog(options).then(fileUri => {
-        if (fileUri && fileUri[0].fsPath) {
-          asyncCreateSeedProject(fileUri[0].fsPath);
-        } else {
-          showMessage('Please select a empty folder', 'err');
-          return;
-        }
-      });
+      asyncCreateProjectWithArgs(type);      
     } else {
-      asyncCreateSeedProject(args.fsPath);
+      asyncCreateProject(args.fsPath, type);
     }
+  });
+
+  const createBasicProjectCommand = {
+    id: 'create-basic-project',
+    label: 'JSONForms: Create Basic Project',
+  };
+  const createBasicProject = theia.commands.registerCommand(
+    createBasicProjectCommand,
+    (args: any) => {
+      const type = 'basic';
+      if (!args) {
+        asyncCreateProjectWithArgs(type);
+      } else {
+        asyncCreateProject(args.fsPath, type);
+      }
   });
 
   const generateUISchemaCommand = {
@@ -74,11 +65,11 @@ export const start = (context: theia.PluginContext) => {
     if (!args) {
       const options: theia.OpenDialogOptions = {
         canSelectMany: false,
-        canSelectFolders: true,
+        canSelectFolders: false,
         canSelectFiles: true,
         openLabel: 'Select schema',
         filters: {
-          'JSON files': ['json'],
+          'Json Files': ['json'],
         },
       };
       theia.window.showOpenDialog(options).then(fileUri => {
@@ -92,45 +83,63 @@ export const start = (context: theia.PluginContext) => {
     } else {
       asyncGenerateUiSchema(args.fsPath);
     }
-  });
+  });  
 
   context.subscriptions.push(createExampleProject);
   context.subscriptions.push(createSeedProject);
+  context.subscriptions.push(createBasicProject);
   context.subscriptions.push(generateUISchema);
 };
 
 /**
- * Async Creating Example Project
+ * Async Creating Project
  * @param {string} path the path to the project folder
+ * @param {string} type the path to the project folder
  */
-const asyncCreateExampleProject = (path: string) => {
-  showMessage(`Creating example project: ${path}`);
-  tooling.cloneAndInstall('example', path, (result: string, type: string) => {
-    showMessage(result, type);
-  });
-};
+const asyncCreateProject = (path: string, type: string) => {
 
-/**
- * Async Creating Seed Project
- * @param {string} path the path to the project folder
- */
-const asyncCreateSeedProject = (path: string) => {
+  if(type === 'example'){
+    showMessage(`Creating example project: ${path}`);
+    tooling.cloneAndInstall(type, path, (result: string, type: string) => {
+      showMessage(result, type);
+    },
+    'jsonforms-example');
+    return;
+  }
+
   const options: theia.InputBoxOptions = {
     prompt: 'Label: ',
-    placeHolder: 'Enter a name for your seed project',
+    placeHolder: `Enter a name for your ${type} project`,
   };
   theia.window.showInputBox(options).then(name => {
     let projectName = name;
     if (!name) {
-      projectName = 'jsonforms-seed';
+      projectName = `jsonforms-${type}`;
     }
-    showMessage(`Creating seed project: ${path}`);
-    tooling.cloneAndInstall(
-      'seed',
-      path,
-      (result: string, type: string) => { showMessage(result, type); },
-      projectName
-    );
+    if(type === 'basic') {
+      const endpointInputOptions: theia.InputBoxOptions = {
+        prompt: 'Label: ',
+        placeHolder: `Enter an OpenAPI endpoint for your ${type} project.`,
+      };
+      theia.window.showInputBox(endpointInputOptions).then(endpoint => {
+        // const apiEndpoint = new URL(endpoint || '');
+        showMessage(`Creating bla ${type} project: ${path}`);
+        tooling.cloneAndInstall(
+            type,
+            path,
+            (result: string, type: string) => { showMessage(result, type); },
+            projectName
+        );
+      });
+    } else {
+      showMessage(`Creating ${type} project: ${path}`);
+      tooling.cloneAndInstall(
+        type,
+        path,
+        (result: string, type: string) => { showMessage(result, type); },
+        projectName
+      );
+    }
   });
 };
 
@@ -171,4 +180,26 @@ const showMessage = (message: string, type?: string) => {
     default:
       theia.window.showInformationMessage(message);
   }
+};
+
+/**
+ * Set up project with options. 
+ * @param {string} type : Type of project to set up.
+ */
+const asyncCreateProjectWithArgs = (type: string) => {
+  const options: theia.OpenDialogOptions = {
+    canSelectMany: false,
+    canSelectFolders: true,
+    canSelectFiles: false,
+    openLabel: 'Select folder',
+  };
+  theia.window.showOpenDialog(options).then(fileUri => {
+    if (fileUri && fileUri[0].fsPath) {
+      asyncCreateProject(fileUri[0].fsPath, type);
+    } else {
+      showMessage('Please select a empty folder', 'err');
+      return;
+    }
+  });
+
 };
