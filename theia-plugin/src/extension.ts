@@ -123,7 +123,7 @@ const asyncCreateProject = (path: string, type: string) => {
       };
       theia.window.showInputBox(endpointInputOptions).then(endpoint => {
         const apiEndpoint = new URL(endpoint || '');
-        showMessage(`Creating bla ${type} project: ${path}`);
+        showMessage(`Creating ${type} project: ${path}`);
         tooling.cloneAndInstall(
             type,
             path,

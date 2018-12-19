@@ -39,7 +39,7 @@ export const cloneAndInstall = (
       return;
   }
   const git = simplegit();
-  callback('start-cloning', 'Starting to clone repo');
+  callback('Starting to clone repo');
   path += sep + name;
   git.clone(url, path)
     .then(() => {
