@@ -20,7 +20,7 @@ const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 export const cloneAndInstall = (
   repo: string,
   path: string,
-  callback: (id: string, result: string, type?: string) => void,
+  callback: (result: string, type?: string) => void,
   name?: string,
   endpoint?: URL
 ) => {
@@ -43,10 +43,10 @@ export const cloneAndInstall = (
   path += sep + name;
   git.clone(url, path)
     .then(() => {
-      callback('finished-cloning', 'Finished to clone repo');
+      callback('Finished to clone repo');
       if(repo === 'basic') {
         if(!endpoint){
-          callback('api-endpoint-error', 'Not a valid API endpoint.', 'err');
+          callback('Not a valid API endpoint.', 'err');
           return;
         }
         retrieveAndSaveJSONUISchemaFromAPI(repo, path, endpoint, callback);
@@ -58,7 +58,7 @@ export const cloneAndInstall = (
       });
       callback('signal', result.signal);
     })
-    .catch((err: any) => { callback('error', err.message, 'err'); });
+    .catch((err: any) => { callback(err.message, 'err'); });
 };
 
 /**
@@ -69,18 +69,18 @@ export const cloneAndInstall = (
 export const generateUISchema = (
   path: string,
   name: string,
-  callback: (id: string, result: string, type?: string) => void) => {
+  callback: (result: string, type?: string) => void) => {
   // Read JSON Schema file
   readFile(path, 'utf8', (readError, data) => {
     if (readError.message) {
-      callback('error', readError.message, 'err');
+      callback(readError.message, 'err');
       return;
     }
 
     const jsonSchema = JSON.parse(data);
     validateJSONSchema(jsonSchema, (validateError?: string) => {
       if (validateError) {
-        callback('error', validateError, 'err');
+        callback(validateError, 'err');
         return;
       }
 
@@ -93,10 +93,10 @@ export const generateUISchema = (
       // Write UI Schema file
       writeFile(newPath, JSON.stringify(jsonUISchema, null, 2), writeError => {
         if (writeError.message) {
-          callback('error', writeError.message, 'err');
+          callback(writeError.message, 'err');
           return;
         }
-        callback('success', 'Successfully generated UI schema');
+        callback('Successfully generated UI schema');
       });
     });
   });
@@ -156,9 +156,9 @@ const retrieveAndSaveJSONUISchemaFromAPI = (
   repo: string, 
   path: string, 
   endpoint: URL, 
-  callback: (id: string, result: string, type?: string) => void
+  callback: (result: string, type?: string) => void
 ) => {
-  callback('information', `Getting endpoint for ${repo} project.`);
+  callback(`Getting endpoint for ${repo} project.`);
   var reqOptions = {
     host : endpoint.hostname,
     path:  endpoint.pathname,
@@ -170,7 +170,7 @@ const retrieveAndSaveJSONUISchemaFromAPI = (
   get(reqOptions, (response) => {
     response.setEncoding('utf-8');
     response.on('data', (schema) => {
-      callback('generating-ui-schema', 'Generating the UI Schema file...');
+      callback('Generating the UI Schema file...');
       const schemaObj = JSON.parse(schema);
       const jsonSchema = schemaObj.components.schemas.Applicant;
       // Construct paths
@@ -185,7 +185,7 @@ const retrieveAndSaveJSONUISchemaFromAPI = (
             callback('error', error.message);
             return;
           }
-          callback('success', 'Successfully generated endpoint!');
+          callback('Successfully generated endpoint!');
         }
       );
       // Generate .json file
@@ -197,7 +197,7 @@ const retrieveAndSaveJSONUISchemaFromAPI = (
       });
     });
   }).on("error", (err) => {
-    callback('error', err.message, 'err');
+    callback(err.message, 'err');
     console.log(err.message);
   });
 };
