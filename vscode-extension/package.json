@@ -21,15 +21,15 @@
     "commands": [
       {
         "command": "extension.createExampleProject",
-        "title": "Create Example Project"
+        "title": "JSONForms: Create Example Project"
       },
       {
         "command": "extension.createSeedProject",
-        "title": "Create Seed Project"
+        "title": "JSONForms: Create Seed Project"
       },
       {
         "command": "extension.generateUISchema",
-        "title": "Generate UI Schema"
+        "title": "JSONForms: Generate UI Schema"
       }
     ],
     "menus": {
@@ -58,10 +58,11 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "postinstall": "node ../node_modules/vscode/bin/install",
-    "lint": "tslint --project tsconfig.json"
+    "lint": "tslint --project tsconfig.json",
+    "custominstall": "npm run postinstall"
   },
   "dependencies": {
-    "jsonforms-tooling": "file:../tooling"
+    "tooling": "file:../tooling"
   },
   "devDependencies": {
     "vscode": "^1.1.21"

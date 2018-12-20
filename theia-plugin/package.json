@@ -12,21 +12,22 @@
     "src"
   ],
   "dependencies": {
-    "jsonforms-tooling": "file:../tooling"
+    "tooling": "file:../tooling"
   },
   "devDependencies": {
-    "@theia/plugin": "^0.4.0-next.c7b8840b",
+    "@theia/plugin": "0.4.0-next.811ac888",
     "@theia/plugin-packager": "0.0.1-1539891078",
     "@types/node": "^10.12.10",
-    "rimraf": "2.6.2"
+    "rimraf": "2.6.2",
+    "typescript": "^3.1.6"
   },
   "scripts": {
-    "prepare": "npm run clean && npm run build",
     "clean": "rimraf out",
     "watch": "tsc -watch",
     "compile": "tsc -p ./",
-    "build": "npm run compile && theia:plugin pack",
-    "postinstall": " "
+    "build": "yarn run compile && theia:plugin pack",
+    "postinstall": " ",
+    "custominstall": "yarn install"
   },
   "engines": {
     "theiaPlugin": "next"

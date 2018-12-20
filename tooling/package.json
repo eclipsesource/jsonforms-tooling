@@ -1,5 +1,5 @@
 {
-  "name": "jsonforms-tooling",
+  "name": "tooling",
   "description": "",
   "version": "0.0.1",
   "publisher": "EclipseSource",
@@ -10,10 +10,16 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run compile",
     "compile": "rimraf out && tsc -p ./ --declaration",
-    "postinstall": " "
+    "postinstall": " ",
+    "custominstall": "npm run postinstall"
   },
   "dependencies": {
-    "@jsonforms/core": "^2.0.12"
+    "@jsonforms/core": "^2.0.12",
+    "ajv": "^6.5.5",
+    "simple-git": "^1.107.0"
   },
-  "type-check": "tsc"
+  "type-check": "tsc",
+  "devDependencies": {
+    "rimraf": "^2.6.2"
+  }
 }
