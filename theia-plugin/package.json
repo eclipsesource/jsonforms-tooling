@@ -18,6 +18,7 @@
     "@theia/plugin": "0.4.0-next.811ac888",
     "@theia/plugin-packager": "0.0.1-1539891078",
     "@types/node": "^10.12.10",
+    "jest": "^23.6.0",
     "rimraf": "2.6.2",
     "typescript": "^3.1.6"
   },
@@ -28,7 +29,8 @@
     "compile": "tsc -p ./",
     "build": "yarn run compile && theia:plugin pack",
     "postinstall": " ",
-    "custominstall": "yarn install"
+    "custominstall": "yarn install",
+    "test": "jest"
   },
   "engines": {
     "theiaPlugin": "next"

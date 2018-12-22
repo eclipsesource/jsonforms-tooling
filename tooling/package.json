@@ -11,7 +11,8 @@
     "build": "npm run compile",
     "compile": "rimraf out && tsc -p ./ --declaration",
     "postinstall": " ",
-    "custominstall": "npm run postinstall"
+    "custominstall": "npm run postinstall",
+    "test": "jest"
   },
   "dependencies": {
     "@jsonforms/core": "^2.0.12",
@@ -20,6 +21,7 @@
   },
   "type-check": "tsc",
   "devDependencies": {
+    "jest": "^23.6.0",
     "rimraf": "^2.6.2"
   }
 }

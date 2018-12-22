@@ -12,7 +12,8 @@
     "postinstall": " ",
     "compile": "tsc -p ./",
     "build": "npm run compile",
-    "custominstall": "npm run postinstall"
+    "custominstall": "npm run postinstall",
+    "test": "jest"
   },
   "dependencies": {
     "@types/yeoman-generator": "^3.0.1",
@@ -26,6 +27,7 @@
     "yeoman-generator": "^3.1.1"
   },
   "devDependencies": {
+    "jest": "^23.6.0",
     "typescript": "^3.1.6"
   }
 }
