@@ -18,7 +18,10 @@
     "@theia/plugin": "0.4.0-next.811ac888",
     "@theia/plugin-packager": "0.0.1-1539891078",
     "@types/node": "^10.12.10",
-    "jest": "^23.6.0",
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.2.3",
+    "@babel/preset-typescript": "^7.1.0",
+    "jest": "^21.3.0-beta.15",
     "rimraf": "2.6.2",
     "typescript": "^3.1.6"
   },
@@ -37,5 +40,9 @@
   },
   "theiaPlugin": {
     "backend": "out/extension.js"
+  },
+  "jest": {
+    "verbose": true,
+    "testURL": "http://localhost/"
   }
 }

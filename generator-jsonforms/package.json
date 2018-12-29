@@ -21,13 +21,20 @@
     "clear": "^0.1.0",
     "figlet": "^1.2.1",
     "jsonforms-react-seed": "git+https://git@github.com/eclipsesource/jsonforms-react-seed.git",
-    "jsonforms-basic-project": "https://github.com/roxhens/example-project",
+    "jsonforms-basic-project": "git+https://git@github.com/roxhens/jsonforms-basic-project.git",
     "make-it-happen-react": "git+https://git@github.com/eclipsesource/make-it-happen-react.git",
     "validate-npm-package-name": "^3.0.0",
     "yeoman-generator": "^3.1.1"
   },
   "devDependencies": {
-    "jest": "^23.6.0",
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.2.3",
+    "@babel/preset-typescript": "^7.1.0",
+    "jest": "^21.3.0-beta.15",
     "typescript": "^3.1.6"
+  },
+  "jest": {
+    "verbose": true,
+    "testURL": "http://localhost/"
   }
 }
