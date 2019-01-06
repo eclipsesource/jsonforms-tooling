@@ -109,7 +109,7 @@ export const start = (context: theia.PluginContext) => {
  */
 const asyncCreateExampleProject = (path: string) => {
   showMessage(`Creating example project: ${path}`);
-  cloneAndInstall('example', path, (result: string, type: string) => {
+  cloneAndInstall('example', path, (result: string, type?: string) => {
     showMessage(result, type);
   });
 };
@@ -132,7 +132,7 @@ const asyncCreateSeedProject = (path: string) => {
     cloneAndInstall(
       'seed',
       path,
-      (result: string, type: string) => { showMessage(result, type); },
+      (result: string, type?: string) => { showMessage(result, type); },
       projectName
     );
   });
@@ -153,7 +153,7 @@ const asyncGenerateUiSchema = (path: string) => {
       fileName = 'jsonforms-seed';
     }
     showMessage(`Generating UI Schema: ${path}`);
-    generateUISchema(path, fileName, (result: string, type: string) => {
+    generateUISchema(path, fileName, (result: string, type?: string) => {
       showMessage(result, type);
     });
   });
