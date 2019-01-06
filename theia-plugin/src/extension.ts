@@ -1,13 +1,14 @@
 // tslint:disable:no-var-requires
 // tslint:disable:no-require-imports
 // tslint:disable:no-use-before-declare
+// tslint:disable:no-shadowed-variable
 
 /**
  * Generated using theia-plugin-generator
  */
 
 import * as theia from '@theia/plugin';
-import { generateUISchema, cloneAndInstall } from 'tooling';
+import { cloneAndInstall, generateUISchema } from 'tooling';
 
 export const start = (context: theia.PluginContext) => {
   const createExampleProjectCommand = {

@@ -9,6 +9,7 @@
     "lint": "lerna run lint"
   },
   "devDependencies": {
+    "@types/jest": "^23.3.11",
     "@types/node": "^10.12.10",
     "coveralls": "^3.0.2",
     "jest": "^23.6.0",
