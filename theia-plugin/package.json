@@ -27,7 +27,7 @@
     "compile": "tsc -p ./",
     "build": "yarn run compile && theia:plugin pack",
     "postinstall": " ",
-    "custominstall": "yarn install"
+    "custominstall": "yarn install",
     "lint": "tslint --project tsconfig.json"
   },
   "engines": {
