@@ -12,7 +12,7 @@
     "src"
   ],
   "dependencies": {
-    "tooling": "file:../tooling"
+    "jsonforms-tooling-common": "file:../jsonforms-tooling-common"
   },
   "devDependencies": {
     "@theia/plugin": "0.4.0-next.811ac888",
