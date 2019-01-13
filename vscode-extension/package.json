@@ -62,7 +62,7 @@
     "lint": "tslint --project tsconfig.json"
   },
   "dependencies": {
-    "jsonforms-tooling-common": "file:../jsonforms-tooling-common"
+    "jsonforms-tooling-common": "0.0.1"
   },
   "devDependencies": {
     "vscode": "^1.1.21"
