@@ -1,4 +1,4 @@
 {
   "version": "0.0.1",
-  "packages": ["tooling", "theia-plugin", "vscode-extension"]
+  "packages": ["jsonforms-tooling-common", "theia-plugin", "vscode-extension"]
 }

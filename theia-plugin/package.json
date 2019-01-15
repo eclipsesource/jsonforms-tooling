@@ -12,7 +12,7 @@
     "src"
   ],
   "dependencies": {
-    "tooling": "file:../tooling"
+    "jsonforms-tooling-common": "file:../jsonforms-tooling-common"
   },
   "devDependencies": {
     "@theia/plugin": "0.4.0-next.811ac888",
@@ -27,7 +27,9 @@
     "compile": "tsc -p ./",
     "build": "yarn run compile && theia:plugin pack",
     "postinstall": " ",
-    "custominstall": "yarn install"
+    "custominstall": "yarn install && yarn run fixlink",
+    "fixlink": "npm link ../jsonforms-tooling-common",
+    "lint": "tslint --project tsconfig.json"
   },
   "engines": {
     "theiaPlugin": "next"

@@ -58,11 +58,11 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "postinstall": "node ../node_modules/vscode/bin/install",
-    "lint": "tslint --project tsconfig.json",
-    "custominstall": "npm run postinstall"
+    "custominstall": "npm run postinstall",
+    "lint": "tslint --project tsconfig.json"
   },
   "dependencies": {
-    "tooling": "file:../tooling"
+    "jsonforms-tooling-common": "0.0.1"
   },
   "devDependencies": {
     "vscode": "^1.1.21"

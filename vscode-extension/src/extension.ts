@@ -1,12 +1,11 @@
-// tslint:disable:no-var-requires
-// tslint:disable:no-require-imports
 // tslint:disable:no-use-before-declare
+// tslint:disable:no-shadowed-variable
 
 'use strict';
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { generateUISchema, cloneAndInstall } from 'tooling';
+import { cloneAndInstall, generateUISchema } from 'jsonforms-tooling-common';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -98,7 +97,7 @@ export const activate = (context: vscode.ExtensionContext) => {
  */
 const asyncCreateExampleProject = (path: string) => {
   showMessage(`Creating example project: ${path}`);
-  cloneAndInstall('example', path, (result: string, type: string) => {
+  cloneAndInstall('example', path, (result: string, type?: string) => {
     showMessage(result, type);
   });
 };
@@ -121,7 +120,7 @@ const asyncCreateSeedProject = (path: string) => {
     cloneAndInstall(
       'seed',
       path,
-      (result: string, type: string) => { showMessage(result, type); },
+      (result: string, type?: string) => { showMessage(result, type); },
       projectName
     );
   });
@@ -142,7 +141,7 @@ const asyncGenerateUiSchema = (path: string) => {
       fileName = 'ui-schema.json';
     }
     showMessage(`Generating UI Schema: ${path}`);
-    generateUISchema(path, fileName, (result: string, type: string) => {
+    generateUISchema(path, fileName, (result: string, type?: string) => {
       showMessage(result, type);
     });
   });

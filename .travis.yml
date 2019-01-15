@@ -1,0 +1,21 @@
+sudo: required
+
+language: node_js
+
+node_js:
+  - 'node'
+
+cache: npm
+
+before_install:
+  - npm update
+
+install:
+  - npm ci
+  - lerna bootstrap --npm-ci-mode --ignore-scripts
+  - lerna exec --no-bail --npm-ci-mode -- npm run postinstall
+
+script:
+  - lerna run build
+  - lerna run lint
+#  - npm run coveralls
