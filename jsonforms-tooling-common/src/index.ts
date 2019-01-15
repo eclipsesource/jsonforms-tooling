@@ -162,12 +162,11 @@ const asyncCreateProject = (editorInstance: any, path: string, project: string) 
       url = 'https://github.com/eclipsesource/make-it-happen-react';
       break;
     case Project.Seed:
-' ' + 
-' ' + 
-' ' + 
-' ' + 
-' ' + 
-' ' + 
+      url = 'https://github.com/eclipsesource/jsonforms-react-seed';
+      break;
+    default:
+      return;
+  }
   if (project === Project.Example) {
     showMessage(editorInstance, `Creating example project: ${path}`);
     cloneAndInstall(editorInstance, url, path);
