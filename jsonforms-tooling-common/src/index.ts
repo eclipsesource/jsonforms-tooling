@@ -44,7 +44,7 @@ export const createProject = (editorInstance: any, path: string, project: string
  * @param {any} editorInstance the instance of the editor
  * @param {string} path the arguments passed to the editor call
  */
-export const generateUISchema = (editorInstance: any, path: any) => {
+export const generateUISchema = (editorInstance: any, path: string) => {
   if (!path) {
     editorInstance.window.showOpenDialog(editorInstance.OpenDialogOptions = {
       canSelectMany: false,
@@ -162,12 +162,12 @@ const asyncCreateProject = (editorInstance: any, path: string, project: string) 
       url = 'https://github.com/eclipsesource/make-it-happen-react';
       break;
     case Project.Seed:
-      url = 'https://github.com/eclipsesource/jsonforms-react-seed';
-      break;
-    default:
-      return;
-  }
-
+' ' + 
+' ' + 
+' ' + 
+' ' + 
+' ' + 
+' ' + 
   if (project === Project.Example) {
     showMessage(editorInstance, `Creating example project: ${path}`);
     cloneAndInstall(editorInstance, url, path);
