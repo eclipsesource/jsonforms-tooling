@@ -2,7 +2,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { createProject, generateUISchema } from 'jsonforms-tooling-common';
+import { createProject, generateUISchema, Project } from 'jsonforms-tooling-common';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -14,21 +14,21 @@ export const activate = (context: vscode.ExtensionContext) => {
   const createExampleProjectCommand = vscode.commands.registerCommand(
     'extension.createExampleProject',
     (args: any) => {
-      createProject(vscode, args, 'example');
+      createProject(vscode, args.fsPath, Project.Example);
     }
   );
 
   const createSeedProjectCommand = vscode.commands.registerCommand(
     'extension.createSeedProject',
     (args: any) => {
-      createProject(vscode, args, 'seed');
+      createProject(vscode, args.fsPath, Project.Seed);
     }
   );
 
   const generateUISchemaCommand = vscode.commands.registerCommand(
     'extension.generateUISchema',
     (args: any) => {
-      generateUISchema(vscode, args);
+      generateUISchema(vscode, args.fsPath);
   });
 
   context.subscriptions.push(createExampleProjectCommand);

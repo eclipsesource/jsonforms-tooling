@@ -3,7 +3,7 @@
  */
 
 import * as theia from '@theia/plugin';
-import { createProject, generateUISchema } from 'jsonforms-tooling-common';
+import { createProject, generateUISchema, Project } from 'jsonforms-tooling-common';
 
 export const start = (context: theia.PluginContext) => {
   const createExampleProjectCommandOptions = {
@@ -14,7 +14,7 @@ export const start = (context: theia.PluginContext) => {
     createExampleProjectCommandOptions,
     (args: any) => {
       if (!args) {
-        createProject(theia, args, 'example');
+        createProject(theia, args.fsPath, Project.Example);
       }
     }
   );
@@ -26,7 +26,7 @@ export const start = (context: theia.PluginContext) => {
   const createSeedProjectCommand = theia.commands.registerCommand(
     createSeedProjectCommandOptions,
     (args: any) => {
-      createProject(theia, args, 'seed');
+      createProject(theia, args.fsPath, Project.Seed);
     }
   );
 
@@ -37,7 +37,7 @@ export const start = (context: theia.PluginContext) => {
   const generateUISchemaCommand = theia.commands.registerCommand(
     generateUISchemaCommandOptions,
     (args: any) => {
-      generateUISchema(theia, args);
+      generateUISchema(theia, args.fsPath);
     }
   );
 

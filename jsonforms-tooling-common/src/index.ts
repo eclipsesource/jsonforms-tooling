@@ -8,14 +8,19 @@ import * as Ajv from 'ajv';
 import { sep } from 'path';
 const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 
+export enum Project {
+  Example = 'example',
+  Seed = 'seed',
+}
+
 /*
  * Receives the data from the editor and calls the install methos
  * @param {any} editorInstance the instance of the editor
- * @param {any} args the arguments passed to the editor call
+ * @param {string} path the arguments passed to the editor call
  * @param {string} project the project, that should be installed
  */
-export const createProject = (editorInstance: any, args: any, project: string) => {
-  if (!args) {
+export const createProject = (editorInstance: any, path: string, project: string) => {
+  if (!path) {
     editorInstance.window.showOpenDialog(editorInstance.OpenDialogOptions = {
       canSelectMany: false,
       canSelectFolders: true,
@@ -30,17 +35,17 @@ export const createProject = (editorInstance: any, args: any, project: string) =
       }
     });
   } else {
-    asyncCreateProject(editorInstance, args.fsPath, project);
+    asyncCreateProject(editorInstance, path, project);
   }
 };
 
 /**
  * Generates the default UI Schema from a json schema
  * @param {any} editorInstance the instance of the editor
- * @param {any} args the arguments passed to the editor call
+ * @param {string} path the arguments passed to the editor call
  */
-export const generateUISchema = (editorInstance: any, args: any) => {
-  if (!args) {
+export const generateUISchema = (editorInstance: any, path: any) => {
+  if (!path) {
     editorInstance.window.showOpenDialog(editorInstance.OpenDialogOptions = {
       canSelectMany: false,
       canSelectFolders: false,
@@ -58,7 +63,7 @@ export const generateUISchema = (editorInstance: any, args: any) => {
       }
     });
   } else {
-    asyncGenerateUiSchema(editorInstance, args.fsPath);
+    asyncGenerateUiSchema(editorInstance, path);
   }
 };
 
@@ -153,17 +158,17 @@ const showMessage = (editorInstance: any, message: string, type?: string) => {
 const asyncCreateProject = (editorInstance: any, path: string, project: string) => {
   let url = '';
   switch (project) {
-    case 'example':
+    case Project.Example:
       url = 'https://github.com/eclipsesource/make-it-happen-react';
       break;
-    case 'seed':
+    case Project.Seed:
       url = 'https://github.com/eclipsesource/jsonforms-react-seed';
       break;
     default:
       return;
   }
 
-  if (project === 'example') {
+  if (project === Project.Example) {
     showMessage(editorInstance, `Creating example project: ${path}`);
     cloneAndInstall(editorInstance, url, path);
     return;
