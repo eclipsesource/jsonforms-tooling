@@ -12,7 +12,8 @@
     "postinstall": " ",
     "compile": "tsc -p ./",
     "build": "npm run compile",
-    "custominstall": "npm run postinstall"
+    "custominstall": "npm run postinstall",
+    "lint": "tslint --project tsconfig.json"
   },
   "dependencies": {
     "@types/yeoman-generator": "^3.0.1",

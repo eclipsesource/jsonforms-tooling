@@ -1,7 +1,6 @@
-'use strict';
-
 // tslint:disable:no-var-requires
 // tslint:disable:no-require-imports
+'use strict';
 
 import * as Generator from 'yeoman-generator';
 import chalk from 'chalk';
@@ -11,10 +10,12 @@ const validate = require('validate-npm-package-name');
 import { join } from 'path';
 import { readFile, writeFile } from 'fs';
 
-const SEED = 'jsonforms-react-seed';
-const EXAMPLE = 'make-it-happen-react';
+export enum Project {
+  Example = 'make-it-happen-react',
+  Seed = 'jsonforms-reacrt-seed',
+}
 
-class JsonformsGenerator extends Generator {
+export class JsonformsGenerator extends Generator {
 
   project: string;
   path: string;
@@ -33,10 +34,10 @@ class JsonformsGenerator extends Generator {
     this.name = this.options.name;
 
     if (this.project === 'example') {
-      this.project = EXAMPLE;
+      this.project = Project.Seed;
     }
     if (this.project === 'seed') {
-      this.project = SEED;
+      this.project = Project.Seed;
     }
   }
 
@@ -55,11 +56,11 @@ class JsonformsGenerator extends Generator {
         choices: [
           {
             name: 'Example Project',
-            value: EXAMPLE
+            value: Project.Example
           },
           {
             name: 'Seed Project',
-            value: SEED
+            value: Project
           }
         ],
         when: (this.project == null)
@@ -82,7 +83,7 @@ class JsonformsGenerator extends Generator {
           'characters and name can no longer contain capital letters.';
         },
         when: answers => {
-          if ((answers.project === SEED || this.project === SEED)
+          if ((answers.project === Project.Seed || this.project === Project.Seed)
           && (this.name == null || !validate(this.name).validForNewPackages)) {
             return true;
           }
@@ -111,11 +112,11 @@ class JsonformsGenerator extends Generator {
   }
 
   install() {
-    if (this.project === SEED && this.name != null) {
+    if (this.project === Project.Seed && this.name != null) {
       const packagePath = this.path + '/package.json';
       readFile(packagePath, 'utf8', (readError, data) => {
 
-        if (readError) {
+        if (readError.message) {
           this.log(chalk.red(readError.message));
           return;
         }
@@ -124,7 +125,7 @@ class JsonformsGenerator extends Generator {
         packageJson.name = this.name;
 
         writeFile(packagePath, JSON.stringify(packageJson, null, 2), writeError => {
-          if (writeError) {
+          if (writeError.message) {
             this.log(chalk.red(writeError.message));
             return;
           }
