@@ -1,0 +1,26 @@
+{
+  "name": "jsonforms-tooling-common",
+  "description": "",
+  "version": "0.0.1",
+  "publisher": "EclipseSource",
+  "license": "MIT",
+  "main": "out/index",
+  "typings": "out/index",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run compile",
+    "compile": "rimraf out && tsc -p ./ --declaration",
+    "postinstall": " ",
+    "custominstall": "npm run postinstall",
+    "lint": "tslint --project tsconfig.json"
+  },
+  "dependencies": {
+    "@jsonforms/core": "^2.0.12",
+    "ajv": "^6.5.5",
+    "simple-git": "^1.107.0"
+  },
+  "type-check": "tsc",
+  "devDependencies": {
+    "rimraf": "^2.6.2"
+  }
+}

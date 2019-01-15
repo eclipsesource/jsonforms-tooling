@@ -1,0 +1,16 @@
+{
+    "extends": "../tsconfig.base",
+    "compilerOptions": {
+        "downlevelIteration": true,
+        "lib": [
+            "es6",
+            "webworker"
+        ],
+        "baseUrl": "src",
+        "outDir": "out",
+        "skipLibCheck": true
+    },
+    "include": [
+        "src"
+    ]
+}

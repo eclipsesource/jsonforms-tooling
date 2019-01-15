@@ -1,0 +1,21 @@
+{
+	"compilerOptions": {
+		"baseUrl": "src",
+		"declaration": true,
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"lib": [
+			"es6"
+		],
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"target": "es6",
+		"noUnusedLocals": true,
+		"sourceMap": true,
+		"strict": true,
+		"types": ["node", "jest"]
+	},
+	"exclude": [
+        "node_modules"
+    ]
+}
