@@ -12,7 +12,7 @@ import { readFile, writeFile } from 'fs';
 
 export enum Project {
   Example = 'make-it-happen-react',
-  Seed = 'jsonforms-reacrt-seed',
+  Seed = 'jsonforms-react-seed',
 }
 
 export class JsonformsGenerator extends Generator {
@@ -20,6 +20,7 @@ export class JsonformsGenerator extends Generator {
   project: string;
   path: string;
   name: string;
+  skipPromting = false;
   answers: any;
 
   constructor(args: any, opts: any) {
@@ -28,10 +29,12 @@ export class JsonformsGenerator extends Generator {
     this.option('project', { type: String } );
     this.option('path', { type: String } );
     this.option('name', { type: String } );
+    this.option('skipPromting', { type: Boolean} );
 
     this.project = this.options.project;
     this.path = this.options.path;
     this.name = this.options.name;
+    this.skipPromting = this.options.skipPromting;
 
     if (this.project === 'example') {
       this.project = Project.Example;
@@ -43,75 +46,80 @@ export class JsonformsGenerator extends Generator {
 
   async prompting() {
     clear();
-    console.log(
+    this.log(
       chalk.blue(
         figlet.textSync('JSONForms Tooling', { horizontalLayout: 'full' }),
       ),
     );
-    this.answers = await this.prompt([
-      {
-        name: 'project',
-        type: 'list',
-        message: 'Select a project',
-        choices: [
-          {
-            name: 'Example Project',
-            value: Project.Example
-          },
-          {
-            name: 'Seed Project',
-            value: Project
-          }
-        ],
-        when: (this.project == null)
-      },
-      {
-        name: 'path',
-        type: 'input',
-        message: 'Enter the path where the project will be installed:',
-        default: 'current',
-        when: (this.path == null)
-      },
-      {
-        name: 'name',
-        type: 'input',
-        message: 'Enter the name of the seed project:',
-        default: 'jsonforms-seed',
-        validate: value => {
-          const valid = validate(value);
-          return valid.validForNewPackages || 'Sorry, name can only contain URL-friendly ' +
-          'characters and name can no longer contain capital letters.';
+    if (!this.skipPromting) {
+      this.answers = await this.prompt([
+        {
+          name: 'project',
+          type: 'list',
+          message: 'Select a project',
+          choices: [
+            {
+              name: 'Example Project',
+              value: Project.Example
+            },
+            {
+              name: 'Seed Project',
+              value: Project
+            }
+          ],
+          when: (this.project == null)
         },
-        when: answers => {
-          if ((answers.project === Project.Seed || this.project === Project.Seed)
-          && (this.name == null || !validate(this.name).validForNewPackages)) {
-            return true;
+        {
+          name: 'path',
+          type: 'input',
+          message: 'Enter the path where the project will be installed:',
+          default: 'current',
+          when: (this.path == null)
+        },
+        {
+          name: 'name',
+          type: 'input',
+          message: 'Enter the name of the seed project:',
+          default: 'jsonforms-seed',
+          validate: value => {
+            const valid = validate(value);
+            return valid.validForNewPackages || 'Sorry, name can only contain URL-friendly ' +
+            'characters and name can no longer contain capital letters.';
+          },
+          when: answers => {
+            if ((answers.project === Project.Seed || this.project === Project.Seed)
+            && (this.name == null || !validate(this.name).validForNewPackages)) {
+              return true;
+            }
+            return false;
           }
-          return false;
         }
+      ]);
+      if (this.project == null) {
+        this.project = this.answers.project;
       }
-    ]);
-
-    if (this.project == null) {
-      this.project = this.answers.project;
-    }
-    if (this.answers.path === 'current' || this.path === 'current') {
-      this.path = process.cwd();
-    }
-    if (this.path == null) {
-      this.path = this.answers.path;
-    }
-    if (this.name == null || !validate(this.name).validForNewPackages) {
-      this.name = this.answers.name;
+      if (this.answers && this.answers.path === 'current' || this.path === 'current') {
+        this.path = process.cwd();
+      }
+      if (this.path == null) {
+        this.path = this.answers.path;
+      }
+      if (this.name == null || !validate(this.name).validForNewPackages) {
+        this.name = this.answers.name;
+      }
     }
   }
 
-  write() {
+  async write() {
+    this.log('writing');
     const source = join(__dirname, '../../node_modules/' + this.project) + '/**';
-    this.fs.copy(source, this.path);
+    const copy = await this.fs.copy(source, this.path);
+    console.log(copy);
+    this.log('done-writing');
   }
 
-  install() {
+  async install() {
+    this.log('installing');
     if (this.project === Project.Seed && this.name != null) {
       const packagePath = this.path + '/package.json';
       readFile(packagePath, 'utf8', (readError, data) => {
@@ -134,7 +142,9 @@ export class JsonformsGenerator extends Generator {
     }
 
     process.chdir(this.path);
-    this.npmInstall();
+    const install = await this.npmInstall();
+    console.log(install);
+    this.log('done-installing');
   }
 }
 

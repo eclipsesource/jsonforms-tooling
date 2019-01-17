@@ -195,10 +195,14 @@ const cloneAndInstall = (editorInstance: any, project: string, path: string, nam
       'project': project,
       'path': path,
       'name': name,
+      'skipPromting': true,
     };
     env.run('jsonforms', options, (err: any) => {
-      console.log(err.message);
-      console.log('done');
+      if (err.message) {
+        showMessage(editorInstance, `Error creating project:  ${err.message}`, 'err');
+      } else {
+        showMessage(editorInstance, `Done creating ${project} project`);
+      }
     });
   });
 };
