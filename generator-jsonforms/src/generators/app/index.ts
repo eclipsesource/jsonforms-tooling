@@ -7,7 +7,7 @@ import chalk from 'chalk';
 const clear = require('clear');
 const figlet = require('figlet');
 const validate = require('validate-npm-package-name');
-import { join } from 'path';
+import { join, sep } from 'path';
 import { readFile, writeFile } from 'fs';
 
 export enum Project {
@@ -113,18 +113,16 @@ export class JsonformsGenerator extends Generator {
   async write() {
     this.log('writing');
     const source = join(__dirname, '../../node_modules/' + this.project) + '/**';
-    const copy = await this.fs.copy(source, this.path);
-    console.log(copy);
-    this.log('done-writing');
+    this.fs.copy(source, this.path);
   }
 
   async install() {
     this.log('installing');
     if (this.project === Project.Seed && this.name != null) {
-      const packagePath = this.path + '/package.json';
+      const packagePath = this.path + sep + 'package.json';
       readFile(packagePath, 'utf8', (readError, data) => {
 
-        if (readError.message) {
+        if ((readError != null) && readError.message) {
           this.log(chalk.red(readError.message));
           return;
         }
@@ -142,9 +140,10 @@ export class JsonformsGenerator extends Generator {
     }
 
     process.chdir(this.path);
-    const install = await this.npmInstall();
-    console.log(install);
-    this.log('done-installing');
+    this.installDependencies({
+      bower: false,
+      npm: true
+    });
   }
 }
 
