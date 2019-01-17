@@ -34,7 +34,7 @@ export class JsonformsGenerator extends Generator {
     this.name = this.options.name;
 
     if (this.project === 'example') {
-      this.project = Project.Seed;
+      this.project = Project.Example;
     }
     if (this.project === 'seed') {
       this.project = Project.Seed;

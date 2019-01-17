@@ -186,12 +186,19 @@ const asyncCreateProject = (editorInstance: any, path: string, project: string) 
  */
 const cloneAndInstall = (editorInstance: any, project: string, path: string, name?: string) => {
   const env = yeoman.createEnv();
-  env.register(require.resolve('generator-jsonforms'), 'jsonforms');
-  console.log('test');
-  const projectArg = ' project ' + project;
-  const pathArg = ' path ' + path;
-  const nameArg = (name) ? ' name ' + name : ' ';
-  env.run('jsonforms' + projectArg + pathArg + nameArg, () => {
-    console.log('done');
+  env.on('error', (err: any) => {
+    console.error('Error', err.message);
+    process.exit(err.code || 1);
+  });
+  env.lookup(() => {
+    const options = {
+      'project': project,
+      'path': path,
+      'name': name,
+    };
+    env.run('jsonforms', options, (err: any) => {
+      console.log(err.message);
+      console.log('done');
+    });
   });
 };
