@@ -188,7 +188,7 @@ const cloneAndInstall = (editorInstance: any, project: string, path: string, nam
   const env = yeoman.createEnv();
   env.on('error', (err: any) => {
     console.error('Error', err.message);
-    process.exit(err.code || 1);
+    process.exit(err.code);
   });
   env.lookup(() => {
     const options = {
