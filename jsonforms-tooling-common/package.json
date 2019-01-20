@@ -1,5 +1,5 @@
 {
-  "name": "jsonforms-tooling",
+  "name": "jsonforms-tooling-common",
   "description": "",
   "version": "0.0.1",
   "publisher": "EclipseSource",
@@ -11,7 +11,8 @@
     "compile": "rimraf out && tsc -p ./ --declaration",
     "postinstall": " ",
     "custominstall": "npm run postinstall",
-    "test": "jest"
+    "test": "jest",
+    "lint": "tslint --project tsconfig.json"
   },
   "dependencies": {
     "@jsonforms/core": "^2.0.12",

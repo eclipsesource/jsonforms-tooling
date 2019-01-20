@@ -1,6 +1,7 @@
 {
   "scripts": {
     "lerna": "lerna",
+    "coveralls": "ts-jest --coverage && cat ./tests/coverage/lcov.info | coveralls",
     "postinstall": "npm run lernabootstrap && npm run lernainstall",
     "lernainstall": "lerna exec --no-bail --npm-ci-mode -- npm run custominstall",
     "lernabootstrap": "lerna bootstrap --npm-ci-mode --ignore-scripts",
@@ -14,8 +15,14 @@
     "@types/node": "^10.12.10",
     "jest": "^21.3.0-beta.15",
     "jest-cli": "^23.6.0",
+    "lint": "lerna run lint",
+    "@types/jest": "^23.3.11",
+    "coveralls": "^3.0.2",
     "lerna": "^3.4.3",
     "rimraf": "2.6.2",
+    "ts-jest": "^23.10.4",
+    "tslint": "^5.11.0",
+    "tslint-react": "^3.6.0",
     "typescript": "^3.1.6",
     "vscode": "^1.1.21"
   },

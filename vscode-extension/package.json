@@ -73,7 +73,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "jsonforms-tooling": "file:../tooling"
+    "jsonforms-tooling-common": "0.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
