@@ -10,14 +10,20 @@ const validate = require('validate-npm-package-name');
 import { join, sep } from 'path';
 import { readFile, writeFile } from 'fs';
 
-export enum Project {
+enum ProjectRepo {
   Example = 'make-it-happen-react',
   Seed = 'jsonforms-react-seed',
+}
+
+enum Project {
+  Example = 'example',
+  Seed = 'seed',
 }
 
 export class JsonformsGenerator extends Generator {
 
   project: string;
+  repo: string;
   path: string;
   name: string;
   skipPromting = false;
@@ -32,15 +38,16 @@ export class JsonformsGenerator extends Generator {
     this.option('skipPromting', { type: Boolean} );
 
     this.project = this.options.project;
+    this.repo = '';
     this.path = this.options.path;
     this.name = this.options.name;
     this.skipPromting = this.options.skipPromting;
 
-    if (this.project === 'example') {
-      this.project = Project.Example;
+    if (this.project === Project.Example) {
+      this.repo = ProjectRepo.Example;
     }
-    if (this.project === 'seed') {
-      this.project = Project.Seed;
+    if (this.project === Project.Seed) {
+      this.repo = ProjectRepo.Seed;
     }
   }
 
@@ -60,14 +67,24 @@ export class JsonformsGenerator extends Generator {
           choices: [
             {
               name: 'Example Project',
-              value: Project.Example
+              value: ProjectRepo.Example
             },
             {
               name: 'Seed Project',
-              value: Project
+              value: ProjectRepo.Seed
             }
           ],
-          when: (this.project == null)
+          when: () => {
+            if (this.project == null) {
+              return true;
+            }
+            /* if (!(Object.values(Project).includes(this.project))) {
+              console.log(Project);
+              this.log(chalk.red('The selected project is not available.'));
+              return true;
+            } */
+            return false;
+          }
         },
         {
           name: 'path',
@@ -87,16 +104,22 @@ export class JsonformsGenerator extends Generator {
             'characters and name can no longer contain capital letters.';
           },
           when: answers => {
-            if ((answers.project === Project.Seed || this.project === Project.Seed)
-            && (this.name == null || !validate(this.name).validForNewPackages)) {
-              return true;
+            if (answers.project === Project.Seed || this.project === Project.Seed) {
+              if (this.name == null) {
+                return true;
+              }
+              if (!validate(this.name).validForNewPackages) {
+                this.log(chalk.red('Sorry, name can only contain URL-friendly ' +
+                'characters and name can no longer contain capital letters.'));
+                return true;
+              }
             }
             return false;
           }
         }
       ]);
       if (this.project == null) {
-        this.project = this.answers.project;
+        this.repo = this.answers.project;
       }
       if (this.answers && this.answers.path === 'current' || this.path === 'current') {
         this.path = process.cwd();
@@ -112,7 +135,7 @@ export class JsonformsGenerator extends Generator {
 
   async write() {
     this.log('writing');
-    const source = join(__dirname, '../../node_modules/' + this.project) + '/**';
+    const source = join(__dirname, '../../node_modules/' + this.repo) + '/**';
     this.fs.copy(source, this.path);
   }
 
