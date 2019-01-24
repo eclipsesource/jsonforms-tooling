@@ -78,11 +78,9 @@ export class JsonformsGenerator extends Generator {
             if (this.project == null) {
               return true;
             }
-            /* if (!(Object.values(Project).includes(this.project))) {
-              console.log(Project);
-              this.log(chalk.red('The selected project is not available.'));
+            if (this.project !== 'example' && this.project !== 'seed') {
               return true;
-            } */
+            }
             return false;
           }
         },
