@@ -1,12 +1,12 @@
+// tslint:disable:no-var-requires
+// tslint:disable:no-require-imports
 // tslint:disable:no-use-before-declare
 
-import * as simplegit from 'simple-git/promise';
 import * as jsonforms from '@jsonforms/core';
-import * as cp from 'child_process';
 import { readFile, writeFile } from 'fs';
 import * as Ajv from 'ajv';
 import { sep } from 'path';
-const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+const yeoman = require('yeoman-environment');
 
 export enum Project {
   Example = 'example',
@@ -156,20 +156,10 @@ const showMessage = (editorInstance: any, message: string, type?: string) => {
  * @param {string} project the project, that will be created
  */
 const asyncCreateProject = (editorInstance: any, path: string, project: string) => {
-  let url = '';
-  switch (project) {
-    case Project.Example:
-      url = 'https://github.com/eclipsesource/make-it-happen-react';
-      break;
-    case Project.Seed:
-      url = 'https://github.com/eclipsesource/jsonforms-react-seed';
-      break;
-    default:
-      return;
-  }
+
   if (project === Project.Example) {
     showMessage(editorInstance, `Creating example project: ${path}`);
-    cloneAndInstall(editorInstance, url, path);
+    cloneAndInstall(editorInstance, project, path);
     return;
   }
 
@@ -182,7 +172,7 @@ const asyncCreateProject = (editorInstance: any, path: string, project: string) 
       projectName = `jsonforms-${project}`;
     } else {
       showMessage(editorInstance, `Creating ${project} project: ${path}`);
-      cloneAndInstall(editorInstance, url, path, projectName);
+      cloneAndInstall(editorInstance, project, path, projectName);
     }
   });
 };
@@ -192,18 +182,27 @@ const asyncCreateProject = (editorInstance: any, path: string, project: string) 
  * @param {any} editorInstance the instance of the editor
  * @param {string} url the url to the project repository
  * @param {string} path the path to the project folder
- * @param {string} projectName the name of the project
+ * @param {string} name the name of the project
  */
-const cloneAndInstall = (editorInstance: any, url: string, path: string, projectName?: string) => {
-  const git = simplegit();
-  git.clone(url, path)
-    .then(() => {
-      showMessage(editorInstance, 'Finished to clone repo');
-      showMessage(editorInstance, 'Running npm install');
-      const result = cp.spawnSync(npm, ['install'], {
-        cwd: path,
-      });
-      showMessage(editorInstance, result.signal);
-    })
-    .catch((err: any) => { showMessage(editorInstance, err.message, 'err'); });
+const cloneAndInstall = (editorInstance: any, project: string, path: string, name?: string) => {
+  const env = yeoman.createEnv();
+  env.on('error', (err: any) => {
+    console.error('Error', err.message);
+    process.exit(err.code);
+  });
+  env.lookup(() => {
+    const options = {
+      'project': project,
+      'path': path,
+      'name': name,
+      'skipPrompting': true,
+    };
+    env.run('jsonforms', options, (err: any) => {
+      if (err.message) {
+        showMessage(editorInstance, `Error creating project:  ${err.message}`, 'err');
+      } else {
+        showMessage(editorInstance, `Done creating ${project} project`);
+      }
+    });
+  });
 };
