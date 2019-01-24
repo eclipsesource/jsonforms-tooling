@@ -26,7 +26,7 @@ export class JsonformsGenerator extends Generator {
   repo: string;
   path: string;
   name: string;
-  skipPromting = false;
+  skipPrompting = false;
   answers: any;
 
   constructor(args: any, opts: any) {
@@ -35,13 +35,13 @@ export class JsonformsGenerator extends Generator {
     this.option('project', { type: String } );
     this.option('path', { type: String } );
     this.option('name', { type: String } );
-    this.option('skipPromting', { type: Boolean} );
+    this.option('skipPrompting', { type: Boolean} );
 
     this.project = this.options.project;
     this.repo = '';
     this.path = this.options.path;
     this.name = this.options.name;
-    this.skipPromting = this.options.skipPromting;
+    this.skipPrompting = this.options.skipPromting;
 
     if (this.project === Project.Example) {
       this.repo = ProjectRepo.Example;
@@ -58,7 +58,7 @@ export class JsonformsGenerator extends Generator {
         figlet.textSync('JSONForms Tooling', { horizontalLayout: 'full' }),
       ),
     );
-    if (!this.skipPromting) {
+    if (!this.skipPrompting) {
       this.answers = await this.prompt([
         {
           name: 'project',

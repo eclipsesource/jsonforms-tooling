@@ -8,6 +8,8 @@ This Yeoman Generator brings you all the functions of the tooling to your termin
 
 ## Get Started
 
+> *Note*: The package is currently not published to the npm store, which will make the installation a lot easier.
+
 1. First you need to install yeoman via `npm i -g yo`
 2. Next you need to run `npm link` inside the main folder
 3. Now the generator is available for yeoman
@@ -20,7 +22,7 @@ If you want to avoid the interface, you can use the following parameters:
 
 Choose the project you would like to scaffold
 
-Current available projects:
+Current available project seeds:
 - `seed`
 - `example`
 

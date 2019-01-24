@@ -195,7 +195,7 @@ const cloneAndInstall = (editorInstance: any, project: string, path: string, nam
       'project': project,
       'path': path,
       'name': name,
-      'skipPromting': true,
+      'skipPrompting': true,
     };
     env.run('jsonforms', options, (err: any) => {
       if (err.message) {
