@@ -1,7 +1,3 @@
-/**
- * Generated using theia-plugin-generator
- */
-
 import * as theia from '@theia/plugin';
 import { createProject, generateUISchema, Project, showPreview } from 'jsonforms-tooling-common';
 
@@ -14,6 +10,9 @@ export const start = (context: theia.PluginContext) => {
     createExampleProjectCommandOptions,
     (args: any) => {
       if (!args) {
+        if (args === undefined) {
+          args = {fsPath: null};
+        }
         createProject(theia, args.fsPath, Project.Example);
       }
     }
@@ -26,6 +25,9 @@ export const start = (context: theia.PluginContext) => {
   const createSeedProjectCommand = theia.commands.registerCommand(
     createSeedProjectCommandOptions,
     (args: any) => {
+      if (args === undefined) {
+        args = {fsPath: null};
+      }
       createProject(theia, args.fsPath, Project.Seed);
     }
   );
@@ -37,6 +39,9 @@ export const start = (context: theia.PluginContext) => {
   const generateUISchemaCommand = theia.commands.registerCommand(
     generateUISchemaCommandOptions,
     (args: any) => {
+      if (args === undefined) {
+        args = {fsPath: null};
+      }
       generateUISchema(theia, args.fsPath);
     }
   );
