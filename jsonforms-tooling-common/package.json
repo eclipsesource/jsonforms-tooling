@@ -15,9 +15,12 @@
     "lint": "tslint --project tsconfig.json"
   },
   "dependencies": {
-    "@jsonforms/core": "^2.0.12",
+    "@jsonforms/core": "^2.2.0",
+    "@jsonforms/react": "^2.2.0",
     "ajv": "^6.5.5",
-    "yeoman-environment": "^2.3.4"
+    "yeoman-environment": "^2.3.4",
+    "react": "^16.8.3",
+    "redux": "^3.0.0"
   },
   "type-check": "tsc",
   "devDependencies": {
