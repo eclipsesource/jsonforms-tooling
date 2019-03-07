@@ -2,7 +2,7 @@
 // tslint:disable:no-require-imports
 'use strict';
 
-import * as Generator from 'yeoman-generator';
+import Generator from 'yeoman-generator';
 import chalk from 'chalk';
 const clear = require('clear');
 const figlet = require('figlet');

@@ -2,9 +2,9 @@
 // tslint:disable:no-require-imports
 // tslint:disable:no-use-before-declare
 
-import * as jsonforms from '@jsonforms/core';
+import { generateDefaultUISchema } from '@jsonforms/core';
 import { readFile, writeFile } from 'fs';
-import * as Ajv from 'ajv';
+import Ajv from 'ajv';
 import { sep } from 'path';
 const yeoman = require('yeoman-environment');
 
@@ -96,7 +96,7 @@ const asyncGenerateUiSchema = (editorInstance: any, path: string) => {
           return;
         }
 
-        const jsonUISchema = jsonforms.generateDefaultUISchema(jsonSchema);
+        const jsonUISchema = generateDefaultUISchema(jsonSchema);
 
         // Check if windows or linux filesystem
         let newPath = path.substring(0, path.lastIndexOf(sep));
