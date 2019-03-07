@@ -11,6 +11,13 @@ export const activate = (context: vscode.ExtensionContext) => {
   // The command has been defined in the package.json file
   // Now provide the implementation of the command with  registerCommand
   // The commandId parameter must match the command field in package.json
+  const createScaffoldingProjectCommand = vscode.commands.registerCommand(
+    'extension.createScaffoldingProject',
+    (args: any) => {
+      createProject(vscode, args.fsPath, Project.Scaffolding);
+    }
+  );
+
   const createExampleProjectCommand = vscode.commands.registerCommand(
     'extension.createExampleProject',
     (args: any) => {
@@ -31,6 +38,7 @@ export const activate = (context: vscode.ExtensionContext) => {
       generateUISchema(vscode, args.fsPath);
   });
 
+  context.subscriptions.push(createScaffoldingProjectCommand);
   context.subscriptions.push(createExampleProjectCommand);
   context.subscriptions.push(createSeedProjectCommand);
   context.subscriptions.push(generateUISchemaCommand);

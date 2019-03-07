@@ -9,6 +9,7 @@ import { sep } from 'path';
 const yeoman = require('yeoman-environment');
 
 export enum Project {
+  Scaffolding = 'scaffolding',
   Example = 'example',
   Seed = 'seed',
 }
@@ -167,12 +168,21 @@ const asyncCreateProject = (editorInstance: any, path: string, project: string) 
     prompt: 'Label: ',
     placeHolder: `Enter a name for your ${project} project`,
   }).then((name: any) => {
-    let projectName = name;
     if (!name) {
-      projectName = `jsonforms-${project}`;
+      name = `jsonforms-${project}`;
+    }
+    if (project === Project.Scaffolding) {
+      editorInstance.window.showInputBox(editorInstance.InputBoxOptions = {
+        prompt: 'Label: ',
+        placeHolder: `Enter the path to retrieve the JSON schema for your ${project} project`,
+      }).then((schemaPath: any) => {
+        showMessage(editorInstance, `Getting definitions for ${project} project: ${schemaPath}`);
+        showMessage(editorInstance, `Creating ${project} project: ${path}`);
+        cloneAndInstall(editorInstance, project, path, name, schemaPath);
+      });
     } else {
       showMessage(editorInstance, `Creating ${project} project: ${path}`);
-      cloneAndInstall(editorInstance, project, path, projectName);
+      cloneAndInstall(editorInstance, project, path, name);
     }
   });
 };
@@ -183,8 +193,16 @@ const asyncCreateProject = (editorInstance: any, path: string, project: string) 
  * @param {string} url the url to the project repository
  * @param {string} path the path to the project folder
  * @param {string} name the name of the project
+ * @param {string} schemaPath the location of the JSON schema definition of the scaffolding project
  */
-const cloneAndInstall = (editorInstance: any, project: string, path: string, name?: string) => {
+const cloneAndInstall = (
+  editorInstance: any,
+  project: string,
+  path: string,
+  name?: string,
+  schemaPath?: string
+) => {
+
   const env = yeoman.createEnv();
   env.on('error', (err: any) => {
     console.error('Error', err.message);
@@ -194,6 +212,7 @@ const cloneAndInstall = (editorInstance: any, project: string, path: string, nam
     const options = {
       'project': project,
       'path': path,
+      'schemaPath': schemaPath,
       'name': name,
       'skipPrompting': true,
     };

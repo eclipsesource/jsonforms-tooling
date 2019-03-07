@@ -12,6 +12,7 @@
     "Other"
   ],
   "activationEvents": [
+    "onCommand:extension.createScaffoldingProject",
     "onCommand:extension.createExampleProject",
     "onCommand:extension.createSeedProject",
     "onCommand:extension.generateUISchema"
@@ -19,6 +20,10 @@
   "main": "./out/extension",
   "contributes": {
     "commands": [
+      {
+        "command": "extension.createScaffoldingProject",
+        "title": "JSONForms: Create Scaffolding Project"
+      },
       {
         "command": "extension.createExampleProject",
         "title": "JSONForms: Create Example Project"
@@ -34,6 +39,11 @@
     ],
     "menus": {
       "explorer/context": [
+        {
+          "when": "explorerResourceIsFolder",
+          "command": "extension.createScaffoldingProject",
+          "group": "jsonforms"
+        },
         {
           "when": "explorerResourceIsFolder",
           "command": "extension.createExampleProject",
