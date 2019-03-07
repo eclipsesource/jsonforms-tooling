@@ -18,12 +18,14 @@
     "@jsonforms/core": "^2.2.0",
     "@jsonforms/react": "^2.2.0",
     "ajv": "^6.5.5",
-    "yeoman-environment": "^2.3.4",
     "react": "^16.8.3",
-    "redux": "^3.0.0"
+    "redux": "^3.0.0",
+    "chokidar": "^2.1.2",
+    "yeoman-environment": "^2.3.4"
   },
   "type-check": "tsc",
   "devDependencies": {
+    "@types/chokidar": "^1.7.5",
     "rimraf": "^2.6.2"
   }
 }
