@@ -28,6 +28,7 @@
     "yeoman-generator": "^3.2.0"
   },
   "devDependencies": {
-    "typescript": "^3.2.2"
+    "@types/figlet": "^1.2.0",
+    "typescript": "^3.3.3333"
   }
 }

@@ -1,15 +1,14 @@
 // tslint:disable:no-var-requires
 // tslint:disable:no-require-imports
-'use strict';
 
 import Generator from 'yeoman-generator';
 import chalk from 'chalk';
-const clear = require('clear');
-const figlet = require('figlet');
-const validate = require('validate-npm-package-name');
+import { textSync } from 'figlet';
 import { join, sep } from 'path';
 import { readFile, writeFile } from 'fs';
 import { promisify } from 'util';
+const clear = require('clear');
+const validate = require('validate-npm-package-name');
 
 enum ProjectRepo {
   Example = 'make-it-happen-react',
@@ -45,7 +44,7 @@ export class JsonformsGenerator extends Generator {
     this.repo = '';
     this.path = this.options.path;
     this.name = this.options.name;
-    this.skipPrompting = this.options.skipPromting;
+    this.skipPrompting = this.options.skipPrompting;
 
     if (this.project === Project.Example) {
       this.repo = ProjectRepo.Example;
@@ -56,13 +55,13 @@ export class JsonformsGenerator extends Generator {
   }
 
   async prompting() {
-    clear();
-    this.log(
-      chalk.blue(
-        figlet.textSync('JSONForms Tooling', { horizontalLayout: 'full' }),
-      ),
-    );
     if (!this.skipPrompting) {
+      clear();
+      this.log(
+        chalk.blue(
+          textSync('JSONForms Tooling', { horizontalLayout: 'full' }),
+        ),
+      );
       this.answers = await this.prompt([
         {
           name: 'project',

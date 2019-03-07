@@ -20,7 +20,7 @@ const writeFileWithPromise = promisify(writeFile);
 
 /*
  * @param {any} editorInstance the instance of the editor
- * @param {string} path the arguments passed to the editor call
+ * @param {string} path the path for the project
  * @param {string} project the project, that should be installed
  */
 export const createProject = async (editorInstance: any, path: string, project: string) => {
@@ -49,7 +49,7 @@ export const createProject = async (editorInstance: any, path: string, project: 
 /**
  * Generates the default UI Schema from a json schema
  * @param {any} editorInstance the instance of the editor
- * @param {string} path the arguments passed to the editor call
+ * @param {string} path the path to the schema file
  */
 export const generateUISchema = async (editorInstance: any, path: string) => {
   if (!path) {
