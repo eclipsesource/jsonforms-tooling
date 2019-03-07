@@ -14,7 +14,8 @@
   "activationEvents": [
     "onCommand:extension.createExampleProject",
     "onCommand:extension.createSeedProject",
-    "onCommand:extension.generateUISchema"
+    "onCommand:extension.generateUISchema",
+    "onCommand:extension.showPreview"
   ],
   "main": "./out/extension",
   "contributes": {
@@ -30,6 +31,10 @@
       {
         "command": "extension.generateUISchema",
         "title": "JSONForms: Generate UI Schema"
+      },
+      {
+        "command": "extension.showPreview",
+        "title": "JSONForms: Show Preview"
       }
     ],
     "menus": {
@@ -48,6 +53,11 @@
           "when": "resourceExtname == .json",
           "command": "extension.generateUISchema",
           "group": "jsonforms"
+        },
+        {
+          "when": "resourceExtname == .json",
+          "command": "extension.showPreview",
+          "group": "jsonforms"
         }
       ]
     }
@@ -65,6 +75,6 @@
     "jsonforms-tooling-common": "0.0.1"
   },
   "devDependencies": {
-    "vscode": "^1.1.21"
+    "vscode": "^1.1.30"
   }
 }

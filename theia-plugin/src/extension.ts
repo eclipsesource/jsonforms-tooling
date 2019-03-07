@@ -3,7 +3,7 @@
  */
 
 import * as theia from '@theia/plugin';
-import { createProject, generateUISchema, Project } from 'jsonforms-tooling-common';
+import { createProject, generateUISchema, Project, showPreview } from 'jsonforms-tooling-common';
 
 export const start = (context: theia.PluginContext) => {
   const createExampleProjectCommandOptions = {
@@ -41,7 +41,22 @@ export const start = (context: theia.PluginContext) => {
     }
   );
 
+  const showPreviewCommandOptions = {
+    id: 'show-preview',
+    label: 'JSONForms: Show Preview',
+  };
+  const showPreviewCommand = theia.commands.registerCommand(
+    showPreviewCommandOptions,
+    (args: any) => {
+      if (args === undefined) {
+        args = {fsPath: null};
+      }
+      showPreview(theia, args.fsPath, context.extensionPath);
+    }
+  );
+
   context.subscriptions.push(createExampleProjectCommand);
   context.subscriptions.push(createSeedProjectCommand);
   context.subscriptions.push(generateUISchemaCommand);
+  context.subscriptions.push(showPreviewCommand);
 };
