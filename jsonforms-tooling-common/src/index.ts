@@ -3,10 +3,11 @@
 // tslint:disable:no-use-before-declare
 
 import { generateDefaultUISchema } from '@jsonforms/core';
-import { readFile, writeFile } from 'fs';
+import { existsSync, readFile, writeFile } from 'fs';
 import Ajv from 'ajv';
 import { join, sep } from 'path';
 import { watch } from 'chokidar';
+import { promisify } from 'util';
 const yeoman = require('yeoman-environment');
 
 export enum Project {
@@ -14,30 +15,35 @@ export enum Project {
   Seed = 'seed',
 }
 
+const readFileWithPromise = promisify(readFile);
+const writeFileWithPromise = promisify(writeFile);
+
 /*
- * Receives the data from the editor and calls the install methos
  * @param {any} editorInstance the instance of the editor
  * @param {string} path the arguments passed to the editor call
  * @param {string} project the project, that should be installed
  */
-export const createProject = (editorInstance: any, path: string, project: string) => {
+export const createProject = async (editorInstance: any, path: string, project: string) => {
   if (!path) {
-    editorInstance.window.showOpenDialog(editorInstance.OpenDialogOptions = {
-      canSelectMany: false,
-      canSelectFolders: true,
-      canSelectFiles: false,
-      openLabel: 'Select folder',
-    }).then((fileUri: any) => {
+    let fileUri = null;
+    try  {
+      fileUri = await editorInstance.window.showOpenDialog(editorInstance.OpenDialogOptions = {
+        canSelectMany: false,
+        canSelectFolders: true,
+        canSelectFiles: false,
+        openLabel: 'Select folder',
+      });
       if (fileUri && fileUri[0].fsPath) {
-        asyncCreateProject(editorInstance, fileUri[0].fsPath, project);
+        path = fileUri[0].fsPath;
       } else {
         showMessage(editorInstance, 'Please select a empty folder', 'err');
         return;
       }
-    });
-  } else {
-    asyncCreateProject(editorInstance, path, project);
+    } catch (err) {
+      return;
+    }
   }
+  asyncCreateProject(editorInstance, path, project);
 };
 
 /**
@@ -45,27 +51,30 @@ export const createProject = (editorInstance: any, path: string, project: string
  * @param {any} editorInstance the instance of the editor
  * @param {string} path the arguments passed to the editor call
  */
-export const generateUISchema = (editorInstance: any, path: string) => {
+export const generateUISchema = async (editorInstance: any, path: string) => {
   if (!path) {
-    editorInstance.window.showOpenDialog(editorInstance.OpenDialogOptions = {
-      canSelectMany: false,
-      canSelectFolders: false,
-      canSelectFiles: true,
-      openLabel: 'Select schema',
-      filters: {
-        'Json Files': ['json'],
-      },
-    }).then((fileUri: any) => {
+    let fileUri = null;
+    try  {
+      fileUri = await editorInstance.window.showOpenDialog(editorInstance.OpenDialogOptions = {
+        canSelectMany: false,
+        canSelectFolders: false,
+        canSelectFiles: true,
+        openLabel: 'Select schema',
+        filters: {
+          'Json Files': ['json'],
+        },
+      });
       if (fileUri && fileUri[0].fsPath) {
-        asyncGenerateUiSchema(editorInstance, fileUri[0].fsPath);
+        path = fileUri[0].fsPath;
       } else {
         showMessage('Please select a json schema file', 'err');
         return;
       }
-    });
-  } else {
-    asyncGenerateUiSchema(editorInstance, path);
+    } catch (err) {
+      return;
+    }
   }
+  asyncGenerateUiSchema(editorInstance, path);
 };
 
 /**
@@ -74,77 +83,69 @@ export const generateUISchema = (editorInstance: any, path: string) => {
  * @param {string} path the path to the schema or ui-schema file
  * @param {string} extensionPath the path to the extension directory
  */
-export const showPreview = (editorInstance: any, path: any, extensionPath: string) => {
-  if (!path) {
-    editorInstance.window.showOpenDialog(editorInstance.OpenDialogOptions = {
+export const showPreview = async (editorInstance: any, firstSchemafileUri: any, extensionPath: string) => {
+  // Set default strings
+  let uiSchemaOrSchema = 'Schema';
+  let selectSecondSchema = 'Select UI Schema';
+  let selectSecondErrorMessage = 'Please select a ui schema file';
+
+  // If the function is not called with a right click on a json file, we need to ask for both files
+  if (!firstSchemafileUri) {
+    try {
+      firstSchemafileUri = await editorInstance.window.showOpenDialog(editorInstance.OpenDialogOptions = {
+        canSelectMany: false,
+        canSelectFolders: false,
+        canSelectFiles: true,
+        openLabel: 'Select schema',
+        filters: {
+          'Json Files': ['json'],
+        },
+      });
+      firstSchemafileUri = firstSchemafileUri[0].fsPath;
+    } catch (err) {
+      showMessage('Please select a schema file', 'err');
+      return;
+    }
+  } else {
+    // If the user called this function by doing a right click on a json file, we need to know which schema file that was
+    try {
+      uiSchemaOrSchema = await editorInstance.window.showQuickPick(['Schema', 'UI Schema'], editorInstance.QuickPickOptions = {
+        canSelectMany: false,
+        placeHolder: 'Was that the schema or the UI schema file?'
+      });
+      if (uiSchemaOrSchema === 'UI Schema') {
+        selectSecondSchema = 'Select Schema';
+        selectSecondErrorMessage = 'Please select a schema file';
+      }
+    } catch (err) {
+      showMessage('Please select the schema type', 'err');
+      return;
+    }
+  }
+  // In both situations we still need the second schema file
+  let secondSchemafileUri = null;
+  try {
+    secondSchemafileUri = await editorInstance.window.showOpenDialog(editorInstance.OpenDialogOptions = {
       canSelectMany: false,
       canSelectFolders: false,
       canSelectFiles: true,
-      openLabel: 'Select ui schema',
+      openLabel: selectSecondSchema,
       filters: {
         'Json Files': ['json'],
       },
-    }).then((uiSchemafileUri: any) => {
-      if (uiSchemafileUri && uiSchemafileUri[0].fsPath) {
-        editorInstance.window.showOpenDialog(editorInstance.OpenDialogOptions = {
-          canSelectMany: false,
-          canSelectFolders: false,
-          canSelectFiles: true,
-          openLabel: 'Select schema',
-          filters: {
-            'Json Files': ['json'],
-          },
-        }).then((schemaFileUri: any) => {
-          if (schemaFileUri && schemaFileUri[0].fsPath) {
-            const uiSchemaPath = uiSchemafileUri[0].fsPath;
-            const schemaPath = schemaFileUri[0].fsPath;
-            showWebview(editorInstance, 'preview', extensionPath, uiSchemaPath, schemaPath);
-          } else {
-            showMessage('Please select a json schema file', 'err');
-            return;
-          }
-        });
-      } else {
-        showMessage('Please select a ui schema file', 'err');
-        return;
-      }
     });
-  } else {
-    editorInstance.window.showQuickPick(['UI Schema', 'Schema'], editorInstance.QuickPickOptions = {
-      canSelectMany: false,
-      placeHolder: 'Was that the UI schema or the schema file?'
-    }).then((schema: any) => {
-      if (schema) {
-        let selectLabel = 'Select ui Schema';
-        if (schema === 'UI Schema') {
-          selectLabel = 'Select Schema';
-        }
-        editorInstance.window.showOpenDialog(editorInstance.OpenDialogOptions = {
-          canSelectMany: false,
-          canSelectFolders: false,
-          canSelectFiles: true,
-          openLabel: selectLabel,
-          filters: {
-            'Json Files': ['json'],
-          },
-        }).then((schemaFileUri: any) => {
-          if (schemaFileUri && schemaFileUri[0].fsPath) {
-            if (schema === 'UI Schema') {
-              showWebview(editorInstance, 'preview', extensionPath, path, schemaFileUri[0].fsPath);
-            } else {
-              showWebview(editorInstance, 'preview', extensionPath, schemaFileUri[0].fsPath, path);
-            }
-          } else {
-            showMessage('Please select a json schema file', 'err');
-            return;
-          }
-        });
-      } else {
-        showMessage('Please select the schema type', 'err');
-        return;
-      }
-    });
+    secondSchemafileUri = secondSchemafileUri[0].fsPath;
+  } catch (err) {
+    showMessage(selectSecondErrorMessage, 'err');
+    return;
   }
+  let uiSchemaPath = firstSchemafileUri;
+  let schemaPath = secondSchemafileUri;
+  if (uiSchemaOrSchema === 'Schema') {
+    uiSchemaPath = secondSchemafileUri;
+    schemaPath = firstSchemafileUri;
+  }
+  showWebview(editorInstance, 'preview', extensionPath, uiSchemaPath, schemaPath);
 };
 
 /**
@@ -152,47 +153,77 @@ export const showPreview = (editorInstance: any, path: any, extensionPath: strin
  * @param {any} editorInstance the instance of the editor
  * @param {string} path the path to the schema file
  */
-const asyncGenerateUiSchema = (editorInstance: any, path: string) => {
-  editorInstance.window.showInputBox(editorInstance.InputBoxOptions = {
-    prompt: 'Label: ',
-    placeHolder: 'Enter a filename for your UI Schema (default: ui-schema.json)',
-  }).then((name: string) => {
-    let fileName = name;
-    if (!fileName) {
-      fileName = 'ui-schema.json';
+const asyncGenerateUiSchema = async (editorInstance: any, path: string) => {
+  // Ask for filename
+  let fileName = '';
+  try {
+    fileName = await editorInstance.window.showInputBox(editorInstance.InputBoxOptions = {
+      prompt: 'Label: ',
+      placeHolder: 'Enter a filename for your UI Schema (default: uischema.json)',
+    });
+    if (fileName === undefined) {
+      showMessage(editorInstance, 'UI schema generation canceled', 'err');
+      return;
     }
-    showMessage(editorInstance, `Generating UI Schema: ${path}`);
-    // Read JSON Schema file
-    readFile(path, 'utf8', (readError, data) => {
-      if (readError.message) {
-        showMessage(editorInstance, readError.message, 'err');
+    if (fileName === '') {
+      fileName = 'uischema.json';
+    }
+  } catch (err) {
+    showMessage(editorInstance, err.message, 'err');
+    return;
+  }
+
+  showMessage(editorInstance, `Generating UI Schema: ${path}`);
+
+  // Read JSON Schema file
+  let content = '';
+  try {
+    content = await readFileWithPromise(path, 'utf8');
+  } catch (err) {
+    showMessage(editorInstance, err.message, 'err');
+    return;
+  }
+
+  // Check if JSON is valid
+  const jsonSchema = JSON.parse(content);
+  try {
+    validateJSONSchema(jsonSchema);
+  } catch (err) {
+    showMessage(editorInstance, err, 'err');
+    return;
+  }
+
+  // Generate the default UI schema
+  const jsonUISchema = generateDefaultUISchema(jsonSchema);
+
+  const newPath = path.substring(0, path.lastIndexOf(sep)) + sep + fileName;
+
+  // Check if file already exist and ask user if it should be overwritten
+  if (existsSync(newPath)) {
+    let decision = 'No';
+    try {
+      decision = await editorInstance.window.showQuickPick(['Yes', 'No'], editorInstance.QuickPickOptions = {
+        canSelectMany: false,
+        placeHolder:  `This file ${fileName} does already exist. Should it be overwritten?`
+      });
+      if (decision !== 'Yes') {
+        showMessage(editorInstance, 'UI schema generation canceled', 'err');
         return;
       }
+    } catch (err) {
+      showMessage(editorInstance, 'UI schema generation canceled', 'err');
+      return;
+    }
+  }
 
-      const jsonSchema = JSON.parse(data);
-      validateJSONSchema(jsonSchema, (validateError?: string) => {
-        if (validateError) {
-          showMessage(editorInstance, validateError, 'err');
-          return;
-        }
-
-        const jsonUISchema = generateDefaultUISchema(jsonSchema);
-
-        // Check if windows or linux filesystem
-        let newPath = path.substring(0, path.lastIndexOf(sep));
-        newPath = newPath + sep + name;
-
-        // Write UI Schema file
-        writeFile(newPath, JSON.stringify(jsonUISchema, null, 2), writeError => {
-          if (writeError.message) {
-            showMessage(editorInstance, writeError.message, 'err');
-            return;
-          }
-          showMessage(editorInstance, 'Successfully generated UI schema');
-        });
-      });
-    });
-  });
+  // Write UI Schema file
+  try {
+    await writeFileWithPromise(newPath, JSON.stringify(jsonUISchema, null, 2));
+  } catch (err) {
+    showMessage(editorInstance, err.message, 'err');
+    return;
+  }
+  showMessage(editorInstance, 'Successfully generated UI schema');
 };
 
 /**
@@ -200,13 +231,13 @@ const asyncGenerateUiSchema = (editorInstance: any, path: string) => {
  * @param {Object} schema the json schema, that will be validated
  * @param {function} callback forwards the current status to the caller
  */
-const validateJSONSchema = (schema: Object, callback: (err?: string) => void) => {
-  const ajv = new Ajv();
+const validateJSONSchema = (schema: Object) => {
   try {
+    const ajv =  new Ajv();
     ajv.compile(schema);
-    callback();
+    return true;
   } catch (error) {
-    callback(error.message);
+    throw(error.message);
   }
 };
 
@@ -235,26 +266,24 @@ const showMessage = (editorInstance: any, message: string, type?: string) => {
  * @param {string} path the path to the project folder
  * @param {string} project the project, that will be created
  */
-const asyncCreateProject = (editorInstance: any, path: string, project: string) => {
-
-  if (project === Project.Example) {
-    showMessage(editorInstance, `Creating example project: ${path}`);
-    cloneAndInstall(editorInstance, project, path);
-    return;
-  }
-
-  editorInstance.window.showInputBox(editorInstance.InputBoxOptions = {
-    prompt: 'Label: ',
-    placeHolder: `Enter a name for your ${project} project`,
-  }).then((name: any) => {
-    let projectName = name;
-    if (!name) {
-      projectName = `jsonforms-${project}`;
-    } else {
-      showMessage(editorInstance, `Creating ${project} project: ${path}`);
-      cloneAndInstall(editorInstance, project, path, projectName);
+const asyncCreateProject = async (editorInstance: any, path: string, project: string) => {
+  let projectName = '';
+  if (project !== Project.Example) {
+    try {
+      projectName = await editorInstance.window.showInputBox(editorInstance.InputBoxOptions = {
+        prompt: 'Label: ',
+        placeHolder: `Enter a name for your ${project} project (default: jsonforms-${project})`,
+      });
+      if (projectName === '') {
+        projectName = `jsonforms-${project}`;
+      }
+    } catch (err) {
+      showMessage(editorInstance, err.message, 'err');
+      return;
     }
-  });
+  }
+  showMessage(editorInstance, `Creating ${project} project: ${path}`);
+  cloneAndInstall(editorInstance, project, path, projectName);
 };
 
 /**
@@ -264,27 +293,27 @@ const asyncCreateProject = (editorInstance: any, path: string, project: string) 
  * @param {string} path the path to the project folder
  * @param {string} name the name of the project
  */
-const cloneAndInstall = (editorInstance: any, project: string, path: string, name?: string) => {
+const cloneAndInstall = async (editorInstance: any, project: string, path: string, name?: string) => {
   const env = yeoman.createEnv();
   env.on('error', (err: any) => {
-    console.error('Error', err.message);
+    showMessage(editorInstance, err.message, 'err');
     process.exit(err.code);
   });
-  env.lookup(() => {
-    const options = {
-      'project': project,
-      'path': path,
-      'name': name,
-      'skipPrompting': true,
-    };
-    env.run('jsonforms', options, (err: any) => {
-      if (err.message) {
-        showMessage(editorInstance, `Error creating project:  ${err.message}`, 'err');
-      } else {
-        showMessage(editorInstance, `Done creating ${project} project`);
-      }
-    });
-  });
+  const options = {
+    env,
+    'project': project,
+    'path': path,
+    'name': name,
+    'skipPrompting': true,
+  };
+  await env.lookup();
+  try {
+    await env.run('jsonforms', options);
+  } catch (err) {
+    showMessage(editorInstance, `Error creating project: ${err.message}`, 'err');
+    return;
+  }
+  showMessage(editorInstance, `Done creating ${project} project`);
 };
 
 /**
@@ -364,7 +393,7 @@ const getPreviewHTML = (
  * @param {string} uiSchemaPath the path to the ui schema
  * @param {string} schemaPath the path to the schema
  */
-const showWebview = (
+const showWebview = async (
   editorInstance: any,
   id: string,
   extensionPath: string,
@@ -378,13 +407,11 @@ const showWebview = (
     editorInstance.ViewColumn.Two,
     { enableScripts: true}
   );
-  preparePreview(editorInstance, extensionPath, uiSchemaPath, schemaPath, (html: string) => {
+  let html = await preparePreview(editorInstance, extensionPath, uiSchemaPath, schemaPath);
+  webView.webview.html = html;
+  watch(uiSchemaPath).on('change', async (event: any, path: any) => {
+    html = await preparePreview(editorInstance, extensionPath, uiSchemaPath, schemaPath);
     webView.webview.html = html;
-    watch(uiSchemaPath).on('change', (event: any, path: any) => {
-      preparePreview(editorInstance, extensionPath, uiSchemaPath, schemaPath, (newHtml: string) => {
-        webView.webview.html = newHtml;
-      });
-    });
   });
 };
 
@@ -394,14 +421,12 @@ const showWebview = (
  * @param {string} extensionPath the path to the extension directory
  * @param {string} uiSchemaPath the path to the ui schema
  * @param {string} schemaPath the path to the schema
- * @param {any} callback the callback, that is called, after all files are loaded
  */
-const preparePreview = (
+const preparePreview = async (
   editorInstance: any,
   extensionPath: string,
   uiSchemaPath: string,
-  schemaPath: string,
-  callback: any
+  schemaPath: string
 ) => {
   // Prepare the scripts needed to show the App inside the Webview
   const scriptPathOnDiskCore = editorInstance.Uri.file(
@@ -418,17 +443,20 @@ const preparePreview = (
   const scriptUriMaterial = scriptPathOnDiskMaterial.with({ scheme: 'vscode-resource'});
 
   // Read json files and load html for webview
-  readFile(schemaPath, 'utf8', (readError, schema) => {
-    if ((readError !== null) && readError.message) {
-      showMessage(editorInstance, readError.message, 'err');
-      return;
-    }
-    readFile(uiSchemaPath, 'utf8', (secondReadError, uiSchema) => {
-      if ((secondReadError !== null) && secondReadError.message) {
-        showMessage(editorInstance, secondReadError.message, 'err');
-        return;
-      }
-      callback(getPreviewHTML(scriptUriCore, scriptUriReact, scriptUriMaterial, schema, uiSchema));
-    });
-  });
+  let schema = '';
+  try {
+    schema = await readFileWithPromise(schemaPath, 'utf8');
+  } catch (err) {
+    showMessage(editorInstance, err.message, 'err');
+    return;
+  }
+  let uiSchema = '';
+  try {
+    uiSchema = await readFileWithPromise(uiSchemaPath, 'utf8');
+  } catch (err) {
+    showMessage(editorInstance, err.message, 'err');
+    return;
+  }
+  const html = getPreviewHTML(scriptUriCore, scriptUriReact, scriptUriMaterial, schema, uiSchema);
+  return html;
 };

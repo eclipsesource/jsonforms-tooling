@@ -9,6 +9,7 @@ const figlet = require('figlet');
 const validate = require('validate-npm-package-name');
 import { join, sep } from 'path';
 import { readFile, writeFile } from 'fs';
+import { promisify } from 'util';
 
 enum ProjectRepo {
   Example = 'make-it-happen-react',
@@ -19,6 +20,9 @@ enum Project {
   Example = 'example',
   Seed = 'seed',
 }
+
+const readFileWithPromise = promisify(readFile);
+const writeFileWithPromise = promisify(writeFile);
 
 export class JsonformsGenerator extends Generator {
 
@@ -141,23 +145,22 @@ export class JsonformsGenerator extends Generator {
     this.log('installing');
     if (this.project === Project.Seed && this.name != null) {
       const packagePath = this.path + sep + 'package.json';
-      readFile(packagePath, 'utf8', (readError, data) => {
+      let content = '';
+      try {
+        content = await readFileWithPromise(packagePath, 'utf8');
+      } catch (err) {
+        this.log(chalk.red(err.message));
+        return;
+      }
+      const packageJson = JSON.parse(content);
+      packageJson.name = this.name;
 
-        if ((readError != null) && readError.message) {
-          this.log(chalk.red(readError.message));
-          return;
-        }
-
-        const packageJson = JSON.parse(data);
-        packageJson.name = this.name;
-
-        writeFile(packagePath, JSON.stringify(packageJson, null, 2), writeError => {
-          if (writeError.message) {
-            this.log(chalk.red(writeError.message));
-            return;
-          }
-        });
-      });
+      try {
+        await writeFileWithPromise(packagePath, JSON.stringify(packageJson, null, 2));
+      } catch (err) {
+        this.log(chalk.red(err.message));
+        return;
+      }
     }
 
     process.chdir(this.path);
