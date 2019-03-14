@@ -3,11 +3,12 @@
 // tslint:disable:no-use-before-declare
 
 import { generateDefaultUISchema } from '@jsonforms/core';
-import { existsSync, readFile, writeFile } from 'fs';
+import { existsSync, readdir, readFile, writeFile } from 'fs';
 import Ajv from 'ajv';
 import { join, sep } from 'path';
 import { watch } from 'chokidar';
 import { promisify } from 'util';
+const TerminalAdapter = require('yeoman-environment/lib/adapter');
 const yeoman = require('yeoman-environment');
 
 export enum Project {
@@ -16,6 +17,7 @@ export enum Project {
 }
 
 const readFileWithPromise = promisify(readFile);
+const readdirWithPromise = promisify(readdir);
 const writeFileWithPromise = promisify(writeFile);
 
 /*
@@ -145,7 +147,7 @@ export const showPreview = async (editorInstance: any, firstSchemafileUri: any, 
     uiSchemaPath = secondSchemafileUri;
     schemaPath = firstSchemafileUri;
   }
-  showWebview(editorInstance, 'preview', extensionPath, uiSchemaPath, schemaPath);
+  showWebview(editorInstance, 'preview', 'JSONForms Preview', extensionPath, uiSchemaPath, schemaPath);
 };
 
 /**
@@ -173,32 +175,8 @@ const asyncGenerateUiSchema = async (editorInstance: any, path: string) => {
     return;
   }
 
-  showMessage(editorInstance, `Generating UI Schema: ${path}`);
-
-  // Read JSON Schema file
-  let content = '';
-  try {
-    content = await readFileWithPromise(path, 'utf8');
-  } catch (err) {
-    showMessage(editorInstance, err.message, 'err');
-    return;
-  }
-
-  // Check if JSON is valid
-  const jsonSchema = JSON.parse(content);
-  try {
-    validateJSONSchema(jsonSchema);
-  } catch (err) {
-    showMessage(editorInstance, err, 'err');
-    return;
-  }
-
-  // Generate the default UI schema
-  const jsonUISchema = generateDefaultUISchema(jsonSchema);
-
-  const newPath = path.substring(0, path.lastIndexOf(sep)) + sep + fileName;
-
   // Check if file already exist and ask user if it should be overwritten
+  const newPath = path.substring(0, path.lastIndexOf(sep)) + sep + fileName;
   if (existsSync(newPath)) {
     let decision = 'No';
     try {
@@ -216,6 +194,29 @@ const asyncGenerateUiSchema = async (editorInstance: any, path: string) => {
     }
   }
 
+  // Read JSON Schema file
+  let jsonContent = null;
+  try {
+    const content = await readFileWithPromise(path, 'utf8');
+    jsonContent = JSON.parse(content);
+  } catch (err) {
+    showMessage(editorInstance, err.message, 'err');
+    return;
+  }
+
+  // Check if JSON is valid
+  showMessage(editorInstance, 'Validating UI schema');
+  try {
+    await validateJSONSchema(jsonContent);
+    showMessage(editorInstance, 'Schema is valid');
+  } catch (err) {
+    showMessage(editorInstance, err, 'err');
+    return;
+  }
+
+  // Generate the default UI schema
+  const jsonUISchema = generateDefaultUISchema(jsonContent);
+
   // Write UI Schema file
   try {
     await writeFileWithPromise(newPath, JSON.stringify(jsonUISchema, null, 2));
@@ -231,7 +232,7 @@ const asyncGenerateUiSchema = async (editorInstance: any, path: string) => {
  * @param {Object} schema the json schema, that will be validated
  * @param {function} callback forwards the current status to the caller
  */
-const validateJSONSchema = (schema: Object) => {
+const validateJSONSchema = async (schema: Object) => {
   try {
     const ajv =  new Ajv();
     ajv.compile(schema);
@@ -267,6 +268,15 @@ const showMessage = (editorInstance: any, message: string, type?: string) => {
  * @param {string} project the project, that will be created
  */
 const asyncCreateProject = async (editorInstance: any, path: string, project: string) => {
+  try {
+    const files = await readdirWithPromise(path);
+    if (files.length) {
+      throw new Error('Folder not empty. Please select an empty folder.');
+    }
+  } catch (err) {
+    showMessage(editorInstance, err.message, 'err');
+    return;
+  }
   let projectName = '';
   if (project !== Project.Example) {
     try {
@@ -294,7 +304,9 @@ const asyncCreateProject = async (editorInstance: any, path: string, project: st
  * @param {string} name the name of the project
  */
 const cloneAndInstall = async (editorInstance: any, project: string, path: string, name?: string) => {
-  const env = yeoman.createEnv();
+  const env = yeoman.createEnv([], {}, new ToolingAdapter( {editorInstance} ));
+  const generatorDir = join(__dirname, '../node_modules/generator-jsonforms/generators/app/index.js');
+  env.getByPath(generatorDir);
   env.on('error', (err: any) => {
     showMessage(editorInstance, err.message, 'err');
     process.exit(err.code);
@@ -306,7 +318,6 @@ const cloneAndInstall = async (editorInstance: any, project: string, path: strin
     'name': name,
     'skipPrompting': true,
   };
-  await env.lookup();
   try {
     await env.run('jsonforms', options);
   } catch (err) {
@@ -334,6 +345,7 @@ const getPreviewHTML = (
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
+  <title>JSONForms Preview</title>
   <script src="https://cdn.jsdelivr.net/npm/react@16.4.0/umd/react.development.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/react-dom@16.4.0/umd/react-dom.development.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/redux@3.7.2/dist/redux.min.js"></script>
@@ -396,13 +408,13 @@ const getPreviewHTML = (
 const showWebview = async (
   editorInstance: any,
   id: string,
+  name: string,
   extensionPath: string,
   uiSchemaPath: string,
   schemaPath: string
 ) => {
-  const name = id;
   const webView = editorInstance.window.createWebviewPanel(
-    'view-' + name,
+    'view-' + id,
     name,
     editorInstance.ViewColumn.Two,
     { enableScripts: true}
@@ -460,3 +472,16 @@ const preparePreview = async (
   const html = getPreviewHTML(scriptUriCore, scriptUriReact, scriptUriMaterial, schema, uiSchema);
   return html;
 };
+
+class ToolingAdapter extends TerminalAdapter {
+  editorInstance: any;
+
+  constructor(args: any) {
+    super();
+    this.editorInstance = args.editorInstance;
+  }
+
+  log = (msg: any, ctx: any) => {
+    showMessage(this.editorInstance, msg);
+  };
+}
