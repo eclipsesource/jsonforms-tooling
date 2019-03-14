@@ -36,7 +36,8 @@ export const showPreview = async (editorInstance: any, firstSchemafileUri: any, 
       return;
     }
   } else {
-    // If the user called this function by doing a right click on a json file, we need to know which schema file that was
+    // If the user called this function by doing a right click on a json file, we need to know which
+    // schema file that was
     try {
       const schemaContent = await readFileWithPromise(firstSchemafileUri, 'utf8');
       const parsedSchemaContent = JSON.parse(schemaContent);
@@ -267,14 +268,16 @@ const preparePreview = async (
   schemaPath: string
 ) => {
   // Prepare the scripts needed to show the App inside the Webview
+  const previewFolder = join(extensionPath, 'assets', 'preview');
+
   const scriptPathOnDiskCore = editorInstance.Uri.file(
-    join(extensionPath, 'assets', 'preview', 'jsonforms-core.js')
+    join(previewFolder, 'jsonforms-core.js')
   );
   const scriptPathOnDiskReact = editorInstance.Uri.file(
-    join(extensionPath, 'assets', 'preview', 'jsonforms-react.js')
+    join(previewFolder, 'jsonforms-react.js')
   );
   const scriptPathOnDiskMaterial = editorInstance.Uri.file(
-    join(extensionPath, 'assets', 'preview', 'jsonforms-material.js')
+    join(previewFolder, 'jsonforms-material.js')
   );
   const scriptUriCore = scriptPathOnDiskCore.with({ scheme: 'vscode-resource'});
   const scriptUriReact = scriptPathOnDiskReact.with({ scheme: 'vscode-resource'});

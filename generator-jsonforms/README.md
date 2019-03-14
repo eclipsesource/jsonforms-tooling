@@ -2,6 +2,7 @@
 
 This Yeoman Generator brings you all the functions of the tooling to your terminal. Within the terminal you can:
 
+* Create a ready to go JSONForms project
 * Create an example project
 * Create an seed project
 * Generate your basic UI Schema from your Schema
@@ -23,6 +24,7 @@ If you want to avoid the interface, you can use the following parameters:
 Choose the project you would like to scaffold
 
 Current available project seeds:
+- `scaffolding`
 - `seed`
 - `example`
 
@@ -40,6 +42,17 @@ You can also use `current` if you want to use the current terminal folder
 Command:
 ```shell
 yo jsonforms --path "~\Documents\Project\Seed"
+```
+
+### Schema Path
+
+Enter the path where the JSON schema is located
+
+This is important for the Scaffolding project to work.
+
+Command:
+```shell
+yo jsonforms --project "Scaffolding" --schemaPath "/Users/CurrentUser/Desktop/project_files/schema_file.json"
 ```
 
 ### Name
