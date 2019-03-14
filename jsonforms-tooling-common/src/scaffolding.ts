@@ -11,6 +11,7 @@ import { MessageType, readdirWithPromise, showMessage } from './utils';
 export enum Project {
   Example = 'example',
   Seed = 'seed',
+  Scaffolding = 'scaffolding'
 }
 
 /*
@@ -48,7 +49,7 @@ export const createProject = async (editorInstance: any, path: string, project: 
  * @param {string} path the path to the project folder
  * @param {string} name the name of the project
  */
-const cloneAndInstall = async (editorInstance: any, project: string, path: string, name?: string) => {
+const cloneAndInstall = async (editorInstance: any, project: string, path: string, name?: string, schemaPath?: string) => {
   const env = yeoman.createEnv([], {}, new ToolingAdapter( {editorInstance} ));
   const generatorDir = join(__dirname, '../node_modules/generator-jsonforms/generators/app/index.js');
   env.getByPath(generatorDir);
@@ -61,6 +62,7 @@ const cloneAndInstall = async (editorInstance: any, project: string, path: strin
     'project': project,
     'path': path,
     'name': name,
+    'schemaPath': schemaPath,
     'skipPrompting': true,
   };
   try {
@@ -88,6 +90,7 @@ const asyncCreateProject = async (editorInstance: any, path: string, project: st
     showMessage(editorInstance, err.message, MessageType.Error);
     return;
   }
+  // Ask for project name
   let projectName = '';
   if (project !== Project.Example) {
     try {
@@ -103,8 +106,24 @@ const asyncCreateProject = async (editorInstance: any, path: string, project: st
       return;
     }
   }
+  // Ask for schema path (only for scaffolding project)
+  let schemaPath = '';
+  if (project === Project.Scaffolding) {
+    try {
+      schemaPath = await editorInstance.window.showInputBox(editorInstance.InputBoxOptions = {
+        prompt: 'Label: ',
+        placeHolder: `Enter the path or url to your schema file`,
+      });
+      if (schemaPath === '' || schemaPath === undefined) {
+        throw new Error('The schema path is missing, process terminated');
+      }
+    } catch (err) {
+      showMessage(editorInstance, err.message, 'err');
+      return;
+    }
+  }
   showMessage(editorInstance, `Creating ${project} project: ${path}`);
-  cloneAndInstall(editorInstance, project, path, projectName);
+  cloneAndInstall(editorInstance, project, path, projectName, schemaPath);
 };
 
 class ToolingAdapter extends TerminalAdapter {

@@ -20,7 +20,7 @@ export enum MessageType {
  */
 export const validateUiSchema = async (schema: Object) => {
   try {
-    const ajv =  new Ajv();
+    const ajv = new Ajv();
     return ajv.validate(uiMetaSchema, schema);
   } catch (error) {
     throw(error.message);
@@ -43,5 +43,6 @@ export const showMessage = (editorInstance: any, message: string, type?: string)
       break;
     default:
       editorInstance.window.showInformationMessage(message);
+      break;
   }
 };
