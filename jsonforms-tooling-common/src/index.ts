@@ -132,7 +132,7 @@ export const showPreview = async (editorInstance: any, firstSchemafileUri: any, 
   try {
     await editorInstance.window.showQuickPick(['Next'], editorInstance.QuickPickOptions = {
       canSelectMany: false,
-      placeHolder: `It seems, that you selected the ${uiSchemaOrSchema}. Now  please select the ${otherSchema} file.`
+      placeHolder: `You've selected a ${uiSchemaOrSchema} file. Continue by selecting a ${otherSchema} file.`
     });
   } catch (err) {
     showMessage(err.message, 'err');
@@ -237,14 +237,12 @@ const asyncGenerateUiSchema = async (editorInstance: any, path: string) => {
  * @param {function} callback forwards the current status to the caller
  */
 const validateUiSchema = async (schema: Object) => {
-  let valid = null;
   try {
     const ajv =  new Ajv();
-    valid = ajv.validate(uiMetaSchema, schema);
+    return ajv.validate(uiMetaSchema, schema);
   } catch (error) {
     throw(error.message);
   }
-  return valid;
 };
 
 /**
@@ -359,45 +357,109 @@ const getPreviewHTML = (
   <script src="${scriptUriCore}"></script>
   <script src="${scriptUriReact}"></script>
   <script src="${scriptUriMaterial}"></script>
+  <style>
+    body {
+      background: #fff;
+      padding: 0;
+    }
+    #root {
+      padding: 20px;
+      overflow-x: hidden;
+    }
+    .loading {
+      width: 100vw;
+      height: 100vh;
+      background: #333333;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin: -20px;
+    }
+    .loader,
+    .loader:after {
+      border-radius: 50%;
+      width: 10em;
+      height: 10em;
+    }
+    .loader {
+      margin: 60px auto;
+      font-size: 10px;
+      position: relative;
+      text-indent: -9999em;
+      border-top: 1.1em solid rgba(255, 255, 255, 0.2);
+      border-right: 1.1em solid rgba(255, 255, 255, 0.2);
+      border-bottom: 1.1em solid rgba(255, 255, 255, 0.2);
+      border-left: 1.1em solid #ffffff;
+      -webkit-transform: translateZ(0);
+      -ms-transform: translateZ(0);
+      transform: translateZ(0);
+      -webkit-animation: load8 1.1s infinite linear;
+      animation: load8 1.1s infinite linear;
+    }
+    @-webkit-keyframes load8 {
+      0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+      }
+      100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+      }
+    }
+    @keyframes load8 {
+      0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+      }
+      100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+      }
+    }
+  </style>
 </head>
 
-<body style="background: #fff">
-    <div id="root">Loading...</div>
-    <script type="text/babel">
+<body>
+  <div id="root">
+    <div class="loading">
+      <div class="loader"></div>
+      <h3>The preview is now loading. When loading for the first time, this process takes a while.</h3>
+    </div>
+  </div>
+  <script type="text/babel">
     var schema = ${schema};
     var uiSchema = ${uiSchema};
 
-  const store = Redux.createStore(
+    const store = Redux.createStore(
       Redux.combineReducers({ jsonforms: JSONFormsCore.jsonformsReducer() }),
       {
-          jsonforms: {
-              fields: JSONFormsMaterial.materialFields,
-              renderers: JSONFormsMaterial.materialRenderers
-          },
+        jsonforms: {
+          fields: JSONFormsMaterial.materialFields,
+          renderers: JSONFormsMaterial.materialRenderers
+        },
       }
-  );
+    );
 
-  store.dispatch(JSONFormsCore.Actions.init({}, schema, uiSchema));
-  const mapStateToProps = state => {
-    return { dataAsString: JSON.stringify(JSONFormsCore.getData(state), null, 2) }
-  };
-  var App = ({ dataAsString }) => {
+    store.dispatch(JSONFormsCore.Actions.init({}, schema, uiSchema));
+    const mapStateToProps = state => {
+      return { dataAsString: JSON.stringify(JSONFormsCore.getData(state), null, 2) }
+    };
+    var App = ({ dataAsString }) => {
       return (
-        <div>
-          <JSONFormsReact.JsonForms />
-        </div>
+        <JSONFormsReact.JsonForms />
       );
-  };
+    };
 
-  const CApp = ReactRedux.connect(mapStateToProps, null)(App);
+    const CApp = ReactRedux.connect(mapStateToProps, null)(App);
 
-  ReactDOM.render(
+    ReactDOM.render(
       <ReactRedux.Provider store={store}>
-          <CApp />
+        <CApp />
       </ReactRedux.Provider>,
       document.getElementById('root')
-  );
-</script>
+    );
+  </script>
 </body>
 </html>`;
 };
