@@ -9,6 +9,7 @@ import { join, sep } from 'path';
 import { watch } from 'chokidar';
 import { promisify } from 'util';
 const TerminalAdapter = require('yeoman-environment/lib/adapter');
+import { uiMetaSchema } from './metaSchema';
 const yeoman = require('yeoman-environment');
 
 export enum Project {
@@ -88,6 +89,7 @@ export const generateUISchema = async (editorInstance: any, path: string) => {
 export const showPreview = async (editorInstance: any, firstSchemafileUri: any, extensionPath: string) => {
   // Set default strings
   let uiSchemaOrSchema = 'Schema';
+  let otherSchema = 'UI Schema';
   let selectSecondSchema = 'Select UI Schema';
   let selectSecondErrorMessage = 'Please select a ui schema file';
 
@@ -111,20 +113,32 @@ export const showPreview = async (editorInstance: any, firstSchemafileUri: any, 
   } else {
     // If the user called this function by doing a right click on a json file, we need to know which schema file that was
     try {
-      uiSchemaOrSchema = await editorInstance.window.showQuickPick(['Schema', 'UI Schema'], editorInstance.QuickPickOptions = {
-        canSelectMany: false,
-        placeHolder: 'Was that the schema or the UI schema file?'
-      });
-      if (uiSchemaOrSchema === 'UI Schema') {
+      const schemaContent = await readFileWithPromise(firstSchemafileUri, 'utf8');
+      const parsedSchemaContent = JSON.parse(schemaContent);
+      const validUiSchema = await validateUiSchema(parsedSchemaContent);
+      if (validUiSchema) {
+        uiSchemaOrSchema = 'UI Schema';
+        otherSchema = 'Schema';
         selectSecondSchema = 'Select Schema';
         selectSecondErrorMessage = 'Please select a schema file';
       }
     } catch (err) {
-      showMessage('Please select the schema type', 'err');
+      showMessage(err.message, 'err');
       return;
     }
   }
   // In both situations we still need the second schema file
+  // First we'll tell the user what to do next
+  try {
+    await editorInstance.window.showQuickPick(['Next'], editorInstance.QuickPickOptions = {
+      canSelectMany: false,
+      placeHolder: `It seems, that you selected the ${uiSchemaOrSchema}. Now  please select the ${otherSchema} file.`
+    });
+  } catch (err) {
+    showMessage(err.message, 'err');
+    return;
+  }
+  // Now he can select the file
   let secondSchemafileUri = null;
   try {
     secondSchemafileUri = await editorInstance.window.showOpenDialog(editorInstance.OpenDialogOptions = {
@@ -204,16 +218,6 @@ const asyncGenerateUiSchema = async (editorInstance: any, path: string) => {
     return;
   }
 
-  // Check if JSON is valid
-  showMessage(editorInstance, 'Validating UI schema');
-  try {
-    await validateJSONSchema(jsonContent);
-    showMessage(editorInstance, 'Schema is valid');
-  } catch (err) {
-    showMessage(editorInstance, err, 'err');
-    return;
-  }
-
   // Generate the default UI schema
   const jsonUISchema = generateDefaultUISchema(jsonContent);
 
@@ -232,14 +236,15 @@ const asyncGenerateUiSchema = async (editorInstance: any, path: string) => {
  * @param {Object} schema the json schema, that will be validated
  * @param {function} callback forwards the current status to the caller
  */
-const validateJSONSchema = async (schema: Object) => {
+const validateUiSchema = async (schema: Object) => {
+  let valid = null;
   try {
     const ajv =  new Ajv();
-    ajv.compile(schema);
-    return true;
+    valid = ajv.validate(uiMetaSchema, schema);
   } catch (error) {
     throw(error.message);
   }
+  return valid;
 };
 
 /**
