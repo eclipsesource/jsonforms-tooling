@@ -5,7 +5,8 @@ import Generator from 'yeoman-generator';
 import chalk from 'chalk';
 import { textSync } from 'figlet';
 import { join, sep } from 'path';
-import { readFile, writeFile } from 'fs';
+import { writeFile } from 'fs';
+import { copy, readJson } from 'fs-extra';
 import { promisify } from 'util';
 const clear = require('clear');
 const validate = require('validate-npm-package-name');
@@ -20,7 +21,6 @@ enum Project {
   Seed = 'seed',
 }
 
-const readFileWithPromise = promisify(readFile);
 const writeFileWithPromise = promisify(writeFile);
 
 export class JsonformsGenerator extends Generator {
@@ -38,7 +38,7 @@ export class JsonformsGenerator extends Generator {
     this.option('project', { type: String } );
     this.option('path', { type: String } );
     this.option('name', { type: String } );
-    this.option('skipPrompting', { type: Boolean} );
+    this.option('skipPrompting', { type: Boolean } );
 
     this.project = this.options.project;
     this.repo = '';
@@ -46,11 +46,15 @@ export class JsonformsGenerator extends Generator {
     this.name = this.options.name;
     this.skipPrompting = this.options.skipPrompting;
 
-    if (this.project === Project.Example) {
-      this.repo = ProjectRepo.Example;
-    }
-    if (this.project === Project.Seed) {
-      this.repo = ProjectRepo.Seed;
+    switch (this.project) {
+      case Project.Example:
+        this.repo = ProjectRepo.Example;
+        break;
+      case Project.Seed:
+        this.repo = ProjectRepo.Seed;
+        break;
+      default:
+        break;
     }
   }
 
@@ -81,7 +85,8 @@ export class JsonformsGenerator extends Generator {
             if (this.project == null) {
               return true;
             }
-            if (this.project !== 'example' && this.project !== 'seed') {
+            if (this.project !== Project.Example
+              && this.project !== Project.Seed) {
               return true;
             }
             return false;
@@ -97,8 +102,8 @@ export class JsonformsGenerator extends Generator {
         {
           name: 'name',
           type: 'input',
-          message: 'Enter the name of the seed project:',
-          default: 'jsonforms-seed',
+          message: `Enter the name of the ${this.project} project:`,
+          default: `jsonforms-${this.project}`,
           validate: value => {
             const valid = validate(value);
             return valid.validForNewPackages || 'Sorry, name can only contain URL-friendly ' +
@@ -135,23 +140,29 @@ export class JsonformsGenerator extends Generator {
   }
 
   async write() {
-    this.log('writing');
-    const source = join(__dirname, '../../node_modules/' + this.repo) + '/**';
-    this.fs.copy(source, this.path);
+    this.log('Writing files to disk');
+    const source = join(__dirname, '../../node_modules/' + this.repo);
+    try {
+      await copy(source, this.path);
+      this.log('Done writing files');
+    } catch (err) {
+      this.log(err);
+      return;
+    }
   }
 
   async install() {
-    this.log('installing');
+    this.log('Installing dependencies. This can take a while.');
+
     if (this.project === Project.Seed && this.name != null) {
       const packagePath = this.path + sep + 'package.json';
-      let content = '';
+      let packageJson = null;
       try {
-        content = await readFileWithPromise(packagePath, 'utf8');
+        packageJson = await readJson(packagePath);
       } catch (err) {
         this.log(chalk.red(err.message));
         return;
       }
-      const packageJson = JSON.parse(content);
       packageJson.name = this.name;
 
       try {
