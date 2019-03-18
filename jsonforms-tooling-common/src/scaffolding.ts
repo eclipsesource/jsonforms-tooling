@@ -6,7 +6,7 @@ import { join } from 'path';
 const TerminalAdapter = require('yeoman-environment/lib/adapter');
 const yeoman = require('yeoman-environment');
 
-import { readdirWithPromise, showMessage } from './utils';
+import { MessageType, readdirWithPromise, showMessage } from './utils';
 
 export enum Project {
   Example = 'example',
@@ -31,7 +31,7 @@ export const createProject = async (editorInstance: any, path: string, project: 
       if (fileUri && fileUri[0].fsPath) {
         path = fileUri[0].fsPath;
       } else {
-        showMessage(editorInstance, 'Please select a empty folder', 'err');
+        showMessage(editorInstance, 'Please select a empty folder', MessageType.Error);
         return;
       }
     } catch (err) {
@@ -53,7 +53,7 @@ const cloneAndInstall = async (editorInstance: any, project: string, path: strin
   const generatorDir = join(__dirname, '../node_modules/generator-jsonforms/generators/app/index.js');
   env.getByPath(generatorDir);
   env.on('error', (err: any) => {
-    showMessage(editorInstance, err.message, 'err');
+    showMessage(editorInstance, err.message, MessageType.Error;
     process.exit(err.code);
   });
   const options = {
@@ -66,7 +66,7 @@ const cloneAndInstall = async (editorInstance: any, project: string, path: strin
   try {
     await env.run('jsonforms', options);
   } catch (err) {
-    showMessage(editorInstance, `Error creating project: ${err.message}`, 'err');
+    showMessage(editorInstance, `Error creating project: ${err.message}`, MessageType.Error);
     return;
   }
   showMessage(editorInstance, `Done creating ${project} project`);
@@ -85,7 +85,7 @@ const asyncCreateProject = async (editorInstance: any, path: string, project: st
       throw new Error('Folder not empty. Please select an empty folder.');
     }
   } catch (err) {
-    showMessage(editorInstance, err.message, 'err');
+    showMessage(editorInstance, err.message, MessageType.Error);
     return;
   }
   let projectName = '';
@@ -99,7 +99,7 @@ const asyncCreateProject = async (editorInstance: any, path: string, project: st
         projectName = `jsonforms-${project}`;
       }
     } catch (err) {
-      showMessage(editorInstance, err.message, 'err');
+      showMessage(editorInstance, err.message, MessageType.Error);
       return;
     }
   }
