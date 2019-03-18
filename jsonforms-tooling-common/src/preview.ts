@@ -3,7 +3,7 @@
 import { watch } from 'chokidar';
 import { join } from 'path';
 
-import { readFileWithPromise, showMessage, validateUiSchema } from './utils';
+import { MessageType, readFileWithPromise, showMessage, validateUiSchema } from './utils';
 
 /**
  * Shows a preview form of a given json schema and ui schema in a new panel inside the editor
@@ -32,7 +32,7 @@ export const showPreview = async (editorInstance: any, firstSchemafileUri: any, 
       });
       firstSchemafileUri = firstSchemafileUri[0].fsPath;
     } catch (err) {
-      showMessage('Please select a schema file', 'err');
+      showMessage('Please select a schema file', MessageType.Error);
       return;
     }
   } else {
@@ -48,7 +48,7 @@ export const showPreview = async (editorInstance: any, firstSchemafileUri: any, 
         selectSecondErrorMessage = 'Please select a schema file';
       }
     } catch (err) {
-      showMessage(err.message, 'err');
+      showMessage(err.message, MessageType.Error);
       return;
     }
   }
@@ -60,7 +60,7 @@ export const showPreview = async (editorInstance: any, firstSchemafileUri: any, 
       placeHolder: `You've selected a ${uiSchemaOrSchema} file. Continue by selecting a ${otherSchema} file.`
     });
   } catch (err) {
-    showMessage(err.message, 'err');
+    showMessage(err.message, MessageType.Error);
     return;
   }
   // Now he can select the file
@@ -77,7 +77,7 @@ export const showPreview = async (editorInstance: any, firstSchemafileUri: any, 
     });
     secondSchemafileUri = secondSchemafileUri[0].fsPath;
   } catch (err) {
-    showMessage(selectSecondErrorMessage, 'err');
+    showMessage(selectSecondErrorMessage, MessageType.Error);
     return;
   }
   let uiSchemaPath = firstSchemafileUri;
@@ -285,14 +285,14 @@ const preparePreview = async (
   try {
     schema = await readFileWithPromise(schemaPath, 'utf8');
   } catch (err) {
-    showMessage(editorInstance, err.message, 'err');
+    showMessage(editorInstance, err.message, MessageType.Error);
     return;
   }
   let uiSchema = '';
   try {
     uiSchema = await readFileWithPromise(uiSchemaPath, 'utf8');
   } catch (err) {
-    showMessage(editorInstance, err.message, 'err');
+    showMessage(editorInstance, err.message, MessageType.Error);
     return;
   }
   const html = getPreviewHTML(scriptUriCore, scriptUriReact, scriptUriMaterial, schema, uiSchema);

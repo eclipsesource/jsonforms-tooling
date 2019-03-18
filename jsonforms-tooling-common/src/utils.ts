@@ -7,6 +7,12 @@ export const readFileWithPromise = promisify(readFile);
 export const readdirWithPromise = promisify(readdir);
 export const writeFileWithPromise = promisify(writeFile);
 
+export enum MessageType {
+  Error = 'err',
+  Warning = 'war',
+  Information = 'info'
+}
+
 /**
  * Validate a given JSON Schema
  * @param {Object} schema the json schema, that will be validated
@@ -29,10 +35,10 @@ export const validateUiSchema = async (schema: Object) => {
  */
 export const showMessage = (editorInstance: any, message: string, type?: string) => {
   switch (type) {
-    case 'err':
+    case MessageType.Error:
       editorInstance.window.showErrorMessage(message);
       break;
-    case 'war':
+    case MessageType.Warning:
       editorInstance.window.showWarningMessage(message);
       break;
     default:

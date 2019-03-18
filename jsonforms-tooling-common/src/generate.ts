@@ -4,7 +4,7 @@ import { generateDefaultUISchema } from '@jsonforms/core';
 import { sep } from 'path';
 import { existsSync } from 'fs';
 
-import { readFileWithPromise, showMessage, writeFileWithPromise } from './utils';
+import { MessageType, readFileWithPromise, showMessage, writeFileWithPromise } from './utils';
 
 /**
  * Generates the default UI Schema from a json schema
@@ -27,7 +27,7 @@ export const generateUISchema = async (editorInstance: any, path: string) => {
       if (fileUri && fileUri[0].fsPath) {
         path = fileUri[0].fsPath;
       } else {
-        showMessage(editorInstance, 'Please select a json schema file', 'err');
+        showMessage(editorInstance, 'Please select a json schema file', MessageType.Error);
         return;
       }
     } catch (err) {
@@ -51,14 +51,13 @@ const asyncGenerateUiSchema = async (editorInstance: any, path: string) => {
       placeHolder: 'Enter a filename for your UI Schema (default: uischema.json)',
     });
     if (fileName === undefined) {
-      showMessage(editorInstance, 'UI schema generation canceled', 'err');
-      return;
+      throw new Error('UI schema generation canceled');
     }
     if (fileName === '') {
       fileName = 'uischema.json';
     }
   } catch (err) {
-    showMessage(editorInstance, err.message, 'err');
+    showMessage(editorInstance, err.message, MessageType.Error);
     return;
   }
 
@@ -72,11 +71,10 @@ const asyncGenerateUiSchema = async (editorInstance: any, path: string) => {
         placeHolder:  `This file ${fileName} does already exist. Should it be overwritten?`
       });
       if (decision !== 'Yes') {
-        showMessage(editorInstance, 'UI schema generation canceled', 'err');
-        return;
+        throw new Error('UI schema generation canceled');
       }
     } catch (err) {
-      showMessage(editorInstance, 'UI schema generation canceled', 'err');
+      showMessage(editorInstance, err.message, MessageType.Error);
       return;
     }
   }
@@ -87,7 +85,7 @@ const asyncGenerateUiSchema = async (editorInstance: any, path: string) => {
     const content = await readFileWithPromise(path, 'utf8');
     jsonContent = JSON.parse(content);
   } catch (err) {
-    showMessage(editorInstance, err.message, 'err');
+    showMessage(editorInstance, err.message, MessageType.Error);
     return;
   }
 
@@ -98,7 +96,7 @@ const asyncGenerateUiSchema = async (editorInstance: any, path: string) => {
   try {
     await writeFileWithPromise(newPath, JSON.stringify(jsonUISchema, null, 2));
   } catch (err) {
-    showMessage(editorInstance, err.message, 'err');
+    showMessage(editorInstance, err.message, MessageType.Error);
     return;
   }
   showMessage(editorInstance, 'Successfully generated UI schema');
