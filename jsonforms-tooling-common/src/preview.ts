@@ -32,7 +32,7 @@ export const showPreview = async (editorInstance: any, firstSchemafileUri: any, 
       });
       firstSchemafileUri = firstSchemafileUri[0].fsPath;
     } catch (err) {
-      showMessage('Please select a schema file', MessageType.Error);
+      showMessage(editorInstance, 'Please select a schema file', MessageType.Error);
       return;
     }
   } else {
@@ -48,7 +48,7 @@ export const showPreview = async (editorInstance: any, firstSchemafileUri: any, 
         selectSecondErrorMessage = 'Please select a schema file';
       }
     } catch (err) {
-      showMessage(err.message, MessageType.Error);
+      showMessage(editorInstance, err.message, MessageType.Error);
       return;
     }
   }
@@ -60,7 +60,7 @@ export const showPreview = async (editorInstance: any, firstSchemafileUri: any, 
       placeHolder: `You've selected a ${uiSchemaOrSchema} file. Continue by selecting a ${otherSchema} file.`
     });
   } catch (err) {
-    showMessage(err.message, MessageType.Error);
+    showMessage(editorInstance, err.message, MessageType.Error);
     return;
   }
   // Now he can select the file
@@ -77,7 +77,7 @@ export const showPreview = async (editorInstance: any, firstSchemafileUri: any, 
     });
     secondSchemafileUri = secondSchemafileUri[0].fsPath;
   } catch (err) {
-    showMessage(selectSecondErrorMessage, MessageType.Error);
+    showMessage(editorInstance, selectSecondErrorMessage, MessageType.Error);
     return;
   }
   let uiSchemaPath = firstSchemafileUri;

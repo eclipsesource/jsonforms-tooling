@@ -53,7 +53,7 @@ const cloneAndInstall = async (editorInstance: any, project: string, path: strin
   const generatorDir = join(__dirname, '../node_modules/generator-jsonforms/generators/app/index.js');
   env.getByPath(generatorDir);
   env.on('error', (err: any) => {
-    showMessage(editorInstance, err.message, MessageType.Error;
+    showMessage(editorInstance, err.message, MessageType.Error);
     process.exit(err.code);
   });
   const options = {
