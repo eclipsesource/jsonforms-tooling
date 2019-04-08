@@ -9,17 +9,17 @@
     "lint": "lerna run lint"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.9",
-    "@types/node": "^11.10.4",
-    "coveralls": "^3.0.2",
-    "jest": "^24.1.0",
+    "@types/jest": "^24.0.11",
+    "@types/node": "^11.13.0",
+    "coveralls": "^3.0.3",
+    "jest": "^24.7.1",
     "lerna": "^3.13.1",
     "rimraf": "2.6.3",
-    "ts-jest": "^24.0.0",
-    "tslint": "^5.11.0",
-    "tslint-react": "^3.6.0",
-    "typescript": "^3.3.3333",
-    "vscode": "^1.1.30"
+    "ts-jest": "^24.0.2",
+    "tslint": "^5.15.0",
+    "tslint-react": "^4.0.0",
+    "typescript": "^3.4.2",
+    "vscode": "^1.1.33"
   },
   "dependencies": {}
 }
