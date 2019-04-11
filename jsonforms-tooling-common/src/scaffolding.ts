@@ -39,48 +39,7 @@ export const createProject = async (editorInstance: any, path: string, project: 
       return;
     }
   }
-  asyncCreateProject(editorInstance, path, project);
-};
 
-/**
- * Async Clone And Install
- * @param {any} editorInstance the instance of the editor
- * @param {string} url the url to the project repository
- * @param {string} path the path to the project folder
- * @param {string} name the name of the project
- */
-const cloneAndInstall = async (editorInstance: any, project: string, path: string, name?: string, schemaPath?: string) => {
-  const env = yeoman.createEnv([], {}, new ToolingAdapter( {editorInstance} ));
-  const generatorDir = join(__dirname, '../node_modules/generator-jsonforms/generators/app/index.js');
-  env.getByPath(generatorDir);
-  env.on('error', (err: any) => {
-    showMessage(editorInstance, err.message, MessageType.Error);
-    process.exit(err.code);
-  });
-  const options = {
-    env,
-    'project': project,
-    'path': path,
-    'name': name,
-    'schemaPath': schemaPath,
-    'skipPrompting': true,
-  };
-  try {
-    await env.run('jsonforms', options);
-  } catch (err) {
-    showMessage(editorInstance, `Error creating project: ${err.message}`, MessageType.Error);
-    return;
-  }
-  showMessage(editorInstance, `Done creating ${project} project`);
-};
-
-/**
- * Async Creating Project
- * @param {any} editorInstance the instance of the editor
- * @param {string} path the path to the project folder
- * @param {string} project the project, that will be created
- */
-const asyncCreateProject = async (editorInstance: any, path: string, project: string) => {
   try {
     const files = await readdirWithPromise(path);
     if (files.length) {
@@ -123,7 +82,31 @@ const asyncCreateProject = async (editorInstance: any, path: string, project: st
     }
   }
   showMessage(editorInstance, `Creating ${project} project: ${path}`);
-  cloneAndInstall(editorInstance, project, path, projectName, schemaPath);
+
+  // Create yeoman environment and call yeoman generator
+  const env = yeoman.createEnv([], {}, new ToolingAdapter( {editorInstance} ));
+  const generatorDir = join(__dirname, '../node_modules/generator-jsonforms/generators/app/index.js');
+  env.getByPath(generatorDir);
+  env.on('error', (err: any) => {
+    showMessage(editorInstance, err.message, MessageType.Error);
+    process.exit(err.code);
+  });
+  const options = {
+    env,
+    'project': project,
+    'path': path,
+    'name': projectName,
+    'schemaPath': schemaPath,
+    'skipPrompting': true,
+  };
+  try {
+    await env.run('jsonforms', options);
+  } catch (err) {
+    showMessage(editorInstance, `Error creating project: ${err.message}`, MessageType.Error);
+    return;
+  }
+  showMessage(editorInstance, `Done creating ${project} project`);
+  return true;
 };
 
 class ToolingAdapter extends TerminalAdapter {

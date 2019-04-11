@@ -34,16 +34,7 @@ export const generateUISchema = async (editorInstance: any, path: string) => {
       return;
     }
   }
-  asyncGenerateUiSchema(editorInstance, path);
-};
 
-/**
- * Async Generate UI Schema
- * @param {any} editorInstance the instance of the editor
- * @param {string} path the path to the schema file
- */
-const asyncGenerateUiSchema = async (editorInstance: any, path: string) => {
-  // Ask for filename
   let fileName = '';
   try {
     fileName = await editorInstance.window.showInputBox(editorInstance.InputBoxOptions = {
@@ -100,4 +91,5 @@ const asyncGenerateUiSchema = async (editorInstance: any, path: string) => {
     return;
   }
   showMessage(editorInstance, 'Successfully generated UI schema');
+  return jsonUISchema;
 };
