@@ -81,7 +81,7 @@ export const uiMetaSchema: JsonSchema7 = {
           'default': 'Control'
         },
         'label': {
-          'type': 'string'
+          'type': ['string', 'boolean']
         },
         'scope': {
           '$ref': '#/definitions/scope'

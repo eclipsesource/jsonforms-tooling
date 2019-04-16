@@ -28,15 +28,16 @@ export const createProject = async (editorInstance: any, path: string, project: 
         canSelectFolders: true,
         canSelectFiles: false,
         openLabel: 'Select folder',
+        id: 'path',
       });
       if (fileUri && fileUri[0].fsPath) {
         path = fileUri[0].fsPath;
       } else {
-        showMessage(editorInstance, 'Please select a empty folder', MessageType.Error);
-        return;
+        throw new Error('Please select a empty folder');
       }
     } catch (err) {
-      return;
+      showMessage(editorInstance, err.message, MessageType.Error);
+      return err;
     }
   }
 
@@ -47,7 +48,7 @@ export const createProject = async (editorInstance: any, path: string, project: 
     }
   } catch (err) {
     showMessage(editorInstance, err.message, MessageType.Error);
-    return;
+    return err;
   }
   // Ask for project name
   let projectName = '';
@@ -56,13 +57,14 @@ export const createProject = async (editorInstance: any, path: string, project: 
       projectName = await editorInstance.window.showInputBox(editorInstance.InputBoxOptions = {
         prompt: 'Label: ',
         placeHolder: `Enter a name for your ${project} project (default: jsonforms-${project})`,
+        id: 'projectName',
       });
       if (projectName === '') {
         projectName = `jsonforms-${project}`;
       }
     } catch (err) {
       showMessage(editorInstance, err.message, MessageType.Error);
-      return;
+      return err;
     }
   }
   // Ask for schema path (only for scaffolding project)
@@ -72,13 +74,14 @@ export const createProject = async (editorInstance: any, path: string, project: 
       schemaPath = await editorInstance.window.showInputBox(editorInstance.InputBoxOptions = {
         prompt: 'Label: ',
         placeHolder: `Enter the path or url to your schema file`,
+        id: 'schemaPath',
       });
       if (schemaPath === '' || schemaPath === undefined) {
         throw new Error('The schema path is missing, process terminated');
       }
     } catch (err) {
       showMessage(editorInstance, err.message, 'err');
-      return;
+      return err;
     }
   }
   showMessage(editorInstance, `Creating ${project} project: ${path}`);
@@ -103,7 +106,7 @@ export const createProject = async (editorInstance: any, path: string, project: 
     await env.run('jsonforms', options);
   } catch (err) {
     showMessage(editorInstance, `Error creating project: ${err.message}`, MessageType.Error);
-    return;
+    return err;
   }
   showMessage(editorInstance, `Done creating ${project} project`);
   return true;

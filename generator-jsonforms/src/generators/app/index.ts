@@ -12,13 +12,13 @@ import { promisify } from 'util';
 const clear = require('clear');
 const validate = require('validate-npm-package-name');
 
-enum ProjectRepo {
+export enum ProjectRepo {
   Example = 'make-it-happen-react',
   Seed = 'jsonforms-react-seed',
   Scaffolding = 'jsonforms-scaffolding-project',
 }
 
-enum Project {
+export enum Project {
   Example = 'example',
   Seed = 'seed',
   Scaffolding = 'scaffolding',

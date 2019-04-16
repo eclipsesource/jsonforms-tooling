@@ -6,7 +6,8 @@
     "lernainstall": "lerna exec --no-bail --npm-ci-mode -- npm run custominstall",
     "lernabootstrap": "lerna bootstrap --npm-ci-mode --ignore-scripts",
     "compile": "lerna run build",
-    "lint": "lerna run lint"
+    "lint": "lerna run lint",
+    "test": "jest"
   },
   "devDependencies": {
     "@types/jest": "^24.0.11",

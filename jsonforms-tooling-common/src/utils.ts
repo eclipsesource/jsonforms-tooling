@@ -1,11 +1,20 @@
-import { readdir, readFile, writeFile } from 'fs';
+// tslint:disable:no-var-requires
+// tslint:disable:no-require-imports
+
+import { mkdir, readdir, readFile, stat, unlink, writeFile } from 'fs';
 import Ajv from 'ajv';
 import { promisify } from 'util';
+const rimraf = require('rimraf');
+
 import { uiMetaSchema } from './metaSchema';
 
-export const readFileWithPromise = promisify(readFile);
+export const statWithPromise = promisify(stat);
+export const mkdirWithPromise = promisify(mkdir);
 export const readdirWithPromise = promisify(readdir);
+export const readFileWithPromise = promisify(readFile);
+export const unlinkWithPromise = promisify(unlink);
 export const writeFileWithPromise = promisify(writeFile);
+export const rimrafWithPromise = promisify(rimraf);
 
 export enum MessageType {
   Error = 'err',
@@ -33,16 +42,18 @@ export const validateUiSchema = async (schema: Object) => {
  * @param {string} message the message that should be displayed
  * @param {string} type the optional type of the message
  */
-export const showMessage = (editorInstance: any, message: string, type?: string) => {
+export const showMessage = async (editorInstance: any, message: string, type?: string) => {
+  let result = null;
   switch (type) {
     case MessageType.Error:
-      editorInstance.window.showErrorMessage(message);
+      result = editorInstance.window.showErrorMessage(message);
       break;
     case MessageType.Warning:
-      editorInstance.window.showWarningMessage(message);
+      result = editorInstance.window.showWarningMessage(message);
       break;
     default:
-      editorInstance.window.showInformationMessage(message);
+      result = editorInstance.window.showInformationMessage(message);
       break;
   }
+  return result;
 };
