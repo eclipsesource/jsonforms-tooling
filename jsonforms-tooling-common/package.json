@@ -1,9 +1,15 @@
 {
   "name": "jsonforms-tooling-common",
-  "description": "",
   "version": "0.0.1",
-  "publisher": "EclipseSource",
+  "description": "Common tooling package for JSON Forms",
+  "repository": "https://github.com/eclipsesource/jsonforms-tooling",
+  "bugs": "https://github.com/eclipsesource/jsonforms-tooling/issues",
+  "homepage": "http://jsonforms.io/",
   "license": "MIT",
+  "publisher": "EclipseSource",
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "out/index",
   "typings": "out/index",
   "scripts": {

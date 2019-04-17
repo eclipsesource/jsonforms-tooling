@@ -1,7 +1,15 @@
 {
   "name": "generator-jsonforms",
   "version": "0.0.1",
-  "description": "",
+  "description": "Yeoman generator for JSON Forms",
+  "repository": "https://github.com/eclipsesource/jsonforms-tooling",
+  "bugs": "https://github.com/eclipsesource/jsonforms-tooling/issues",
+  "homepage": "http://jsonforms.io/",
+  "license": "MIT",
+  "publisher": "EclipseSource",
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "generators"
   ],
