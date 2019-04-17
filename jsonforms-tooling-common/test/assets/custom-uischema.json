@@ -1,0 +1,25 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Control",
+      "label": "Name",
+      "scope": "#/properties/name"
+    },
+    {
+      "type": "Control",
+      "label": "Description",
+      "scope": "#/properties/description"
+    },
+    {
+      "type": "Control",
+      "label": "Done",
+      "scope": "#/properties/done"
+    },
+    {
+      "type": "Control",
+      "label": "Rating",
+      "scope": "#/properties/rating"
+    }
+  ]
+}

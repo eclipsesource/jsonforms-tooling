@@ -8,18 +8,12 @@ const yeoman = require('yeoman-environment');
 
 import { MessageType, readdirWithPromise, showMessage } from './utils';
 
-export enum Project {
-  Example = 'example',
-  Seed = 'seed',
-  Scaffolding = 'scaffolding'
-}
-
 /*
  * @param {any} editorInstance the instance of the editor
  * @param {string} path the path for the project
  * @param {string} project the project, that should be installed
  */
-export const createProject = async (editorInstance: any, path: string, project: string) => {
+export const createProject = async (editorInstance: any, path: string) => {
   if (!path) {
     let fileUri = null;
     try  {
@@ -52,39 +46,32 @@ export const createProject = async (editorInstance: any, path: string, project: 
   }
   // Ask for project name
   let projectName = '';
-  if (project !== Project.Example) {
-    try {
-      projectName = await editorInstance.window.showInputBox(editorInstance.InputBoxOptions = {
-        prompt: 'Label: ',
-        placeHolder: `Enter a name for your ${project} project (default: jsonforms-${project})`,
-        id: 'projectName',
-      });
-      if (projectName === '') {
-        projectName = `jsonforms-${project}`;
-      }
-    } catch (err) {
-      showMessage(editorInstance, err.message, MessageType.Error);
-      return err;
+  try {
+    projectName = await editorInstance.window.showInputBox(editorInstance.InputBoxOptions = {
+      prompt: 'Label: ',
+      placeHolder: `Enter a name for your seed project (default: jsonforms-react-seed)`,
+      id: 'projectName',
+    });
+    if (projectName === '') {
+      projectName = `jsonforms-react-seed`;
     }
+  } catch (err) {
+    showMessage(editorInstance, err.message, MessageType.Error);
+    return err;
   }
   // Ask for schema path (only for scaffolding project)
   let schemaPath = '';
-  if (project === Project.Scaffolding) {
-    try {
-      schemaPath = await editorInstance.window.showInputBox(editorInstance.InputBoxOptions = {
-        prompt: 'Label: ',
-        placeHolder: `Enter the path or url to your schema file`,
-        id: 'schemaPath',
-      });
-      if (schemaPath === '' || schemaPath === undefined) {
-        throw new Error('The schema path is missing, process terminated');
-      }
-    } catch (err) {
-      showMessage(editorInstance, err.message, 'err');
-      return err;
-    }
+  try {
+    schemaPath = await editorInstance.window.showInputBox(editorInstance.InputBoxOptions = {
+      prompt: 'Label: ',
+      placeHolder: `Enter the path to your schema file (leave blank to use default schema)`,
+      id: 'schemaPath',
+    });
+  } catch (err) {
+    showMessage(editorInstance, err.message, 'err');
+    return err;
   }
-  showMessage(editorInstance, `Creating ${project} project: ${path}`);
+  showMessage(editorInstance, `Scaffolding Seed project: ${path}`);
 
   // Create yeoman environment and call yeoman generator
   const env = yeoman.createEnv([], {}, new ToolingAdapter( {editorInstance} ));
@@ -96,7 +83,6 @@ export const createProject = async (editorInstance: any, path: string, project: 
   });
   const options = {
     env,
-    'project': project,
     'path': path,
     'name': projectName,
     'schemaPath': schemaPath,
@@ -108,7 +94,7 @@ export const createProject = async (editorInstance: any, path: string, project: 
     showMessage(editorInstance, `Error creating project: ${err.message}`, MessageType.Error);
     return err;
   }
-  showMessage(editorInstance, `Done creating ${project} project`);
+  showMessage(editorInstance, `Done scaffolding the seed project`);
   return true;
 };
 

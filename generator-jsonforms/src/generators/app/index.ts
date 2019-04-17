@@ -12,25 +12,11 @@ import { promisify } from 'util';
 const clear = require('clear');
 const validate = require('validate-npm-package-name');
 
-export enum ProjectRepo {
-  Example = 'make-it-happen-react',
-  Seed = 'jsonforms-react-seed',
-  Scaffolding = 'jsonforms-scaffolding-project',
-}
-
-export enum Project {
-  Example = 'example',
-  Seed = 'seed',
-  Scaffolding = 'scaffolding',
-}
-
 const writeFileWithPromise = promisify(writeFile);
 const readFileWithPromise = promisify(readFile);
 
 export class JsonformsGenerator extends Generator {
 
-  project: string;
-  repo: string;
   path: string;
   schemaPath: string;
   name: string;
@@ -46,26 +32,10 @@ export class JsonformsGenerator extends Generator {
     this.option('name', { type: String } );
     this.option('skipPrompting', { type: Boolean } );
 
-    this.project = this.options.project;
-    this.repo = '';
     this.path = this.options.path;
     this.schemaPath = this.options.schemaPath;
     this.name = this.options.name;
     this.skipPrompting = this.options.skipPrompting;
-
-    switch (this.project) {
-      case Project.Example:
-        this.repo = ProjectRepo.Example;
-        break;
-      case Project.Seed:
-        this.repo = ProjectRepo.Seed;
-        break;
-      case Project.Scaffolding:
-        this.repo = ProjectRepo.Scaffolding;
-        break;
-      default:
-        break;
-    }
   }
 
   async prompting() {
@@ -78,36 +48,6 @@ export class JsonformsGenerator extends Generator {
       );
       this.answers = await this.prompt([
         {
-          name: 'project',
-          type: 'list',
-          message: 'Select a project',
-          choices: [
-            {
-              name: 'Example Project',
-              value: ProjectRepo.Example
-            },
-            {
-              name: 'Seed Project',
-              value: ProjectRepo.Seed
-            },
-            {
-              name: 'Scaffolding Project',
-              value: ProjectRepo.Scaffolding
-            },
-          ],
-          when: () => {
-            if (this.project == null) {
-              return true;
-            }
-            if (this.project !== Project.Example
-              && this.project !== Project.Seed
-              && this.project !== Project.Scaffolding) {
-              return true;
-            }
-            return false;
-          }
-        },
-        {
           name: 'path',
           type: 'input',
           message: 'Enter the path where the project will be installed:',
@@ -119,39 +59,28 @@ export class JsonformsGenerator extends Generator {
           type: 'input',
           message: 'Enter the path of schema from which the ui schema will be generated:',
           default: 'required',
-          when: answers => (
-            answers.project === ProjectRepo.Scaffolding ||
-            this.project === ProjectRepo.Scaffolding
-          )
+          when: (this.schemaPath == null)
         },
         {
           name: 'name',
           type: 'input',
-          message: `Enter the name of the ${this.project} project:`,
-          default: `jsonforms-${this.project}`,
+          message: `Enter a name for your seed project:`,
+          default: `jsonforms-react-seed`,
           validate: value => {
             const valid = validate(value);
             return valid.validForNewPackages || 'Sorry, name can only contain URL-friendly ' +
             'characters and name can no longer contain capital letters.';
           },
-          when: answers => {
-            if (answers.project !== Project.Example && this.project !== Project.Example) {
-              if (this.name == null) {
-                return true;
-              }
-              if (!validate(this.name).validForNewPackages) {
-                this.log(chalk.red('Sorry, name can only contain URL-friendly ' +
-                'characters and name can no longer contain capital letters.'));
-                return true;
-              }
+          when: () => {
+            if (!validate(this.name).validForNewPackages) {
+              this.log(chalk.red('Sorry, name can only contain URL-friendly ' +
+              'characters and name can no longer contain capital letters.'));
+              return true;
             }
             return false;
           }
         }
       ]);
-      if (this.project == null) {
-        this.repo = this.answers.project;
-      }
       if (this.answers && this.answers.path === 'current' || this.path === 'current') {
         this.path = process.cwd();
       }
@@ -169,7 +98,7 @@ export class JsonformsGenerator extends Generator {
 
   async write() {
     this.log('Writing files to disk');
-    const source = join(__dirname, '../../node_modules', this.repo);
+    const source = join(__dirname, '../../node_modules', 'jsonforms-react-seed');
     try {
       await copy(source, this.path);
       this.log('Done writing files');
@@ -182,8 +111,7 @@ export class JsonformsGenerator extends Generator {
   async install() {
     this.log('Installing dependencies. This can take a while.');
 
-    if ((this.project === Project.Seed || this.project === Project.Scaffolding)
-      && this.name != null) {
+    if (this.name != null) {
       const packagePath = join(this.path, 'package.json');
       let packageJson = null;
       try {
@@ -203,7 +131,7 @@ export class JsonformsGenerator extends Generator {
       }
     }
 
-    if (this.project === Project.Scaffolding) {
+    if (this.schemaPath !== '') {
       await this.getSchemaFromPath(this.schemaPath);
     }
 
