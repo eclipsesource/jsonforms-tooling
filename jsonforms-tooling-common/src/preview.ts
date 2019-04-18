@@ -72,6 +72,7 @@ export const showPreview = async (editorInstance: any, firstSchemafileUri: any, 
       canSelectFolders: false,
       canSelectFiles: true,
       openLabel: selectSecondSchema,
+      defaultUri: editorInstance.Uri.parse(firstSchemafileUri),
       filters: {
         'Json Files': ['json'],
       },
