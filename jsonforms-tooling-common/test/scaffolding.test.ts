@@ -10,6 +10,7 @@ import { mkdirWithPromise, readFileWithPromise, rimrafWithPromise, statWithPromi
 describe('Test createProject with default schema', () => {
   let selectPathWasCalled = false;
   let enterProjectNameWasCalled = false;
+  let whichSchemaWasCalled = false;
   let enterSchemaPathWasCalled = false;
 
   const random = Math.random().toString(36).substring(7);
@@ -25,16 +26,23 @@ describe('Test createProject with default schema', () => {
         if (param.id === 'projectName') {
           enterProjectNameWasCalled = true;
           return projectName;
-        } else if (param.id === 'schemaPath') {
-          enterSchemaPathWasCalled = true;
-          return '';
         }
         return false;
       },
       showOpenDialog: async (param: any) => {
         if (param.id === 'path') {
           selectPathWasCalled = true;
-        return [{fsPath: path}];
+          return [{fsPath: path}];
+        } else if (param.id === 'schemaPath') {
+          enterSchemaPathWasCalled = true;
+          return [{fsPath: ''}];
+        }
+        return false;
+      },
+      showQuickPick: async (options: any, param: any) => {
+        if (param.id === 'whichSchema') {
+          whichSchemaWasCalled = true;
+          return 'Default';
         }
         return false;
       },
@@ -59,8 +67,12 @@ describe('Test createProject with default schema', () => {
     expect(enterProjectNameWasCalled).toBe(true);
   });
 
+  test('If which schema was asked', async () => {
+    expect(whichSchemaWasCalled).toBe(true);
+  });
+
   test('If schema path was asked', async () => {
-    expect(enterSchemaPathWasCalled).toBe(true);
+    expect(enterSchemaPathWasCalled).toBe(false);
   });
 
   test('Check if package.json exists', async () => {
@@ -104,6 +116,7 @@ describe('Test createProject with default schema', () => {
 describe('Test createProject with custom schema', () => {
   let selectPathWasCalled = false;
   let enterProjectNameWasCalled = false;
+  let whichSchemaWasCalled = false;
   let enterSchemaPathWasCalled = false;
 
   const random = Math.random().toString(36).substring(7);
@@ -121,16 +134,23 @@ describe('Test createProject with custom schema', () => {
         if (param.id === 'projectName') {
           enterProjectNameWasCalled = true;
           return projectName;
-        } else if (param.id === 'schemaPath') {
-          enterSchemaPathWasCalled = true;
-          return schemaPath;
         }
         return false;
       },
       showOpenDialog: async (param: any) => {
         if (param.id === 'path') {
           selectPathWasCalled = true;
-        return [{fsPath: path}];
+          return [{fsPath: path}];
+        } else if (param.id === 'schemaPath') {
+          enterSchemaPathWasCalled = true;
+          return [{fsPath: schemaPath}];
+        }
+        return false;
+      },
+      showQuickPick: async (options: any, param: any) => {
+        if (param.id === 'whichSchema') {
+          whichSchemaWasCalled = true;
+          return 'Custom';
         }
         return false;
       },
@@ -153,6 +173,10 @@ describe('Test createProject with custom schema', () => {
 
   test('If project name was asked', async () => {
     expect(enterProjectNameWasCalled).toBe(true);
+  });
+
+  test('If which schema was asked', async () => {
+    expect(whichSchemaWasCalled).toBe(true);
   });
 
   test('If schema path was asked', async () => {

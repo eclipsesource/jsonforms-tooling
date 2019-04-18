@@ -24,26 +24,25 @@ export const createProject = async (editorInstance: any, path: string) => {
         openLabel: 'Select folder',
         id: 'path',
       });
-      if (fileUri && fileUri[0].fsPath) {
-        path = fileUri[0].fsPath;
-      } else {
-        throw new Error('Please select a empty folder');
-      }
+      path = fileUri[0].fsPath;
     } catch (err) {
       showMessage(editorInstance, err.message, MessageType.Error);
       return err;
     }
   }
 
+  // Check if folder is empty
   try {
     const files = await readdirWithPromise(path);
     if (files.length) {
-      throw new Error('Folder not empty. Please select an empty folder.');
+      showMessage(editorInstance, 'Folder not empty. Please select an empty folder.', MessageType.Error);
+      return;
     }
   } catch (err) {
     showMessage(editorInstance, err.message, MessageType.Error);
     return err;
   }
+
   // Ask for project name
   let projectName = '';
   try {
@@ -59,18 +58,46 @@ export const createProject = async (editorInstance: any, path: string) => {
     showMessage(editorInstance, err.message, MessageType.Error);
     return err;
   }
-  // Ask for schema path (only for scaffolding project)
-  let schemaPath = '';
+
+  // Check if file already exist and ask user if it should be overwritten
+  let whichSchema = 'Default';
   try {
-    schemaPath = await editorInstance.window.showInputBox(editorInstance.InputBoxOptions = {
-      prompt: 'Label: ',
-      placeHolder: `Enter the path to your schema file (leave blank to use default schema)`,
-      id: 'schemaPath',
+    whichSchema = await editorInstance.window.showQuickPick(['Default', 'Custom'], editorInstance.QuickPickOptions = {
+      canSelectMany: false,
+      placeHolder:  `Do you want to use the default schema or a custom schema?`,
+      id: 'whichSchema',
     });
   } catch (err) {
-    showMessage(editorInstance, err.message, 'err');
+    showMessage(editorInstance, err.message, MessageType.Error);
     return err;
   }
+
+  // Ask for schema path
+  let schemaPath = null;
+  if (whichSchema === 'Custom') {
+    try {
+      schemaPath = await editorInstance.window.showOpenDialog(editorInstance.OpenDialogOptions = {
+        canSelectMany: false,
+        canSelectFolders: false,
+        canSelectFiles: true,
+        openLabel: 'Select the custom schema file',
+        defaultUri: editorInstance.Uri.parse(path),
+        filters: {
+          'Json Files': ['json'],
+        },
+        id: 'schemaPath',
+      });
+      schemaPath = schemaPath[0].fsPath;
+    } catch (err) {
+      showMessage(editorInstance, err.message, MessageType.Error);
+      return err;
+    }
+  }
+
+  if (schemaPath == null) {
+    schemaPath = '';
+  }
+
   showMessage(editorInstance, `Scaffolding Seed project: ${path}`);
 
   // Create yeoman environment and call yeoman generator
@@ -107,6 +134,10 @@ class ToolingAdapter extends TerminalAdapter {
   }
 
   log = (msg: any, ctx: any) => {
-    showMessage(this.editorInstance, msg);
+    if (ctx === 'err') {
+      showMessage(this.editorInstance, msg, MessageType.Error);
+    } else {
+      showMessage(this.editorInstance, msg);
+    }
   };
 }

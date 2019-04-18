@@ -17,6 +17,7 @@ export const editorInstance = {
   QuickPickOptions: {},
   InputBoxOptions: {},
   Uri: {
+    parse: jest.fn(() => true),
     file: jest.fn(() => true)
   },
 };
