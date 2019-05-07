@@ -11,6 +11,7 @@ describe('Test generateUISchema', () => {
   let selectSchemaWasCalled = false;
   let enterFileNameWasCalled = false;
   let overwriteFileWasCalled = false;
+  let errorMessage = '';
   const basePath = join(__dirname, 'assets');
 
   const getEditor = (schemaPath: string) => {
@@ -20,11 +21,16 @@ describe('Test generateUISchema', () => {
     selectSchemaWasCalled = false;
     enterFileNameWasCalled = false;
     overwriteFileWasCalled = false;
+    errorMessage = '';
 
     const newEditorInstance = {
       ...editorInstance,
       window: {
         ...editorInstance.window,
+        showErrorMessage: (message: any) => {
+          errorMessage = message;
+          return message;
+        },
         showInputBox: async (param: any) => {
           if (param.id === 'fileName') {
             enterFileNameWasCalled = true;
@@ -104,12 +110,13 @@ describe('Test generateUISchema', () => {
   test('Check if an error is thrown, when file is uischema', async () => {
     const schemaPath = join(basePath, 'uischema.json');
     const newEditorInstance = getEditor(schemaPath);
-    const result = await generateUISchema(newEditorInstance, schemaPath);
+    await generateUISchema(newEditorInstance, schemaPath);
 
     expect(selectSchemaWasCalled).toBe(false);
     expect(enterFileNameWasCalled).toBe(false);
     expect(overwriteFileWasCalled).toBe(false);
 
-    expect(result).toBeInstanceOf(Error);
+    expect(errorMessage).toBe('It seems you selected a uischema. This function does'
+    + ' only work with a schema file');
   });
 });

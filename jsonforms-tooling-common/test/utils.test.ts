@@ -47,7 +47,7 @@ describe('Test validateUiSchema', () => {
     ]
   };
 
-  const notValidUiSchema = {
+  const invalidUiSchema = {
     'type': 'object',
     'properties': {
       'name': {
@@ -92,7 +92,7 @@ describe('Test validateUiSchema', () => {
   });
 
   test('not valid uischema', async () => {
-    const resultFalse = await validateUiSchema(notValidUiSchema);
+    const resultFalse = await validateUiSchema(invalidUiSchema);
     expect(resultFalse).toBe(false);
   });
 });
