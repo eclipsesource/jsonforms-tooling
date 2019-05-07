@@ -28,7 +28,8 @@ export const generateUISchema = async (editorInstance: any, path: any) => {
       if (fileUri && fileUri[0].fsPath) {
         path = fileUri[0].fsPath;
       } else {
-        throw new Error('Please select a json schema file');
+        showMessage(editorInstance, 'Please select a json schema file', MessageType.Error);
+        return;
       }
     } catch (err) {
       showMessage(editorInstance, err.message, MessageType.Error);
@@ -50,8 +51,9 @@ export const generateUISchema = async (editorInstance: any, path: any) => {
   try {
     const validUiSchema = await validateUiSchema(jsonContent);
     if (validUiSchema) {
-      throw new Error('It seems you selected a uischema. This functions does only work with a'
-      + ' schema file');
+      showMessage(editorInstance, 'It seems you selected a uischema. This function does'
+      + ' only work with a schema file', MessageType.Error);
+      return;
     }
   } catch (err) {
     showMessage(editorInstance, err.message, MessageType.Error);
@@ -66,7 +68,8 @@ export const generateUISchema = async (editorInstance: any, path: any) => {
       id: 'fileName',
     });
     if (fileName === undefined) {
-      throw new Error('UI schema generation canceled');
+      showMessage(editorInstance, 'UI schema generation canceled', MessageType.Error);
+      return;
     }
     if (fileName === '') {
       fileName = 'uischema.json';
@@ -83,11 +86,12 @@ export const generateUISchema = async (editorInstance: any, path: any) => {
     try {
       decision = await editorInstance.window.showQuickPick(['Yes', 'No'], editorInstance.QuickPickOptions = {
         canSelectMany: false,
-        placeHolder:  `This file ${fileName} does already exist. Should it be overwritten?`,
+        placeHolder:  `The file ${fileName} does already exist. Should it be overwritten?`,
         id: 'overwrite',
       });
       if (decision !== 'Yes') {
-        throw new Error('UI schema generation canceled');
+        showMessage(editorInstance, 'UI schema generation canceled', MessageType.Error);
+        return;
       }
     } catch (err) {
       showMessage(editorInstance, err.message, MessageType.Error);

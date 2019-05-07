@@ -63,26 +63,28 @@ describe('Test createProject with seed project', () => {
     expect(() => statWithPromise(join(srcPath, 'uischema.json'))).not.toThrow();
   });
 
-  test('Check if uischema is valid', async () => {
+  test('Check if uischema is valid', async (done: any) => {
     let jsonContent = null;
     try {
       const content = await readFileWithPromise(join(srcPath, 'uischema.json'), 'utf8');
       jsonContent = JSON.parse(content);
     } catch (err) {
-      return;
+      done.fail(new Error('File could not be read'));
     }
     const isValidSchema = await validateUiSchema(jsonContent);
     expect(isValidSchema).toBe(true);
+    done();
   });
 
-  test('Check if project name is set correct', async () => {
+  test('Check if project name is set correct', async (done: any) => {
     let jsonContent = null;
     try {
       const content = await readFileWithPromise(join(path, 'package.json'), 'utf8');
       jsonContent = JSON.parse(content);
     } catch (err) {
-      return;
+      done.fail(new Error('File could not be read'));
     }
     expect(jsonContent.name).toBe(projectName);
+    done();
   });
 });
