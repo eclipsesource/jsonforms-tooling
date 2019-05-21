@@ -29,7 +29,7 @@
     "@jsonforms/react": "^2.2.3",
     "chalk": "^2.4.2",
     "clear": "^0.1.0",
-    "figlet": "^1.2.1",
+    "figlet": "^1.2.3",
     "fs-extra": "^7.0.1",
     "jsonforms-react-seed": "git+https://github.com/eclipsesource/jsonforms-react-seed.git",
     "react": "^16.8.3",
@@ -37,14 +37,12 @@
     "redux": "^4.0.1",
     "util": "^0.12.0",
     "validate-npm-package-name": "^3.0.0",
-    "yeoman-generator": "^3.2.0"
+    "yeoman-generator": "^4.0.1"
   },
   "devDependencies": {
     "@types/figlet": "^1.2.0",
     "@types/fs-extra": "^5.1.0",
-    "@types/yeoman-generator": "^3.1.2",
-    "typescript": "^3.4.5",
-    "yeoman-assert": "^3.1.1",
-    "yeoman-test": "^1.9.1"
+    "@types/yeoman-generator": "^3.1.3",
+    "typescript": "^3.4.5"
   }
 }
