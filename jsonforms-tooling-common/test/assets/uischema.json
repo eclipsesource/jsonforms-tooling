@@ -3,37 +3,30 @@
   "elements": [
     {
       "type": "Control",
-      "label": "Name",
       "scope": "#/properties/name"
     },
     {
       "type": "Control",
-      "label": "Description",
       "scope": "#/properties/description"
     },
     {
       "type": "Control",
-      "label": "Done",
       "scope": "#/properties/done"
     },
     {
       "type": "Control",
-      "label": "Due Date",
       "scope": "#/properties/due_date"
     },
     {
       "type": "Control",
-      "label": "Rating",
       "scope": "#/properties/rating"
     },
     {
       "type": "Control",
-      "label": "Recurrence",
       "scope": "#/properties/recurrence"
     },
     {
       "type": "Control",
-      "label": "Recurrence Interval",
       "scope": "#/properties/recurrence_interval"
     }
   ]
