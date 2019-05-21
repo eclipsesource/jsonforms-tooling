@@ -19,45 +19,27 @@ This Yeoman Generator brings you all the functions of the tooling to your termin
 
 If you want to avoid the interface, you can use the following parameters:
 
-### Project
-
-Choose the project you would like to scaffold
-
-Current available project seeds:
-- `scaffolding`
-- `seed`
-- `example`
-
-Command:
-```shell
-yo jsonforms --project "seed"
-```
-
 ### Path
 
-Enter the path where you want to install the project
-
-You can also use `current` if you want to use the current terminal folder
+Enter the path where you want to install the project. (Default: current terminal folder)
 
 Command:
 ```shell
-yo jsonforms --path "~\Documents\Project\Seed"
+yo jsonforms --path "~/Documents/Project/Seed"
 ```
 
 ### Schema Path
 
-Enter the path where the JSON schema is located
-
-This is important for the Scaffolding project to work.
+Enter the path where the JSON schema is located. If not provided, a default schema will be used.
 
 Command:
 ```shell
-yo jsonforms --project "Scaffolding" --schemaPath "/Users/CurrentUser/Desktop/project_files/schema_file.json"
+yo jsonforms --schemaPath "~/MyProject/schema.json"
 ```
 
 ### Name
 
-This parameter is only available for the `seed` project. This name will be used inside the `package.json`.
+This name will be used inside the `package.json`. (Default: `jsonforms-react-seed`)
 *Note!* Only a url like schema is allowed here (e.g. no uppercase characters, no whitespaces etc.)
 
 Command:
@@ -71,6 +53,6 @@ If parameters are missing, yeoman will still ask you for them via the yeoman ter
 
 Command:
 ```shell
-yo jsonforms --project "seed" --path "~\Documents\Project\Seed" --name "my-project"
+yo jsonforms --path "~/Documents/Project/Seed" --schemaPath "~/MyProject/schema.json" --name "my-project"
 ```
 
