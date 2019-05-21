@@ -33,7 +33,6 @@ export class JsonformsGenerator extends Generator {
   constructor(args: any, opts: any) {
     super(args, opts);
 
-    this.option('project', { type: String } );
     this.option('path', { type: String } );
     this.option('schemaPath', { type: String } );
     this.option('name', { type: String } );
@@ -178,6 +177,7 @@ export class JsonformsGenerator extends Generator {
    * @param {string} schemaPath path to the schema file for generating the ui schema.
    */
   getSchemaFromPath = async (schemaPath: string) => {
+    const srcPath = join(this.path, 'src');
     let jsonSchema = null;
     try {
       const content = await readFileWithPromise(schemaPath, 'utf8');
@@ -186,8 +186,11 @@ export class JsonformsGenerator extends Generator {
       this.log(chalk.red(err.message), MessageType.Error);
       return;
     }
+
+    this.log('Generating the uischema file...');
+    await this.generateUISchema(join(srcPath, 'uischema.json'), jsonSchema);
+
     this.log('Saving json schema file into project...');
-    const srcPath = join(this.path, 'src');
     try {
       await writeFileWithPromise(join(srcPath, 'schema.json'), JSON.stringify(jsonSchema, null, 2));
     } catch (err) {
@@ -195,8 +198,6 @@ export class JsonformsGenerator extends Generator {
       return;
     }
     this.log('Successfully saved the schema file!');
-    this.log('Generating the uischema file...');
-    await this.generateUISchema(join(srcPath, 'uischema.json'), jsonSchema);
   };
 
   /**
@@ -209,7 +210,7 @@ export class JsonformsGenerator extends Generator {
     const jsonUISchema = await generateDefaultUISchema(jsonSchema);
     try {
       if (jsonUISchema === null) {
-        this.log(chalk.red('Schema file was not valid. The uischema file was not generated'), MessageType.Error);
+        this.log(chalk.red('Schema file was not valid. Default schema will be used.'), MessageType.Error);
         return;
       }
       await writeFileWithPromise(path, JSON.stringify(jsonUISchema, null, 2));
