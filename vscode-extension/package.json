@@ -13,7 +13,7 @@
   },
   "displayName": "JSONForms Tooling",
   "engines": {
-    "vscode": "^1.28.0"
+    "vscode": "^1.34.0"
   },
   "categories": [
     "Other"
