@@ -1,6 +1,6 @@
 {
   "name": "jsonforms-tooling-common",
-  "version": "0.0.1",
+  "version": "0.0.2-alpha.0",
   "description": "Common package for JSON Forms tooling",
   "repository": "https://github.com/eclipsesource/jsonforms-tooling",
   "bugs": "https://github.com/eclipsesource/jsonforms-tooling/issues",
@@ -25,17 +25,17 @@
     "@jsonforms/react": "^2.2.3",
     "ajv": "^6.10.0",
     "chokidar": "^3.0.1",
-    "generator-jsonforms": "0.0.1",
+    "generator-jsonforms": "^0.0.2-alpha.0",
     "react": "^16.8.6",
     "react-redux": "^6.0.0",
     "redux": "^4.0.1",
-    "util": "^0.12.0",
     "rimraf": "^2.6.3",
+    "util": "^0.12.0",
     "yeoman-environment": "^2.3.4"
   },
   "type-check": "tsc",
   "devDependencies": {
-    "typescript": "^3.5.2",
-    "@types/rimraf": "2.0.2"
+    "@types/rimraf": "2.0.2",
+    "typescript": "^3.5.2"
   }
 }

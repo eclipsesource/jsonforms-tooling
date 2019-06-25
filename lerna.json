@@ -1,4 +1,8 @@
 {
-  "version": "0.0.1",
-  "packages": ["jsonforms-tooling-common", "vscode-extension", "generator-jsonforms"]
+  "version": "0.0.2-alpha.0",
+  "packages": [
+    "generator-jsonforms",
+    "jsonforms-tooling-common",
+    "vscode-extension"
+  ]
 }
