@@ -4,7 +4,7 @@
   "description": "VSCode extension for JSON Forms tooling",
   "repository": "https://github.com/eclipsesource/jsonforms-tooling",
   "bugs": "https://github.com/eclipsesource/jsonforms-tooling/issues",
-  "homepage": "http://jsonforms.io/",
+  "homepage": "https://jsonforms.io/",
   "license": "MIT",
   "publisher": "EclipseSource",
   "private": true,
@@ -12,12 +12,17 @@
     "access": "public"
   },
   "displayName": "JSONForms Tooling",
-  "engines": {
-    "vscode": "^1.34.0"
-  },
   "categories": [
     "Other"
   ],
+  "galleryBanner": {
+    "color": "#212121",
+    "theme": "dark"
+  },
+  "icon": "icon.png",
+  "engines": {
+    "vscode": "^1.34.0"
+  },
   "activationEvents": [
     "onCommand:extension.scaffoldSeedProject",
     "onCommand:extension.generateUISchema",
