@@ -28,7 +28,7 @@ The VS extension brings you all the functions of the tooling to your Visual Stud
 ## Generate a default UI schema
 1. Right click on a `schema.json` file.
 2. Select `JSONForms: Generate UI Schema`.
-3. Enter a name for the ui schema file (default: `uischema.json`).
+3. Enter a name for the UI schema file (default: `uischema.json`).
 
 ## Preview the schema and UI schema
 1. Right click on a `schema.json` or a `uischema.json` file.
