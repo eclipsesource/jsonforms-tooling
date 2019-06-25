@@ -21,7 +21,7 @@ If you want to avoid the interface, you can use the following parameters:
 
 ### Path
 
-Enter the path where you want to install the project. (Default: current terminal folder)
+Enter the path where you want to install the project. (Default: current working directory)
 
 Command:
 ```shell
