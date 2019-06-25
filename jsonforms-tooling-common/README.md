@@ -2,7 +2,7 @@
 
 This package is used by the JSONForms Tooling Visual Studio Code extensions and the Theia plugin, to outsource common shared code. This package is not meant to be used on it's own.
 
-It provides the following functions (for vscode and theia):
-* Generate a default UI schema
-* Scaffolded a sample JSONForms project
-* Preview JSONForms schema and uischema
+It provides the following functionality (for vscode and theia):
+* Generating a default UI schema
+* Scaffolding of a sample JSONForms project
+* Previewing JSONForms schema and uischema
