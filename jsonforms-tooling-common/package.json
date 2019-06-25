@@ -35,6 +35,7 @@
   },
   "type-check": "tsc",
   "devDependencies": {
+    "typescript": "^3.5.2",
     "@types/rimraf": "2.0.2"
   }
 }
