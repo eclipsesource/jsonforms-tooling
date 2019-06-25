@@ -19,7 +19,7 @@
     "color": "#212121",
     "theme": "dark"
   },
-  "icon": "icon.png",
+  "icon": "images/icon.png",
   "engines": {
     "vscode": "^1.34.0"
   },

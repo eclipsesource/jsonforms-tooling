@@ -1,5 +1,8 @@
 # JSONForms Tooling Visual Studio Code Extension
 
+![Scaffolding](images/screenshot_scafolding.png)
+![Preview](images/screenshot_preview.png)
+
 The VS extension brings you all the functions of the tooling to your Visual Studio Code. Within VS Code you can:
 
 * Scaffold a seed project
