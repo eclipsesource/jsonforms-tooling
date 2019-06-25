@@ -1,7 +1,7 @@
 {
   "name": "jsonforms-tooling-common",
   "version": "0.0.1",
-  "description": "Common tooling package for JSON Forms",
+  "description": "Common package for JSON Forms tooling",
   "repository": "https://github.com/eclipsesource/jsonforms-tooling",
   "bugs": "https://github.com/eclipsesource/jsonforms-tooling/issues",
   "homepage": "http://jsonforms.io/",
