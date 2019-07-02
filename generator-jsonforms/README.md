@@ -12,10 +12,9 @@ This Yeoman Generator brings you all the functions of the tooling to your termin
 > *Note*: The package is currently not published to the npm store, which will make the installation a lot easier.
 
 1. First you need to install yeoman via `npm i -g yo`
-2. Next you need to run `npm link` inside the main folder
+2. Next install the yeoman jsonforms generator via `npm i -g generator-jsonforms`
 3. Now the generator is available for yeoman
 4. To run, just type `yo jsonforms`
-5. yeoman will ask you some questions (e.g. which project, which path etc.)
 
 If you want to avoid the interface, you can use the following parameters:
 

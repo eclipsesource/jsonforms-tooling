@@ -6,7 +6,7 @@ import { join } from 'path';
 const TerminalAdapter = require('yeoman-environment/lib/adapter');
 const yeoman = require('yeoman-environment');
 
-import { MessageType, readdirWithPromise, showMessage } from './utils';
+import { MessageType, readdirWithPromise, showMessage, statWithPromise } from './utils';
 
 /*
  * @param {any} editorInstance the instance of the editor
@@ -102,7 +102,13 @@ export const createProject = async (editorInstance: any, path: string) => {
 
   // Create yeoman environment and call yeoman generator
   const env = yeoman.createEnv([], {}, new ToolingAdapter( {editorInstance} ));
-  const generatorDir = join(__dirname, '../node_modules/generator-jsonforms/generators/app/index.js');
+  const generatorPath = '../node_modules/generator-jsonforms/generators/app/index.js';
+  let generatorDir = join(__dirname, generatorPath);
+  try {
+    await statWithPromise(generatorDir);
+  } catch (err) {
+    generatorDir = join(__dirname, '../../', generatorPath);
+  }
   env.getByPath(generatorDir);
   env.on('error', (err: any) => {
     showMessage(editorInstance, err.message, MessageType.Error);
