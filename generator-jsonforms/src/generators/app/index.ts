@@ -127,7 +127,12 @@ export class JsonformsGenerator extends Generator {
 
   async write() {
     this.log('Writing files to disk');
-    const source = join(__dirname, '../../node_modules', 'jsonforms-react-seed');
+    let source = join(__dirname, '../../node_modules', 'jsonforms-react-seed');
+    try {
+      await statWithPromise(source);
+    } catch (err) {
+      source = join(__dirname, '../../../../node_modules', 'jsonforms-react-seed');
+    }
     try {
       await copy(source, this.path);
       this.log('Done writing files');
