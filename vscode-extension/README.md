@@ -34,3 +34,18 @@ The VS extension brings you all the functions of the tooling to your Visual Stud
 1. Right click on a `schema.json` or a `uischema.json` file.
 2. The editor will now ask you to select the other file (if you selected a schema file in the first step, now select the uischema file).
 3. Now the preview will open in split screen and show you a preview of your schema files. (Note: It can take a while to load the environment)
+
+## Deployment
+
+To get an installable vscode extension file, you first need to install the "Visual Studio Code Extensions" tool:
+```shell
+npm install -g vsce
+```
+
+After that run:
+```shell
+vsce package
+```
+
+The tool will generate a file, that can directly be installed within vscode. More information can be found here:
+https://code.visualstudio.com/api/working-with-extensions/publishing-extension
