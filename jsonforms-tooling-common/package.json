@@ -25,7 +25,7 @@
     "@jsonforms/react": "^2.2.3",
     "ajv": "^6.10.0",
     "chokidar": "^3.0.1",
-    "generator-jsonforms": "^0.0.2-alpha.0",
+    "generator-jsonforms": "0.0.2-alpha.0",
     "react": "^16.8.6",
     "react-redux": "^6.0.0",
     "redux": "^4.0.1",
