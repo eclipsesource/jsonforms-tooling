@@ -45,27 +45,55 @@ export class JsonformsGenerator extends Generator {
   }
 
   async prompting() {
+
     if (!this.skipPrompting) {
       clear();
       this.log(
-        chalk.blue(
-          textSync('JSONForms Tooling', { horizontalLayout: 'full' }),
-        ),
+        textSync('JSONForms Tooling', { horizontalLayout: 'full' }),
       );
       this.answers = await this.prompt([
         {
-          name: 'path',
+          name: 'name',
           type: 'input',
-          message: 'Enter the path where the project will be installed (default: current folder):',
-          validate: async value => {
+          message: 'Enter a name for your seed project:',
+          default: 'jsonforms-react-seed',
+          validate: (value: any) => {
             if (value !== '') {
-              try {
-                await statWithPromise(value);
-              } catch (err) {
-                return 'Folder does not exists';
-              }
+              const valid = validate(value);
+              return valid.validForNewPackages || 'Sorry, the name can only contain URL-friendly ' +
+              'characters and cannot contain capital letters.';
             }
             return true;
+          },
+          when: () => {
+            if (this.name === undefined) {
+              return true;
+            }
+            if (!validate(this.name).validForNewPackages) {
+              this.log(chalk.red('Sorry, the name can only contain URL-friendly ' +
+              'characters and cannot contain capital letters.'));
+              return true;
+            }
+            return false;
+          }
+        },
+        {
+          name: 'path',
+          type: 'input',
+          message: `Enter the path where the project will be installed:`,
+          default: ( answers: any) => {
+            if (this.name !== undefined) {
+              return join(process.cwd(), this.name);
+            }
+            return join(process.cwd(), answers.name);
+          },
+          validate: async (value: any) => {
+            try {
+              await statWithPromise(value);
+            } catch (err) {
+              return true;
+            }
+            return 'Folder does already exists. Please enter a different path.';
           },
           when: (this.path == null)
         },
@@ -73,7 +101,7 @@ export class JsonformsGenerator extends Generator {
           name: 'schemaPath',
           type: 'input',
           message: 'Enter the path of schema from which the ui schema will be generated (leave empty for default schema):',
-          validate: async value => {
+          validate: async (value: any) => {
             if (value !== '') {
               try {
                 await statWithPromise(value);
@@ -85,30 +113,6 @@ export class JsonformsGenerator extends Generator {
           },
           when: (this.schemaPath == null)
         },
-        {
-          name: 'name',
-          type: 'input',
-          message: `Enter a name for your seed project (default: jsonforms-react-seed):`,
-          validate: value => {
-            if (value !== '') {
-              const valid = validate(value);
-              return valid.validForNewPackages || 'Sorry, name can only contain URL-friendly ' +
-              'characters and name can no longer contain capital letters.';
-            }
-            return true;
-          },
-          when: () => {
-            if (this.name === undefined) {
-              return true;
-            }
-            if (!validate(this.name).validForNewPackages) {
-              this.log(chalk.red('Sorry, name can only contain URL-friendly ' +
-              'characters and name can no longer contain capital letters.'));
-              return true;
-            }
-            return false;
-          }
-        }
       ]);
       if (this.answers && this.answers.path === '' || this.path === '') {
         this.path = process.cwd();
