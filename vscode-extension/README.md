@@ -9,16 +9,9 @@ The VS extension brings you all the functions of the tooling to your Visual Stud
 * Generate your basic UI Schema from your Schema
 * Preview the current schema files
 
-## Get Started
-
-1. First you need to follow the `Get Started` instructions within the README file in the root folder. 
-2. After that open the `vscode-extension` folder within Visual Studio Code.
-3. Now press F5 and wait for the debugger to get started. 
-4. In the debugger window open any folder you want. 
-
 ## Scaffold a sample project
 1. Right click on the folder, where you want to install the sample project.
-2. Select the `JSONForms: Scaffold Seed Project` in the context menu.
+2. Select the `JSONForms: Scaffold Seed Project` in the context menu. **NOTE**: It can take up to 1 minute, until vscode shows you the next popup
 3. Set a custom name for your project. You can also leave the field blank, then the project name will be `jsonforms-react-seed`
 4. Select if you want to use a default schema or a custom schema.
 5a. If you've selected the custom schema option, you now need to select the schema file on your PC.
@@ -34,6 +27,13 @@ The VS extension brings you all the functions of the tooling to your Visual Stud
 1. Right click on a `schema.json` or a `uischema.json` file.
 2. The editor will now ask you to select the other file (if you selected a schema file in the first step, now select the uischema file).
 3. Now the preview will open in split screen and show you a preview of your schema files. (Note: It can take a while to load the environment)
+
+## Build & Testing
+
+1. First you need to follow the `Get Started` instructions within the README file in the root folder. 
+2. After that open the `vscode-extension` folder within Visual Studio Code.
+3. Now press F5 and wait for the debugger to get started. 
+4. In the debugger window open any folder you want. 
 
 ## Deployment
 
