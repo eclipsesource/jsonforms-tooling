@@ -18,9 +18,19 @@ This Yeoman Generator brings you all the functions of the tooling to your termin
 
 If you want to avoid the interface, you can use the following parameters:
 
+### Name
+
+This name will be used inside the `package.json`. (Default: `jsonforms-react-seed`)
+*Note!* Only a url like schema is allowed here (e.g. no uppercase characters, no whitespaces etc.)
+
+Command:
+```shell
+yo jsonforms --name "my-project"
+```
+
 ### Path
 
-Enter the path where you want to install the project. (Default: current working directory)
+Enter the path where you want to install the project. (Default: current working directory + the name of the project)
 
 Command:
 ```shell
@@ -34,16 +44,6 @@ Enter the path where the JSON schema is located. If not provided, a default sche
 Command:
 ```shell
 yo jsonforms --schemaPath "~/MyProject/schema.json"
-```
-
-### Name
-
-This name will be used inside the `package.json`. (Default: `jsonforms-react-seed`)
-*Note!* Only a url like schema is allowed here (e.g. no uppercase characters, no whitespaces etc.)
-
-Command:
-```shell
-yo jsonforms --name "my-project"
 ```
 
 ### All together
