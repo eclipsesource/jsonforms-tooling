@@ -17,10 +17,8 @@
     "yeoman-generator"
   ],
   "scripts": {
-    "postinstall": " ",
     "compile": "tsc -p ./",
     "build": "npm run compile",
-    "custominstall": "npm run postinstall",
     "lint": "tslint --project tsconfig.json"
   },
   "main": "./generators/app/index.js",
