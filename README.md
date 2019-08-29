@@ -18,7 +18,7 @@ It will also run the `lerna bootstrap` and the `lerna postinstall` command.
 
 To compile the code in all packages, just run 
 ```shell
-npm run compile
+npm run build
 ```
 
 For more information on each package, please read the  README of those packages.
