@@ -21,7 +21,7 @@
   },
   "icon": "images/icon.png",
   "engines": {
-    "vscode": "^1.34.0"
+    "vscode": "^1.37.1"
   },
   "activationEvents": [
     "onCommand:extension.scaffoldSeedProject",
@@ -46,11 +46,6 @@
     ],
     "menus": {
       "explorer/context": [
-        {
-          "when": "explorerResourceIsFolder",
-          "command": "extension.scaffoldSeedProject",
-          "group": "jsonforms"
-        },
         {
           "when": "resourceExtname == .json",
           "command": "extension.generateUISchema",
