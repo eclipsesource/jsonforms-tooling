@@ -10,10 +10,11 @@ The VS extension brings you all the functions of the tooling to your Visual Stud
 * Preview the current schema files
 
 ## Scaffold a sample project
-1. Right click on the folder, where you want to install the sample project.
-2. Select the `JSONForms: Scaffold Seed Project` in the context menu. **NOTE**: It can take up to 1 minute, until vscode shows you the next popup
-3. Set a custom name for your project. You can also leave the field blank, then the project name will be `jsonforms-react-seed`
-4. Select if you want to use a default schema or a custom schema.
+1. Open the VSCode command palette via `Ctrl+Shift+P`
+2. Search for `JSONForms: Scaffold Seed Project` and select it. **NOTE**: It can take up to 1 minute, until vscode shows you the next popup
+3. Select a folder, where you want the seed project to be created in
+4. Set a custom name for your project. You can also leave the field blank, then the project name will be `jsonforms-react-seed`
+5. Select if you want to use a default schema or a custom schema.
 5a. If you've selected the custom schema option, you now need to select the schema file on your PC.
 5b. You can then right click on any empty folder and install the [seed](https://github.com/eclipsesource/jsonforms-react-seed) project inside it. This will clone the code from the repositories and run `npm install`
 6. (Optional) You can also generate an UI Schema out of any valid JSON schema file by rightclicking on the schema file
