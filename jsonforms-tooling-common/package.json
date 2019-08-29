@@ -21,21 +21,21 @@
     "lint": "tslint --project tsconfig.json"
   },
   "dependencies": {
-    "@jsonforms/core": "^2.2.3",
-    "@jsonforms/react": "^2.2.3",
-    "ajv": "^6.10.0",
-    "chokidar": "^3.0.1",
+    "@jsonforms/core": "^2.3.1",
+    "@jsonforms/react": "^2.3.1",
+    "ajv": "^6.10.2",
+    "chokidar": "^3.0.2",
     "generator-jsonforms": "^0.0.2-alpha.2",
-    "react": "^16.8.6",
-    "react-redux": "^6.0.0",
-    "redux": "^4.0.1",
-    "rimraf": "^2.6.3",
-    "util": "^0.12.0",
-    "yeoman-environment": "^2.3.4"
+    "react": "^16.9.0",
+    "react-redux": "^7.1.1",
+    "redux": "^4.0.4",
+    "rimraf": "^3.0.0",
+    "util": "^0.12.1",
+    "yeoman-environment": "^2.4.0"
   },
   "type-check": "tsc",
   "devDependencies": {
     "@types/rimraf": "2.0.2",
-    "typescript": "^3.5.2"
+    "typescript": "^3.6.2"
   }
 }
