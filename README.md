@@ -14,7 +14,6 @@ To get started, you just need to run the following commands:
 npm install
 ```
 This will install all dependencies for the `vscode-extension`, the `jsonforms-common-tooling` and the `generator-jsonforms` package. 
-It will also run the `lerna bootstrap` and the `lerna postinstall` command.
 
 To compile the code in all packages, just run 
 ```shell

@@ -13,7 +13,6 @@
   "main": "out/index",
   "typings": "out/index",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rimraf out && tsc -p ./ --declaration",
     "lint": "tslint --project tsconfig.json"
   },
