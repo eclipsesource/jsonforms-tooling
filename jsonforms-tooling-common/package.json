@@ -13,11 +13,7 @@
   "main": "out/index",
   "typings": "out/index",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run compile",
-    "compile": "rimraf out && tsc -p ./ --declaration",
-    "postinstall": " ",
-    "custominstall": "npm run postinstall",
+    "build": "rimraf out && tsc -p ./ --declaration",
     "lint": "tslint --project tsconfig.json"
   },
   "dependencies": {

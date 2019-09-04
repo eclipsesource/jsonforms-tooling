@@ -1,10 +1,9 @@
 {
   "scripts": {
     "lerna": "lerna",
-    "postinstall": "npm run lernabootstrap && npm run lernainstall",
-    "lernainstall": "lerna exec --no-bail --npm-ci-mode -- npm run custominstall",
-    "lernabootstrap": "lerna bootstrap --npm-ci-mode --ignore-scripts",
-    "compile": "lerna run build",
+    "clear": "lerna clean -y && rimraf node_modules",
+    "postinstall": "lerna bootstrap --npm-ci-mode",
+    "build": "lerna run build",
     "lint": "lerna run lint",
     "test": "jest"
   },
